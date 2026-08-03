@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  /* Neutrals — color comes from photography, not brand UI */
+  --color-white: #ffffff;
+  --color-mist: #efefef;
+
+  /* Text */
+  --color-heading: #000000; /* headings, solid black */
+  --color-body: #333333; /* charcoal body text */
+  --color-muted: #737373; /* muted / secondary text */
+
+  /* Structure */
+  --color-border: #e5e5e5;
+
+  /* Shape & elevation */
+  --radius-card: 1.75rem;
+  --radius-control: 0.75rem;
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.05);
+  --shadow-soft-lift: 0 8px 16px rgba(0, 0, 0, 0.08), 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-accent: var(--font-instrument-serif);
+
+  /* Colors exposed as Tailwind utilities (bg-*, text-*, border-*, etc.) */
+  --color-white: var(--color-white);
+  --color-mist: var(--color-mist);
+
+  --color-heading: var(--color-heading);
+  --color-body: var(--color-body);
+  --color-muted: var(--color-muted);
+
+  --color-border: var(--color-border);
+
+  /* Radius */
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+
+  /* Shadow */
+  --shadow-soft: var(--shadow-soft);
+  --shadow-soft-lift: var(--shadow-soft-lift);
+}
+
+body {
+  background: var(--color-white);
+  color: var(--color-body);
+  font-family: var(--font-sans);
+}
+
+/* Accent word style: 1-3 key words per headline, serif italic */
+.text-accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+}
