@@ -7,3 +7,4 @@ export * from "./modal";
 export * from "./section-header";
 export * from "./select";
 export * from "./star-rating";
+export * from "./textarea";
