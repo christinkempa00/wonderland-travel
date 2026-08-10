@@ -40,6 +40,7 @@ jobs:
           server: ${{ secrets.HOSTINGER_FTP_SERVER }}
           username: ${{ secrets.HOSTINGER_CEK_FTP_USERNAME }}
           password: ${{ secrets.HOSTINGER_CEK_FTP_PASSWORD }}
+          protocol: ftps
           local-dir: ./cek/dist/
           server-dir: ./
           dangerous-clean-slate: false

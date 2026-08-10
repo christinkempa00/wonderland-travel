@@ -37,9 +37,8 @@ jobs:
           server: ${{ secrets.HOSTINGER_FTP_SERVER }}
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
           local-dir: ./out/
           server-dir: public_html/
           # Hapus file lama di server yang sudah tidak ada di build baru
           dangerous-clean-slate: false
-
-          fix: deploy ke folder public_html
