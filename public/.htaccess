@@ -1,0 +1,40 @@
+# Next.js static export (output: "export") di Apache/Hostinger.
+#
+# Next.js menghasilkan "paket-wisata.html" DAN folder "paket-wisata/" (isinya
+# payload RSC untuk client-side navigation, BUKAN halaman, jadi tidak ada
+# index.html di dalamnya). Tanpa aturan di bawah, Apache mengira "/paket-wisata"
+# adalah folder tsb, redirect ke "/paket-wisata/", lalu 403 karena folder itu
+# tidak punya index.html dan directory listing dimatikan. Aturan ini membuat
+# Apache langsung menyajikan file ".html" yang sebenarnya, sebelum sempat
+# "nyasar" ke folder.
+
+DirectoryIndex index.html
+Options -Indexes +FollowSymLinks
+
+# Tanpa ini, Apache mendeteksi folder "/paket-wisata/" duluan (lewat mod_dir)
+# dan redirect ke situ SEBELUM aturan RewriteRule di bawah sempat jalan —
+# akibatnya tetap nyasar ke folder kosong itu. Mematikan auto-redirect ini
+# supaya RewriteRule di bawah yang mengambil alih sepenuhnya.
+<IfModule mod_dir.c>
+  DirectorySlash Off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # /halaman/  ->  /halaman.html  (kalau ada file .html-nya)
+  RewriteCond %{REQUEST_URI} ^/(.+)/$
+  RewriteCond %{DOCUMENT_ROOT}/%1.html -f
+  RewriteRule ^ /%1.html [L]
+
+  # /halaman  ->  /halaman.html  (request tanpa slash, sebelum Apache sempat
+  # mencocokkan ke folder "/halaman/" yang isinya cuma payload RSC)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.*)$ /$1.html [L]
+</IfModule>
+
+# Path yang sama sekali tidak cocok file/folder apa pun (bukan hasil rewrite
+# di atas) jatuh ke sini lewat mekanisme 404 bawaan Apache — supaya status
+# HTTP-nya benar 404 (bukan 200) sambil tetap menampilkan halaman custom.
+ErrorDocument 404 /404.html
