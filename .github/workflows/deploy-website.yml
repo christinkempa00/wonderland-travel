@@ -40,5 +40,11 @@ jobs:
           protocol: ftps
           local-dir: ./out/
           server-dir: public_html/
-          # Hapus file lama di server yang sudah tidak ada di build baru
-          dangerous-clean-slate: false
+          # Next.js kasih nama folder acak baru ("_next/<hash>/") tiap build,
+          # jadi folder acak dari build sebelumnya selalu perlu dihapus. Kalau
+          # diff-based (false), action ini kadang gagal 550 "No such file or
+          # directory" pas coba hapus folder itu jika state di server & yang
+          # action catat sempat tidak sinkron (mis. run sebelumnya gagal
+          # separuh jalan). "true" = hapus semua & upload ulang bersih tiap
+          # kali, lebih lambat tapi tidak pernah nyangkut di kasus ini.
+          dangerous-clean-slate: true

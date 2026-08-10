@@ -43,4 +43,6 @@ jobs:
           protocol: ftps
           local-dir: ./cek/dist/
           server-dir: ./
-          dangerous-clean-slate: false
+          # Lihat komentar yang sama di deploy-website.yml — hindari 550 saat
+          # action coba hapus file/folder hash lama yang sudah tak ada.
+          dangerous-clean-slate: true
