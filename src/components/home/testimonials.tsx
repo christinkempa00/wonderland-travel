@@ -43,7 +43,6 @@ export function Testimonials() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6">
         <SectionHeader
           tone="dark"
-          badge="Testimoni"
           title={
             <>
               Kata Mereka Tentang <Accent>Perjalanannya</Accent>

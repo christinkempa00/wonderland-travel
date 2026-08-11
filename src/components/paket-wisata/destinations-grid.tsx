@@ -45,7 +45,6 @@ export function DestinationsGrid() {
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 pb-16 pt-8 md:pb-20 md:pt-10">
       <SectionHeader
-        badge="Destinasi"
         title={
           <>
             Jelajahi <Accent>Indonesia</Accent> dari Ujung ke Ujung

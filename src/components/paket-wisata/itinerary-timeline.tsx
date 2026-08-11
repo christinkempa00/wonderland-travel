@@ -40,7 +40,6 @@ export function ItineraryTimeline() {
   return (
     <div className="flex flex-col gap-12 border-t border-border pt-16">
       <SectionHeader
-        badge="Contoh Itinerary"
         title={
           <>
             Seperti Apa Itinerary <Accent>{EXAMPLE_PACKAGE_NAME}</Accent>?

@@ -37,7 +37,6 @@ export function GalleryGrid() {
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-16 pt-8 md:pb-20 md:pt-10">
       <SectionHeader
         align="left"
-        badge="Galeri"
         title={
           <>
             Cerita Visual dari <Accent>Setiap Perjalanan</Accent>

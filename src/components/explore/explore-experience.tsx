@@ -83,7 +83,6 @@ export function ExploreExperience() {
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-16 pt-8 md:pb-20 md:pt-10">
       <SectionHeader
         align="left"
-        badge="Explore"
         title={
           <>
             Booking <Accent>Gabungan</Accent> Dalam Satu Genggaman

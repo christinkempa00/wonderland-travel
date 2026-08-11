@@ -29,7 +29,6 @@ export function WhyWonderland() {
     <section className="py-16 md:py-20">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6">
         <SectionHeader
-          badge="Kenapa Kami"
           title={
             <>
               Alasan Memilih <Accent>Wonderland</Accent>

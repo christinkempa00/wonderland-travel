@@ -14,7 +14,6 @@ export function Cta() {
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-6">
         <SectionHeader
           tone="dark"
-          badge="Mulai Perjalananmu"
           title={
             <>
               Siap <Accent>Menjelajah</Accent> Bersama Kami?

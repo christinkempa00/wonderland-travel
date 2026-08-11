@@ -135,7 +135,6 @@ export function PackageCatalog() {
     <section id="katalog" className="mx-auto flex w-full max-w-7xl scroll-mt-24 flex-col gap-12 px-6 py-16 md:py-20">
       <SectionHeader
         align="left"
-        badge="Katalog Paket"
         title={
           <>
             Semua <Accent>Paket Wisata</Accent> Kami

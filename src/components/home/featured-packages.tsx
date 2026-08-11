@@ -49,7 +49,6 @@ export function FeaturedPackages() {
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeader
           align="left"
-          badge="Paket Unggulan"
           title={
             <>
               Destinasi <Accent>Favorit</Accent> Bulan Ini

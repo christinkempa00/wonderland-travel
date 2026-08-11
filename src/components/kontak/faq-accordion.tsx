@@ -44,7 +44,6 @@ export function FaqAccordion() {
   return (
     <section className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-16 md:py-20">
       <SectionHeader
-        badge="FAQ"
         title={
           <>
             Pertanyaan yang <Accent>Sering Diajukan</Accent>

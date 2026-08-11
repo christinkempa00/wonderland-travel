@@ -23,7 +23,6 @@ export function AboutStats() {
       <div className="flex flex-col gap-8">
         <SectionHeader
           align="left"
-          badge="Tentang Kami"
           title={
             <>
               Perjalanan Yang <Accent>Terasa Personal</Accent>
