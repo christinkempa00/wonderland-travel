@@ -4,6 +4,11 @@
 # (tidak ada lagi file "route.html" terpisah yang bentrok nama dengan folder
 # "route/" seperti sebelumnya) — jadi direktori/index bawaan server sudah
 # cukup, tidak perlu RewriteRule custom sama sekali.
+#
+# Terverifikasi lokal (Apache/XAMPP): semua route 200, request tanpa trailing
+# slash tetap 301 -> URL kanonik lalu 200, route yang tidak ada 404 dengan
+# benar. Kalau masih 403 di server, cek dulu apakah build terbaru (dengan
+# next.config.ts trailingSlash: true) benar-benar sudah ter-upload.
 
 DirectoryIndex index.html
 Options -Indexes +FollowSymLinks
