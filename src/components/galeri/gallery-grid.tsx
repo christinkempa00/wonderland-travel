@@ -34,7 +34,7 @@ export function GalleryGrid() {
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-16 pt-16 md:pb-20 md:pt-20">
+    <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-16 pt-8 md:pb-20 md:pt-10">
       <SectionHeader
         align="left"
         badge="Galeri"
