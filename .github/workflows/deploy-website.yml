@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
           protocol: ftps
           local-dir: ./out/
-          server-dir: public_html/
+          server-dir: ./
           # Next.js kasih nama folder acak baru ("_next/<hash>/") tiap build,
           # jadi folder acak dari build sebelumnya selalu perlu dihapus. Kalau
           # diff-based (false), action ini kadang gagal 550 "No such file or
