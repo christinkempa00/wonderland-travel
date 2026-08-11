@@ -1,5 +1,6 @@
 import { Accent, SectionHeader } from "@/components/ui";
 
+// TODO: ganti angka statistik riil klien
 const STATS = [
   { value: "500+", label: "Klien Puas" },
   { value: "50+", label: "Destinasi" },
@@ -9,8 +10,9 @@ const STATS = [
 
 export function AboutStats() {
   return (
-    <section className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-6 py-24 lg:grid-cols-2">
+    <section className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-6 py-16 md:py-20 lg:grid-cols-2">
       <div className="overflow-hidden rounded-card">
+        {/* TODO: ganti data riil klien — foto tim placeholder dari picsum.photos. */}
         <img
           src="https://picsum.photos/seed/wonderland-about/800/900"
           alt="Tim Wonderland Travel"

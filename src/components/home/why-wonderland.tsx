@@ -26,7 +26,7 @@ const FEATURES = [
 
 export function WhyWonderland() {
   return (
-    <section className="bg-mist/60 py-24">
+    <section className="py-16 md:py-20">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6">
         <SectionHeader
           badge="Kenapa Kami"
@@ -41,7 +41,7 @@ export function WhyWonderland() {
           {FEATURES.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="flex flex-col gap-4 rounded-card border border-border bg-white p-8 shadow-soft"
+              className="flex flex-col gap-4 rounded-card bg-white p-8 shadow-soft"
             >
               <div className="flex size-12 items-center justify-center rounded-full bg-mist">
                 <Icon className="size-5 text-heading" />

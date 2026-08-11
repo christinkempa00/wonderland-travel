@@ -1,6 +1,7 @@
 import { Quote } from "lucide-react";
 import { Accent, SectionHeader, StarRating } from "@/components/ui";
 
+// TODO: ganti testimoni + foto asli (minta izin pelanggan)
 const TESTIMONIALS = [
   {
     name: "Rina Ayu",
@@ -38,7 +39,7 @@ const TESTIMONIALS = [
 
 export function Testimonials() {
   return (
-    <section className="bg-black py-24 text-white">
+    <section className="bg-black py-16 text-white md:py-20">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6">
         <SectionHeader
           tone="dark"

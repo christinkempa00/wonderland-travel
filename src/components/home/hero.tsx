@@ -3,7 +3,8 @@ import { Accent, Badge, Button } from "@/components/ui";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-black">
+    <section className="relative min-h-[85vh] overflow-hidden bg-black">
+      {/* TODO: ganti data riil klien — foto hero placeholder dari picsum.photos. */}
       <img
         src="https://picsum.photos/seed/wonderland-hero/1920/1080"
         alt="Pemandangan destinasi wisata"
@@ -11,7 +12,7 @@ export function Hero() {
       />
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
 
-      <div className="relative z-10 flex min-h-screen flex-col">
+      <div className="relative z-10 flex min-h-[85vh] flex-col">
         <div className="flex flex-1 items-center px-6 pt-32">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-6">
             <Badge variant="dark">Wonderland Travel</Badge>

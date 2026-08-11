@@ -1,8 +1,9 @@
-import { Accent, Badge, Button } from "@/components/ui";
+import { Accent, Button, SectionHeader } from "@/components/ui";
 
 export function Cta() {
   return (
-    <section className="relative overflow-hidden bg-black py-32 text-white">
+    <section className="relative overflow-hidden bg-black py-16 text-white md:py-20">
+      {/* TODO: ganti data riil klien — foto latar placeholder dari picsum.photos. */}
       <img
         src="https://picsum.photos/seed/wonderland-cta/1920/1080"
         alt=""
@@ -10,16 +11,18 @@ export function Cta() {
       />
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 text-center">
-        <Badge variant="dark">Mulai Perjalananmu</Badge>
-        <h2 className="text-4xl font-bold sm:text-5xl">
-          Siap <Accent>Menjelajah</Accent> Bersama Kami?
-        </h2>
-        <p className="max-w-xl text-white/80">
-          Konsultasikan rencana perjalananmu dengan tim kami dan dapatkan itinerary yang dirancang
-          khusus untukmu.
-        </p>
-        <div className="mt-2 flex flex-wrap justify-center gap-4">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-6">
+        <SectionHeader
+          tone="dark"
+          badge="Mulai Perjalananmu"
+          title={
+            <>
+              Siap <Accent>Menjelajah</Accent> Bersama Kami?
+            </>
+          }
+          description="Konsultasikan rencana perjalananmu dengan tim kami dan dapatkan itinerary yang dirancang khusus untukmu."
+        />
+        <div className="mt-6 flex flex-wrap justify-center gap-4">
           <Button href="/kontak" variant="inverse" size="lg">
             Hubungi Kami
           </Button>

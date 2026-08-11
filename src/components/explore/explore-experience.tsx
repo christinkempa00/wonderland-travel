@@ -80,7 +80,7 @@ export function ExploreExperience() {
         : rentalResults.length;
 
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-24">
+    <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-16 pt-10 md:pb-20 md:pt-14">
       <SectionHeader
         align="left"
         badge="Explore"

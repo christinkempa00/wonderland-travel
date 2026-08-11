@@ -10,7 +10,7 @@ export function Card({ interactive = false, className, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "group overflow-hidden rounded-card border border-border bg-white shadow-soft",
+        "group overflow-hidden rounded-card bg-white shadow-soft",
         interactive &&
           "transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-soft-lift",
         className,

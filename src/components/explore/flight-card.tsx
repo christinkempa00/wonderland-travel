@@ -34,7 +34,7 @@ export function FlightCard({
     <div className="w-80 shrink-0 snap-start sm:w-96">
       <div
         className={cn(
-          "flex h-full flex-col gap-4 rounded-card border border-border bg-white p-6 shadow-soft",
+          "flex h-full flex-col gap-4 rounded-card bg-white p-6 shadow-soft",
           "transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-soft-lift",
           selected && "ring-2 ring-black",
         )}

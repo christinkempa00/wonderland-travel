@@ -42,7 +42,7 @@ export function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-24">
+    <section className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-16 md:py-20">
       <SectionHeader
         badge="FAQ"
         title={

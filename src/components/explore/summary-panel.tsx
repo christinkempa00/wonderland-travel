@@ -54,7 +54,7 @@ export function SummaryPanel({ hotel, pesawat, rental, onRemove }: SummaryPanelP
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
   return (
-    <div className="flex flex-col gap-6 rounded-card border border-border bg-white p-6 shadow-soft">
+    <div className="flex flex-col gap-6 rounded-card bg-white p-6 shadow-soft">
       <h3 className="text-lg font-bold text-heading">Ringkasan Pesanan</h3>
 
       <div className="flex flex-col gap-4">

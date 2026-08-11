@@ -7,7 +7,8 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { NAV_LINKS } from "@/lib/nav-links";
 import { cn } from "@/lib/cn";
-import { LanguageToggle } from "./language-toggle";
+// TODO: aktifkan lagi saat i18n siap — LanguageToggle saat ini cuma UI, belum benar-benar menerjemahkan konten.
+// import { LanguageToggle } from "./language-toggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -54,7 +55,8 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <LanguageToggle />
+          {/* TODO: aktifkan lagi saat i18n siap */}
+          {/* <LanguageToggle /> */}
           <Button href="/kontak" size="sm">
             Hubungi Kami
           </Button>
@@ -65,7 +67,7 @@ export function Navbar() {
           onClick={() => setMobileOpen((open) => !open)}
           aria-label={mobileOpen ? "Tutup menu" : "Buka menu"}
           aria-expanded={mobileOpen}
-          className="flex size-10 items-center justify-center rounded-full text-heading transition-colors hover:bg-mist lg:hidden"
+          className="flex size-11 items-center justify-center rounded-full text-heading transition-colors hover:bg-mist lg:hidden"
         >
           {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
@@ -88,9 +90,15 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <div className="mt-6 flex items-center justify-between">
-            <LanguageToggle />
-            <Button href="/kontak" size="sm" onClick={() => setMobileOpen(false)}>
+          <div className="mt-6">
+            {/* TODO: aktifkan lagi saat i18n siap */}
+            {/* <LanguageToggle /> */}
+            <Button
+              href="/kontak"
+              size="sm"
+              className="w-full"
+              onClick={() => setMobileOpen(false)}
+            >
               Hubungi Kami
             </Button>
           </div>

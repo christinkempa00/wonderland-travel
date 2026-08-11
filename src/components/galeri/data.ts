@@ -17,6 +17,9 @@ export const DESTINATIONS = [
   "Danau Toba",
 ] as const;
 
+// TODO: ganti data riil klien — seed di bawah cuma nama acuan buat generate
+// foto placeholder dari picsum.photos (lihat gallery-grid.tsx & lightbox.tsx),
+// bukan foto asli perjalanan/klien. Ganti dengan URL foto sungguhan sebelum go-live.
 export const PHOTOS: Photo[] = [
   { id: "g01", destination: "Bali", caption: "Sawah terasering Ubud saat pagi hari", seed: "wonderland-gal-bali-01", size: "large" },
   { id: "g02", destination: "Yogyakarta", caption: "Candi Prambanan menjelang senja", seed: "wonderland-gal-yogya-01", size: "normal" },

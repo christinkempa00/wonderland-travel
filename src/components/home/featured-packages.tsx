@@ -9,9 +9,14 @@ import {
   StarRating,
 } from "@/components/ui";
 
+// TODO: ganti data riil klien — field `image` (seed picsum.photos) dan `price`
+// di bawah masih placeholder, bukan foto/harga paket sungguhan.
 const PACKAGES = [
   {
     name: "Bali",
+    // Sama dengan id paket "Bali Highlights" di katalog Paket Wisata, supaya
+    // nanti mengarah ke halaman detail yang sama persis.
+    slug: "bali-4d3n",
     days: "4D3N",
     price: "Rp 4.500.000",
     rating: 4.8,
@@ -20,6 +25,7 @@ const PACKAGES = [
   },
   {
     name: "Yogyakarta",
+    slug: "yogyakarta-3d2n",
     days: "3D2N",
     price: "Rp 2.800.000",
     rating: 4.7,
@@ -28,6 +34,7 @@ const PACKAGES = [
   },
   {
     name: "Labuan Bajo",
+    slug: "labuan-bajo-5d4n",
     days: "5D4N",
     price: "Rp 6.200.000",
     rating: 4.9,
@@ -38,7 +45,7 @@ const PACKAGES = [
 
 export function FeaturedPackages() {
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-24">
+    <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-16 md:py-20">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeader
           align="left"
@@ -57,7 +64,7 @@ export function FeaturedPackages() {
 
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {PACKAGES.map((pkg) => (
-          <Card key={pkg.name} interactive>
+          <Card key={pkg.slug} interactive>
             <CardMedia>
               <img src={`https://picsum.photos/seed/${pkg.image}/640/480`} alt={pkg.name} />
             </CardMedia>
@@ -70,6 +77,7 @@ export function FeaturedPackages() {
               <p className="text-sm text-muted">{pkg.days} · Termasuk akomodasi &amp; pemandu</p>
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-lg font-bold text-heading">{pkg.price}</span>
+                {/* TODO: arahkan ke `/paket-wisata/${pkg.slug}` begitu halaman detail per paket sudah ada. */}
                 <Button href="/paket-wisata" size="sm">
                   Lihat Detail
                 </Button>

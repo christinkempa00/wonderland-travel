@@ -36,9 +36,11 @@ export interface RentalItem {
   seats: number;
 }
 
-/** Placeholder WhatsApp business number — replace with the real number before launch. */
-export const WHATSAPP_NUMBER = "6281234567890";
+export { WHATSAPP_NUMBER } from "@/lib/whatsapp";
 
+// TODO: ganti data riil klien — HOTELS, FLIGHTS, RENTALS, dan semua harganya
+// di bawah ini masih data contoh (mock), bukan inventori sungguhan. Sambungkan
+// ke sumber data/API pemesanan yang sebenarnya sebelum go-live.
 export const HOTELS: HotelItem[] = [
   {
     id: "hotel-ubud-retreat",

@@ -1,5 +1,7 @@
 import { Accent, SectionHeader } from "@/components/ui";
 
+// TODO: ganti data riil klien — field `image` (seed picsum.photos) di bawah
+// masih placeholder, bukan foto destinasi sungguhan.
 const DESTINATIONS = [
   {
     name: "Bali",
@@ -41,7 +43,7 @@ const DESTINATIONS = [
 
 export function DestinationsGrid() {
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 pb-24 pt-32">
+    <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 pb-16 pt-10 md:pb-20 md:pt-14">
       <SectionHeader
         badge="Destinasi"
         title={

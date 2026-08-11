@@ -13,7 +13,10 @@ import {
   SectionHeader,
   StarRating,
 } from "@/components/ui";
+import { ItineraryTimeline } from "./itinerary-timeline";
 
+// TODO: ganti data riil klien — field `image` (seed picsum.photos) dan `price`
+// di bawah masih placeholder, bukan foto/harga paket sungguhan.
 const PACKAGES = [
   {
     id: "bali-4d3n",
@@ -129,7 +132,7 @@ export function PackageCatalog() {
   const [selected, setSelected] = useState<(typeof PACKAGES)[number] | null>(null);
 
   return (
-    <section id="katalog" className="mx-auto flex w-full max-w-7xl scroll-mt-24 flex-col gap-12 px-6 py-24">
+    <section id="katalog" className="mx-auto flex w-full max-w-7xl scroll-mt-24 flex-col gap-12 px-6 py-16 md:py-20">
       <SectionHeader
         align="left"
         badge="Katalog Paket"
@@ -166,6 +169,8 @@ export function PackageCatalog() {
           </Card>
         ))}
       </div>
+
+      <ItineraryTimeline />
 
       <Modal open={selected !== null} onClose={() => setSelected(null)} title={selected?.name}>
         {selected && (

@@ -34,7 +34,7 @@ export function GalleryGrid() {
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-24">
+    <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-16 pt-10 md:pb-20 md:pt-14">
       <SectionHeader
         align="left"
         badge="Galeri"
@@ -53,7 +53,7 @@ export function GalleryGrid() {
             type="button"
             onClick={() => handleFilterChange(destination)}
             className={cn(
-              "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+              "flex min-h-11 items-center rounded-full px-4 text-sm font-semibold transition-colors",
               activeDestination === destination
                 ? "bg-black text-white"
                 : "bg-mist text-body hover:bg-black/10",

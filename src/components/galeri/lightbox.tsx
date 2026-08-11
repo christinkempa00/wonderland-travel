@@ -65,7 +65,7 @@ export function Lightbox({ photos, index, onClose, onNavigate }: LightboxProps) 
           type="button"
           onClick={goPrev}
           aria-label="Foto sebelumnya"
-          className="absolute left-2 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:left-6 sm:size-12"
+          className="absolute left-2 z-10 flex size-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:left-6 sm:size-12"
         >
           <ChevronLeft className="size-5 sm:size-6" />
         </button>
@@ -81,7 +81,7 @@ export function Lightbox({ photos, index, onClose, onNavigate }: LightboxProps) 
           type="button"
           onClick={goNext}
           aria-label="Foto berikutnya"
-          className="absolute right-2 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:right-6 sm:size-12"
+          className="absolute right-2 z-10 flex size-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:right-6 sm:size-12"
         >
           <ChevronRight className="size-5 sm:size-6" />
         </button>
