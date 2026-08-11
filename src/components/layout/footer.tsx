@@ -6,7 +6,8 @@ import {
   TiktokIcon,
   YoutubeIcon,
 } from "@/components/icons/social-icons";
-import { LanguageToggle } from "./language-toggle";
+// TODO: aktifkan lagi saat i18n siap — LanguageToggle saat ini cuma UI, belum benar-benar menerjemahkan konten.
+// import { LanguageToggle } from "./language-toggle";
 
 const CONTACT_INFO = [
   { label: "Email", value: "hello@wonderlandtravel.id" },
@@ -88,7 +89,8 @@ export function Footer() {
           <p className="text-xs text-white/50">
             &copy; {new Date().getFullYear()} Wonderland Travel. Seluruh hak cipta dilindungi.
           </p>
-          <LanguageToggle variant="dark" />
+          {/* TODO: aktifkan lagi saat i18n siap */}
+          {/* <LanguageToggle variant="dark" /> */}
         </div>
       </div>
     </footer>
