@@ -1,4 +1,4 @@
-import { Accent, Badge } from "@/components/ui";
+import { Accent } from "@/components/ui";
 
 export function HeroBanner() {
   return (
@@ -12,7 +12,6 @@ export function HeroBanner() {
       <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start gap-6 px-6 pt-8 md:pt-10">
-        <Badge variant="dark">Kontak</Badge>
         <h1 className="max-w-2xl text-4xl font-bold text-white sm:text-5xl">
           Mari <Accent>Rencanakan</Accent> Perjalananmu
         </h1>

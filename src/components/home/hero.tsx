@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { Accent, Badge, Button } from "@/components/ui";
+import { Accent, Button } from "@/components/ui";
 
 export function Hero() {
   return (
@@ -15,7 +15,6 @@ export function Hero() {
       <div className="relative z-10 flex min-h-[85vh] flex-col">
         <div className="flex flex-1 items-center px-6 pt-16 md:pt-20">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-6">
-            <Badge variant="dark">Wonderland Travel</Badge>
             <h1 className="max-w-3xl text-5xl font-bold leading-tight text-white sm:text-6xl md:text-7xl">
               Ke Mana Pun, <Accent>Kami Temani</Accent>
             </h1>
