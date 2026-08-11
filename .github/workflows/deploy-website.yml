@@ -31,10 +31,7 @@ jobs:
       - name: Build (static export)
         run: npm run build
 
-      - name: Write deploy marker (diagnostic)
-        run: echo "run ${{ github.run_id }} - commit ${{ github.sha }} - $(date -u +%Y-%m-%dT%H:%M:%SZ)" > ./out/DEPLOY_MARKER.txt
-
-      - name: Deploy ke public_html via FTP
+      - name: Deploy ke Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.HOSTINGER_FTP_SERVER }}
