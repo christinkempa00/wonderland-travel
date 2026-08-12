@@ -31,8 +31,6 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-# scoped to root only — server/ and cek/ have their own .gitignore for their
-# own .env files, and need their .env.example templates to stay tracked.
 /.env*
 
 # vercel

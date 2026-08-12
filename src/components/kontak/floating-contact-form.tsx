@@ -51,12 +51,11 @@ export function FloatingContactForm() {
     const pesan = String(data.get("pesan") ?? "").trim();
 
     // TODO: hubungkan ke backend/WA — form ini belum terhubung ke endpoint
-    // penyimpanan lead sungguhan (mis. POST /api/kontak di `server/`, yang
-    // idealnya mencatat pesan ini sebagai Reservasi/notifikasi baru di panel
-    // admin, persis seperti alur "WEBSITE_KONTAK" yang sudah disiapkan di
-    // enum ReservasiSumber). Untuk sekarang, "kirim" berarti membuka draf
-    // pesan WhatsApp berisi isi form — pengguna masih perlu menekan kirim
-    // secara manual di WhatsApp, jadi ini BUKAN pengiriman otomatis.
+    // penyimpanan lead sungguhan (mis. POST /api/kontak di sistem admin,
+    // yang idealnya mencatat pesan ini sebagai lead/notifikasi baru).
+    // Untuk sekarang, "kirim" berarti membuka draf pesan WhatsApp berisi isi
+    // form — pengguna masih perlu menekan kirim secara manual di WhatsApp,
+    // jadi ini BUKAN pengiriman otomatis.
     try {
       const message = [
         "Halo Wonderland Travel, saya ingin bertanya:",
