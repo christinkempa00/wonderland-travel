@@ -14,10 +14,6 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
-// TEMP DEBUG — hapus setelah dipakai untuk cari akar masalah 500 di doc.php
-if (($_GET['_dbg'] ?? '') === 'wtdbg08192026') {
-    ini_set('display_errors', 1);
-}
 date_default_timezone_set('Asia/Jakarta');
 
 define('BASE_PATH', __DIR__);
@@ -140,7 +136,11 @@ $serviceType = (!empty($items) && isset($items[0]['item_type'])) ? $items[0]['it
 
 // Get "Harga Sudah Termasuk" from database
 $serviceIncludes = [];
-$includesResult = db()->fetchAll("SELECT include_item FROM service_includes WHERE service_type = ? AND is_active = 1 ORDER BY sort_order", [$serviceType]);
+try {
+    $includesResult = db()->fetchAll("SELECT include_item FROM service_includes WHERE service_type = ? AND is_active = 1 ORDER BY sort_order", [$serviceType]);
+} catch (Exception $e) {
+    $includesResult = [];
+}
 if ($includesResult) {
     foreach ($includesResult as $inc) {
         $serviceIncludes[] = $inc['include_item'];

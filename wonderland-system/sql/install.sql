@@ -207,6 +207,22 @@ CREATE TABLE IF NOT EXISTS `order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ================================================================
+-- TABLE: service_includes
+-- "Harga Sudah Termasuk" per jenis layanan, dikelola lewat
+-- settings-service-includes.php dan ditampilkan di invoice/kwitansi (doc.php)
+-- ================================================================
+CREATE TABLE IF NOT EXISTS `service_includes` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `service_type` VARCHAR(50) NOT NULL,
+    `include_item` VARCHAR(255) NOT NULL,
+    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+    `sort_order` INT NOT NULL DEFAULT 0,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `service_type` (`service_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================================
 -- TABLE: hotel_guests / flight_details / rental_details / vehicle_documents
 -- Detail per-item attachments (tamu hotel, penumpang pesawat, kendaraan sewa, dokumen kendaraan)
 -- ================================================================
