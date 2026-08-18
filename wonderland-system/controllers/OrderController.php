@@ -116,6 +116,7 @@ class OrderController {
             'order' => null,
             'items' => [],
             'clients' => Client::getForDropdown($companyId),
+            'clientsUsesDivisi' => $this->getClientsUsesDivisi($companyId),
             'itemTypes' => ITEM_TYPES,
             'markupTypes' => MARKUP_TYPES,
             'defaultMarkupType' => getCompanySetting($companyId, 'default_markup_type', 'percentage'),
@@ -154,6 +155,7 @@ class OrderController {
                 'event_name' => trim($_POST['event_name'] ?? ''),
                 'pic_name' => trim($_POST['pic_name'] ?? ''),
                 'pic_phone' => trim($_POST['pic_phone'] ?? ''),
+                'divisi' => $this->resolveDivisi($_POST),
                 'description' => trim($_POST['description'] ?? ''),
                 'notes' => trim($_POST['notes'] ?? ''),
                 'status' => 'invoiced',
@@ -364,6 +366,7 @@ class OrderController {
             'order' => $order,
             'items' => $order->getItems(),
             'clients' => Client::getForDropdown($companyId),
+            'clientsUsesDivisi' => $this->getClientsUsesDivisi($companyId),
             'itemTypes' => ITEM_TYPES,
             'markupTypes' => MARKUP_TYPES,
             'defaultMarkupType' => getCompanySetting($companyId, 'default_markup_type', 'percentage'),
@@ -414,6 +417,7 @@ class OrderController {
                 'event_name' => trim($_POST['event_name'] ?? ''),
                 'pic_name' => trim($_POST['pic_name'] ?? ''),
                 'pic_phone' => trim($_POST['pic_phone'] ?? ''),
+                'divisi' => $this->resolveDivisi($_POST),
                 'description' => trim($_POST['description'] ?? ''),
                 'notes' => trim($_POST['notes'] ?? ''),
                 'status' => 'invoiced'
@@ -2253,13 +2257,53 @@ class OrderController {
                 'markup_value' => $markupValue,
                 'markup_amount' => $markupAmount,  // FIXED: Dihitung dengan benar
                 'final_price' => $finalPrice,       // FIXED: Dihitung dengan benar
-                'vehicle_plate' => trim($item['vehicle_plate'] ?? '')
+                'vehicle_plate' => trim($item['vehicle_plate'] ?? ''),
+                'participant_qty' => (isset($item['participant_qty']) && $item['participant_qty'] !== '')
+                    ? max(0, (int) $item['participant_qty']) : null,
+                'participant_names' => trim($item['participant_names'] ?? '') ?: null
             ];
         }
-        
+
         return $items;
     }
-    
+
+    /**
+     * Resolve the PELNI "Divisi" from POST data — only returns a value when
+     * the selected client has uses_divisi = 1 and the submitted value is one
+     * of the known options; otherwise null (non-PELNI clients are unaffected).
+     */
+    private function resolveDivisi(array $post): ?string {
+        $divisi = $post['divisi'] ?? '';
+        if (!isset(DIVISI_OPTIONS[$divisi])) {
+            return null;
+        }
+
+        $clientId = (int) ($post['client_id'] ?? 0);
+        if (!$clientId) {
+            return null;
+        }
+
+        $client = Client::find($clientId);
+        if (!$client || empty($client->uses_divisi)) {
+            return null;
+        }
+
+        return $divisi;
+    }
+
+    /**
+     * Map of client_id => uses_divisi (bool), for the order form's JS to
+     * decide when to reveal the Divisi dropdown.
+     */
+    private function getClientsUsesDivisi(int $companyId): array {
+        $rows = db()->fetchAll("SELECT id, uses_divisi FROM clients WHERE company_id = ?", [$companyId]);
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int) $row['id']] = (bool) $row['uses_divisi'];
+        }
+        return $map;
+    }
+
     /**
      * Validate order data
      */

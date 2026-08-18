@@ -99,6 +99,23 @@ $orderData = $order ? $order->toArray() : [
                     </div>
                 </div>
 
+                <div class="row g-3 mt-2" id="divisiRow" style="display: none;">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Divisi</label>
+                            <select name="divisi" class="form-control" id="divisiSelect">
+                                <option value="">-- Pilih Divisi --</option>
+                                <?php foreach (DIVISI_OPTIONS as $key => $label): ?>
+                                <option value="<?= $key ?>" <?= old('divisi', $orderData['divisi'] ?? '') === $key ? 'selected' : '' ?>>
+                                    <?= e($label) ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <small class="text-muted">Menentukan format penomoran invoice khusus untuk klien ini.</small>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row g-3 mt-2">
                     <div class="col-12 col-md-6">
                         <div class="form-group">
@@ -218,6 +235,20 @@ $orderData = $order ? $order->toArray() : [
                                         <input type="text" class="form-control form-control-sm item-final-price"
                                                value="<?= number_format($item['final_price'] ?? 0, 0, ',', '.') ?>" readonly
                                                style="background: var(--gray-100); font-weight: 600;">
+                                    </div>
+                                </div>
+                                <div class="row g-2 mt-2">
+                                    <div class="col-4 col-md-2">
+                                        <label class="form-label-sm">Qty Peserta</label>
+                                        <input type="number" name="items[<?= $index ?>][participant_qty]"
+                                               class="form-control form-control-sm" min="0" placeholder="0"
+                                               value="<?= e($item['participant_qty'] ?? '') ?>">
+                                    </div>
+                                    <div class="col-8 col-md-10">
+                                        <label class="form-label-sm">Nama Peserta <i class="fas fa-info-circle text-muted" title="Satu nama per baris"></i></label>
+                                        <textarea name="items[<?= $index ?>][participant_names]"
+                                                  class="form-control form-control-sm" rows="1"
+                                                  placeholder="Opsional, satu nama per baris"><?= e($item['participant_names'] ?? '') ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -346,6 +377,19 @@ $orderData = $order ? $order->toArray() : [
                     <label class="form-label-sm">Final</label>
                     <input type="text" class="form-control form-control-sm item-final-price"
                            value="0" readonly style="background: var(--gray-100); font-weight: 600;">
+                </div>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-4 col-md-2">
+                    <label class="form-label-sm">Qty Peserta</label>
+                    <input type="number" name="items[__INDEX__][participant_qty]"
+                           class="form-control form-control-sm" min="0" placeholder="0">
+                </div>
+                <div class="col-8 col-md-10">
+                    <label class="form-label-sm">Nama Peserta <i class="fas fa-info-circle text-muted" title="Satu nama per baris"></i></label>
+                    <textarea name="items[__INDEX__][participant_names]"
+                              class="form-control form-control-sm" rows="1"
+                              placeholder="Opsional, satu nama per baris"></textarea>
                 </div>
             </div>
         </div>
@@ -519,7 +563,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var container = document.getElementById('itemsContainer');
     var template = document.getElementById('itemTemplate');
     var emptyMessage = document.getElementById('emptyItemsMessage');
-    
+
+    // Divisi PELNI: dropdown hanya tampil untuk klien dengan uses_divisi = 1
+    var clientsUsesDivisi = <?= json_encode($clientsUsesDivisi ?? []) ?>;
+    var clientSelect = document.getElementById('clientSelect');
+    var divisiRow = document.getElementById('divisiRow');
+    function toggleDivisiRow() {
+        if (clientSelect.value && clientsUsesDivisi[clientSelect.value]) {
+            divisiRow.style.display = '';
+        } else {
+            divisiRow.style.display = 'none';
+            document.getElementById('divisiSelect').value = '';
+        }
+    }
+    clientSelect.addEventListener('change', toggleDivisiRow);
+    toggleDivisiRow();
+
     // Calculate days from dates (HANYA update display, TIDAK auto-update items)
     function calculateDays() {
         var startDate = document.getElementById('eventStartDate').value;

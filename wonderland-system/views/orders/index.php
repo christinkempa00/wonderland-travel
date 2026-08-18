@@ -198,11 +198,12 @@ foreach ($orders as $order) {
                         <?php $paymentStatus = PAYMENT_STATUSES[$order['payment_status']] ?? null; ?>
                         <div class="payment-status-wrapper">
                             <?php if ($paymentStatus): ?>
-                            <span class="badge badge-<?= $paymentStatus['color'] ?> payment-badge" 
+                            <?php $orderRemaining = max(0, $displayTotal - (float)($order['paid_amount'] ?? 0)); ?>
+                            <span class="badge badge-<?= $paymentStatus['color'] ?> payment-badge"
                                   data-order-id="<?= $order['id'] ?>"
                                   data-current-status="<?= $order['payment_status'] ?>"
                                   style="cursor: pointer;"
-                                  onclick="openPaymentModal(<?= $order['id'] ?>, '<?= $order['payment_status'] ?>', '<?= e($order['paid_at'] ?? '') ?>')">
+                                  onclick="openPaymentModal(<?= $order['id'] ?>, '<?= $order['payment_status'] ?>', '<?= e($order['paid_at'] ?? '') ?>', <?= (float) $orderRemaining ?>)">
                                 <?= $paymentStatus['label'] ?>
                                 <i class="fas fa-edit ms-1" style="font-size: 0.65rem;"></i>
                             </span>
@@ -302,9 +303,9 @@ foreach ($orders as $order) {
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <form id="paymentForm" method="POST" action="">
+        <form id="paymentForm" method="POST" action="" enctype="multipart/form-data">
             <?= csrfField() ?>
-            <?= methodField('PATCH') ?>
+            <input type="hidden" name="_method" id="paymentMethodOverride" value="PATCH">
             <div class="modal-body">
                 <div class="form-group mb-3">
                     <label class="form-label">Status Pembayaran</label>
@@ -314,10 +315,24 @@ foreach ($orders as $order) {
                         <option value="partial">Dibayar Sebagian</option>
                     </select>
                 </div>
-                <div class="form-group" id="paidAtGroup">
-                    <label class="form-label">Tanggal Pembayaran</label>
-                    <input type="date" name="paid_at" id="modalPaidAt" class="form-control" value="<?= date('Y-m-d') ?>">
-                    <small class="text-muted">Tanggal saat pembayaran diterima</small>
+
+                <!-- Lunas / Sebagian: catat pembayaran sungguhan (masuk order_payments) -->
+                <div id="paymentRecordGroup" style="display: none;">
+                    <input type="hidden" name="payment_method" value="transfer">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Tanggal Pembayaran</label>
+                        <input type="date" name="payment_date" id="modalPaymentDate" class="form-control" value="<?= date('Y-m-d') ?>">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Nominal</label>
+                        <input type="text" name="amount" id="modalAmount" class="form-control rupiah-input" data-remaining="0">
+                        <small class="text-muted" id="modalRemainingHint"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bukti Transaksi</label>
+                        <input type="file" name="proof_image" class="form-control" accept="image/*">
+                        <small class="text-muted">Opsional, maks 2MB (jpg/png)</small>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -475,32 +490,27 @@ foreach ($orders as $order) {
 </style>
 
 <script>
-function openPaymentModal(orderId, currentStatus, paidAt) {
+function openPaymentModal(orderId, currentStatus, paidAt, remaining) {
     var modal = document.getElementById('paymentModal');
     var form = document.getElementById('paymentForm');
     var statusSelect = document.getElementById('modalPaymentStatus');
-    var paidAtInput = document.getElementById('modalPaidAt');
-    var paidAtGroup = document.getElementById('paidAtGroup');
-    
-    // Set form action
+    var amountInput = document.getElementById('modalAmount');
+
+    // Base action always targets payment-status; togglePaidAtField() swaps it
+    // to /payment when the chosen status needs a real payment record.
     form.action = '/orders/' + orderId + '/payment-status';
-    
+    form.dataset.orderId = orderId;
+    amountInput.dataset.remaining = remaining || 0;
+
     // Set current status
     statusSelect.value = currentStatus;
-    
-    // Set paid_at if exists
-    if (paidAt) {
-        paidAtInput.value = paidAt;
-    } else {
-        paidAtInput.value = new Date().toISOString().split('T')[0];
-    }
-    
-    // Show/hide paid_at based on status
+
+    // Show/hide payment-record fields + switch submission target based on status
     togglePaidAtField(currentStatus);
-    
+
     // Show modal
     modal.style.display = 'flex';
-    
+
     // Add event listener for status change
     statusSelect.onchange = function() {
         togglePaidAtField(this.value);
@@ -508,11 +518,39 @@ function openPaymentModal(orderId, currentStatus, paidAt) {
 }
 
 function togglePaidAtField(status) {
-    var paidAtGroup = document.getElementById('paidAtGroup');
+    var form = document.getElementById('paymentForm');
+    var recordGroup = document.getElementById('paymentRecordGroup');
+    var methodOverride = document.getElementById('paymentMethodOverride');
+    var amountInput = document.getElementById('modalAmount');
+    var remainingHint = document.getElementById('modalRemainingHint');
+    var remaining = parseFloat(amountInput.dataset.remaining || '0');
+    var orderId = form.dataset.orderId;
+
     if (status === 'paid' || status === 'partial') {
-        paidAtGroup.style.display = 'block';
+        recordGroup.style.display = 'block';
+        form.action = '/orders/' + orderId + '/payment';
+        methodOverride.disabled = true;
+
+        if (status === 'paid') {
+            amountInput.value = new Intl.NumberFormat('id-ID').format(remaining);
+            amountInput.readOnly = true;
+            remainingHint.textContent = 'Nominal otomatis disamakan dengan sisa tagihan.';
+        } else {
+            amountInput.readOnly = false;
+            if (amountInput.value === new Intl.NumberFormat('id-ID').format(remaining)) {
+                amountInput.value = '';
+            }
+            remainingHint.textContent = 'Sisa tagihan saat ini: Rp ' + new Intl.NumberFormat('id-ID').format(remaining);
+            amountInput.oninput = function() {
+                var typed = parseFloat(this.value.replace(/[^0-9]/g, '')) || 0;
+                var left = Math.max(0, remaining - typed);
+                remainingHint.textContent = 'Sisa setelah pembayaran ini: Rp ' + new Intl.NumberFormat('id-ID').format(left);
+            };
+        }
     } else {
-        paidAtGroup.style.display = 'none';
+        recordGroup.style.display = 'none';
+        form.action = '/orders/' + orderId + '/payment-status';
+        methodOverride.disabled = false;
     }
 }
 

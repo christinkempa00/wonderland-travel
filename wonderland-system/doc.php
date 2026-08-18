@@ -275,7 +275,14 @@ $clAddr = isset($client['address']) ? $client['address'] : '';
 $clPhone = isset($client['phone']) ? $client['phone'] : '';
 $orderPicName = isset($order['pic_name']) ? $order['pic_name'] : '';
 $orderPicPhone = isset($order['pic_phone']) ? $order['pic_phone'] : '';
-$docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
+// Klien PELNI (uses_divisi) punya penomoran invoice persisten sendiri,
+// dibuat sekali saat order dibuat/diedit — lihat Order::generatePelniInvoiceNumber().
+// Klien lain tetap pakai skema lama (dibuat ulang tiap render, tidak persisten).
+if ($docType === 'invoice' && !empty($order['divisi']) && !empty($order['pelni_invoice_number'])) {
+    $docNum = $order['pelni_invoice_number'];
+} else {
+    $docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
+}
 $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 
 // event_date sering NULL (pesanan tanpa tanggal event) — jangan biarkan jatuh

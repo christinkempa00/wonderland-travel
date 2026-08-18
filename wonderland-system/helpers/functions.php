@@ -357,6 +357,28 @@ function monthRoman(int $month): string {
 }
 
 /**
+ * Convert an integer to Roman numerals (used for the current year in
+ * PELNI's invoice number format, e.g. 2026 -> "XXVI").
+ * @param int $num
+ * @return string
+ */
+function intToRoman(int $num): string {
+    $map = [
+        1000 => 'M', 900 => 'CM', 500 => 'D', 400 => 'CD',
+        100 => 'C', 90 => 'XC', 50 => 'L', 40 => 'XL',
+        10 => 'X', 9 => 'IX', 5 => 'V', 4 => 'IV', 1 => 'I'
+    ];
+    $result = '';
+    foreach ($map as $value => $symbol) {
+        while ($num >= $value) {
+            $result .= $symbol;
+            $num -= $value;
+        }
+    }
+    return $result;
+}
+
+/**
  * Get Indonesian Month Name
  * @param int $month
  * @return string

@@ -87,6 +87,19 @@ $routes = [
     'POST /orders/{id:\d+}/payment/{paymentId:\d+}/void' => ['OrderController', 'voidPayment', 'auth'],
 
     // ============================================
+    // PEMBAYARAN (Company-wide Payment Tracking)
+    // ============================================
+
+    'GET /pembayaran' => ['PembayaranController', 'index', 'auth,page:pembayaran'],
+
+    // ============================================
+    // SURAT PERMOHONAN PEMBAYARAN
+    // ============================================
+
+    'GET /surat-permohonan' => ['SuratPermohonanController', 'index', 'auth,page:surat_permohonan'],
+    'GET /surat-permohonan/generate' => ['SuratPermohonanController', 'generate', 'auth,page:surat_permohonan'],
+
+    // ============================================
     // HOTEL GUESTS MANAGEMENT
     // ============================================
     

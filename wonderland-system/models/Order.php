@@ -29,6 +29,8 @@ class Order extends Model {
         'event_name',
         'pic_name',
         'pic_phone',
+        'divisi',
+        'pelni_invoice_number',
         'description',
         'notes',
         'total_base_price',
@@ -110,7 +112,30 @@ class Order extends Model {
         
         return $orderNumber;
     }
-    
+
+    /**
+     * Generate PELNI's persisted per-divisi invoice number.
+     * Format: INV-PLNI{TAHUN ROMAWI}{INFIX}-{00001}, mis. INV-PLNIXXVI-00001 (JM),
+     * INV-PLNIXXVIOF-00001 (Office), INV-PLNIXXVITI-00001 (Tikom). Counter dimulai
+     * ulang tiap tahun & terpisah per divisi.
+     */
+    public static function generatePelniInvoiceNumber(int $companyId, string $divisi): string {
+        // 2 digit terakhir tahun (mis. 2026 -> 26 -> "XXVI"), bukan tahun penuh.
+        $yy = (int) date('y');
+        $infix = DIVISI_INVOICE_INFIX[$divisi] ?? '';
+        $prefix = 'INV-PLNI' . intToRoman($yy) . $infix . '-';
+
+        $lastNumber = self::db()->fetchColumn(
+            "SELECT MAX(CAST(SUBSTRING_INDEX(pelni_invoice_number, '-', -1) AS UNSIGNED))
+             FROM orders
+             WHERE company_id = ? AND divisi = ? AND pelni_invoice_number LIKE ?",
+            [$companyId, $divisi, $prefix . '%']
+        );
+
+        $nextNumber = ($lastNumber ?? 0) + 1;
+        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+    }
+
     /**
      * Get items
      */
@@ -407,7 +432,11 @@ class Order extends Model {
             $orderData['company_id'] = $companyId;
             $orderData['order_number'] = self::generateOrderNumber($companyId);
             $orderData['created_by'] = Session::userId();
-            
+
+            if (!empty($orderData['divisi'])) {
+                $orderData['pelni_invoice_number'] = self::generatePelniInvoiceNumber($companyId, $orderData['divisi']);
+            }
+
             $order = self::create($orderData);
             
             foreach ($items as $item) {
@@ -455,8 +484,14 @@ class Order extends Model {
     public function updateWithItems(array $orderData, array $items): bool {
         $db = self::db();
         $db->beginTransaction();
-        
+
         try {
+            // Assign the persisted PELNI number once, the first time a divisi is
+            // set — never regenerated afterwards so re-saving doesn't renumber it.
+            if (!empty($orderData['divisi']) && empty($this->pelni_invoice_number)) {
+                $orderData['pelni_invoice_number'] = self::generatePelniInvoiceNumber((int) $this->company_id, $orderData['divisi']);
+            }
+
             // Update order data
             $this->update($orderData);
             

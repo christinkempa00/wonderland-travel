@@ -138,6 +138,18 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                     <label>Nama Event</label>
                     <span><?= e($order->event_name) ?: '-' ?></span>
                 </div>
+                <?php if (!empty($order->divisi)): ?>
+                <div class="info-item">
+                    <label>Divisi</label>
+                    <span><?= e(DIVISI_OPTIONS[$order->divisi] ?? $order->divisi) ?></span>
+                </div>
+                <?php if (!empty($order->pelni_invoice_number)): ?>
+                <div class="info-item">
+                    <label>No. Invoice (PELNI)</label>
+                    <span><?= e($order->pelni_invoice_number) ?></span>
+                </div>
+                <?php endif; ?>
+                <?php endif; ?>
             </div>
             
             <?php if ($order->description): ?>
@@ -229,6 +241,20 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                                     <?= number_format($markupValue, 0) ?>% = <?= formatRupiah($displayItemMarkup) ?>
                                 <?php else: ?>
                                     <?= formatRupiah($markupValue) ?>/unit/hari × <?= $qty ?> × <?= $days ?> = <?= formatRupiah($displayItemMarkup) ?>
+                                <?php endif; ?>
+                            </small>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($item['participant_qty']) || !empty($item['participant_names'])): ?>
+                        <div class="item-markup-info">
+                            <small class="text-muted">
+                                <i class="fas fa-users"></i>
+                                <?php if (!empty($item['participant_qty'])): ?>
+                                Qty Peserta: <?= (int) $item['participant_qty'] ?>
+                                <?php endif; ?>
+                                <?php if (!empty($item['participant_names'])): ?>
+                                <?= !empty($item['participant_qty']) ? ' — ' : '' ?>Nama: <?= e(str_replace("\n", ', ', trim($item['participant_names']))) ?>
                                 <?php endif; ?>
                             </small>
                         </div>
@@ -492,9 +518,9 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <form id="paymentForm" method="POST" action="<?= url('/orders/' . $order->id . '/payment-status') ?>">
+        <form id="paymentForm" method="POST" action="<?= url('/orders/' . $order->id . '/payment-status') ?>" enctype="multipart/form-data">
             <?= csrfField() ?>
-            <?= methodField('PATCH') ?>
+            <input type="hidden" name="_method" id="paymentMethodOverride" value="PATCH">
             <div class="modal-body">
                 <div class="form-group mb-3">
                     <label class="form-label">Status Pembayaran</label>
@@ -506,11 +532,26 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="form-group" id="paidAtGroup">
-                    <label class="form-label">Tanggal Pembayaran</label>
-                    <input type="date" name="paid_at" id="modalPaidAt" class="form-control" 
-                           value="<?= e($order->paid_at ?? date('Y-m-d')) ?>">
-                    <small class="text-muted">Tanggal saat pembayaran diterima</small>
+
+                <!-- Lunas / Sebagian: catat pembayaran sungguhan (masuk order_payments) -->
+                <div id="paymentRecordGroup" style="display: none;">
+                    <input type="hidden" name="payment_method" value="transfer">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Tanggal Pembayaran</label>
+                        <input type="date" name="payment_date" id="modalPaymentDate" class="form-control"
+                               value="<?= e(date('Y-m-d')) ?>">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Nominal</label>
+                        <input type="text" name="amount" id="modalAmount" class="form-control rupiah-input"
+                               data-remaining="<?= (float) $order->getRemainingAmount() ?>">
+                        <small class="text-muted" id="modalRemainingHint"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bukti Transaksi</label>
+                        <input type="file" name="proof_image" class="form-control" accept="image/*">
+                        <small class="text-muted">Opsional, maks 2MB (jpg/png)</small>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1057,24 +1098,16 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
 function openPaymentModal(orderId, currentStatus, paidAt) {
     var modal = document.getElementById('paymentModal');
     var statusSelect = document.getElementById('modalPaymentStatus');
-    var paidAtInput = document.getElementById('modalPaidAt');
-    
+
     // Set current status
     statusSelect.value = currentStatus;
-    
-    // Set paid_at if exists
-    if (paidAt) {
-        paidAtInput.value = paidAt;
-    } else {
-        paidAtInput.value = new Date().toISOString().split('T')[0];
-    }
-    
-    // Show/hide paid_at based on status
+
+    // Show/hide payment-record fields + switch submission target based on status
     togglePaidAtField(currentStatus);
-    
+
     // Show modal
     modal.style.display = 'flex';
-    
+
     // Add event listener for status change
     statusSelect.onchange = function() {
         togglePaidAtField(this.value);
@@ -1082,11 +1115,40 @@ function openPaymentModal(orderId, currentStatus, paidAt) {
 }
 
 function togglePaidAtField(status) {
-    var paidAtGroup = document.getElementById('paidAtGroup');
+    var form = document.getElementById('paymentForm');
+    var recordGroup = document.getElementById('paymentRecordGroup');
+    var methodOverride = document.getElementById('paymentMethodOverride');
+    var amountInput = document.getElementById('modalAmount');
+    var remainingHint = document.getElementById('modalRemainingHint');
+    var remaining = parseFloat(amountInput.dataset.remaining || '0');
+
     if (status === 'paid' || status === 'partial') {
-        paidAtGroup.style.display = 'block';
+        // Reuse the already-validated payment-recording endpoint (storePayment)
+        recordGroup.style.display = 'block';
+        form.action = form.action.replace(/\/payment-status$/, '/payment');
+        methodOverride.disabled = true; // plain POST, no method spoofing
+
+        if (status === 'paid') {
+            amountInput.value = new Intl.NumberFormat('id-ID').format(remaining);
+            amountInput.readOnly = true;
+            remainingHint.textContent = 'Nominal otomatis disamakan dengan sisa tagihan.';
+        } else {
+            amountInput.readOnly = false;
+            if (amountInput.value === new Intl.NumberFormat('id-ID').format(remaining)) {
+                amountInput.value = '';
+            }
+            remainingHint.textContent = 'Sisa tagihan saat ini: Rp ' + new Intl.NumberFormat('id-ID').format(remaining);
+            amountInput.oninput = function() {
+                var typed = parseFloat(this.value.replace(/[^0-9]/g, '')) || 0;
+                var left = Math.max(0, remaining - typed);
+                remainingHint.textContent = 'Sisa setelah pembayaran ini: Rp ' + new Intl.NumberFormat('id-ID').format(left);
+            };
+        }
     } else {
-        paidAtGroup.style.display = 'none';
+        // Belum Dibayar: hanya revert status, tidak mencatat pembayaran
+        recordGroup.style.display = 'none';
+        form.action = form.action.replace(/\/payment$/, '/payment-status');
+        methodOverride.disabled = false;
     }
 }
 

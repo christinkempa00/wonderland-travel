@@ -9,11 +9,21 @@ $currentPath = '/' . trim($currentPath, '/');
 
 // Super Admin bisa atur halaman mana yang terlihat untuk role lain
 // (Pengaturan > Akses Halaman) — lihat helpers/functions.php.
-$__role = Session::userRole();
+// NB: sidebar.php di-include lewat view()'s local scope (bukan scope global),
+// jadi jangan pakai `global $x` di sini untuk membaca variabel di atas — baca
+// ulang lewat Session:: di dalam closure/function seperti di bawah.
 if (!function_exists('pageVisible')) {
     function pageVisible(string $pageKey): bool {
-        global $__role;
-        return isPageEnabledForRole($__role, $pageKey);
+        // Super Admin selalu bisa lihat semua halaman (konsisten dengan
+        // middleware 'page:' di index.php yang juga mem-bypass Super Admin).
+        if (Session::isSuperAdmin()) {
+            return true;
+        }
+        $role = Session::userRole();
+        if (!$role) {
+            return true;
+        }
+        return isPageEnabledForRole($role, $pageKey);
     }
 }
 
@@ -117,6 +127,26 @@ if (!function_exists('isSubmenuActive')) {
                 <a href="<?= url('/documents') ?>" class="nav-link <?= isMenuActive('/documents', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-file-invoice"></i>
                     <span>Dokumen</span>
+                </a>
+            </div>
+            <?php endif; ?>
+
+            <!-- Pembayaran -->
+            <?php if (pageVisible('pembayaran')): ?>
+            <div class="nav-item">
+                <a href="<?= url('/pembayaran') ?>" class="nav-link <?= isMenuActive('/pembayaran', $currentPath) ? 'active' : '' ?>">
+                    <i class="fas fa-money-check-alt"></i>
+                    <span>Pembayaran</span>
+                </a>
+            </div>
+            <?php endif; ?>
+
+            <!-- Surat Permohonan Pembayaran -->
+            <?php if (pageVisible('surat_permohonan')): ?>
+            <div class="nav-item">
+                <a href="<?= url('/surat-permohonan') ?>" class="nav-link <?= isMenuActive('/surat-permohonan', $currentPath) ? 'active' : '' ?>">
+                    <i class="fas fa-file-signature"></i>
+                    <span>Surat Permohonan</span>
                 </a>
             </div>
             <?php endif; ?>

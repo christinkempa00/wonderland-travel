@@ -65,6 +65,7 @@ class ClientController {
             'phone' => trim($_POST['phone'] ?? ''),
             'address' => trim($_POST['address'] ?? ''),
             'npwp' => trim($_POST['npwp'] ?? ''),
+            'uses_divisi' => !empty($_POST['uses_divisi']) ? 1 : 0,
             'notes' => trim($_POST['notes'] ?? '')
         ];
         
@@ -194,6 +195,7 @@ class ClientController {
             'phone' => trim($_POST['phone'] ?? ''),
             'address' => trim($_POST['address'] ?? ''),
             'npwp' => trim($_POST['npwp'] ?? ''),
+            'uses_divisi' => !empty($_POST['uses_divisi']) ? 1 : 0,
             'notes' => trim($_POST['notes'] ?? '')
         ];
         

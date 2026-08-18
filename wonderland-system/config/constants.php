@@ -157,6 +157,8 @@ define('PAGE_ACCESS_PAGES', [
     'orders' => 'Pesanan',
     'clients' => 'Klien',
     'documents' => 'Dokumen',
+    'pembayaran' => 'Pembayaran',
+    'surat_permohonan' => 'Surat Permohonan Pembayaran',
     'profit' => 'Bagi Hasil',
     'settings' => 'Pengaturan',
     'users' => 'Pengguna',
@@ -195,6 +197,26 @@ define('PAYMENT_STATUSES', [
     PAYMENT_UNPAID => ['label' => 'Belum Dibayar', 'color' => 'danger'],
     PAYMENT_PARTIAL => ['label' => 'Sebagian', 'color' => 'warning'],
     PAYMENT_PAID => ['label' => 'Lunas', 'color' => 'success']
+]);
+
+/**
+ * PELNI Divisi (khusus klien dengan clients.uses_divisi = 1)
+ * Menentukan format penomoran invoice: INV-PLNI{TAHUN ROMAWI}{INFIX}-{NOMOR}
+ */
+define('DIVISI_JM', 'JM');
+define('DIVISI_OFFICE', 'OFFICE');
+define('DIVISI_TIKOM', 'TIKOM');
+
+define('DIVISI_OPTIONS', [
+    DIVISI_JM => 'JM',
+    DIVISI_OFFICE => 'Office',
+    DIVISI_TIKOM => 'Tikom',
+]);
+
+define('DIVISI_INVOICE_INFIX', [
+    DIVISI_JM => '',
+    DIVISI_OFFICE => 'OF',
+    DIVISI_TIKOM => 'TI',
 ]);
 
 /**

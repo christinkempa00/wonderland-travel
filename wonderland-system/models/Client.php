@@ -23,6 +23,7 @@ class Client extends Model {
         'phone',
         'address',
         'npwp',
+        'uses_divisi',
         'notes'
     ];
 

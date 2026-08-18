@@ -64,6 +64,16 @@ $data = $client ? $client->toArray() : [];
                 </div>
                 
                 <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="uses_divisi" name="uses_divisi" class="form-check-input" value="1"
+                               <?= old('uses_divisi', $data['uses_divisi'] ?? 0) ? 'checked' : '' ?>>
+                        <label for="uses_divisi" class="form-check-label">
+                            Klien PELNI (aktifkan dropdown Divisi &amp; penomoran invoice khusus di form pesanan)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="notes" class="form-label">Catatan</label>
                     <textarea id="notes" name="notes" class="form-control" rows="2" 
                               placeholder="Catatan tambahan (opsional)"><?= e(old('notes', $data['notes'] ?? '')) ?></textarea>
