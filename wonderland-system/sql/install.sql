@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `order_items` (
     `unit` VARCHAR(50) NULL COMMENT 'unit, pax, malam, hari, dll',
     `details_json` JSON NULL COMMENT 'Detail spesifik per jenis: origin, destination, vehicle_type, etc',
     `base_price` DECIMAL(15,2) NOT NULL DEFAULT 0,
+    `cashback` DECIMAL(15,2) NOT NULL DEFAULT 0 COMMENT 'Ditambahkan ke base_price sebelum markup dihitung',
     `markup_type` ENUM('percentage', 'fixed') NOT NULL DEFAULT 'percentage',
     `markup_value` DECIMAL(15,2) NOT NULL DEFAULT 0,
     `markup_amount` DECIMAL(15,2) NOT NULL DEFAULT 0,

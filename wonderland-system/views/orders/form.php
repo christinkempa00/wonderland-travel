@@ -172,29 +172,36 @@ $orderData = $order ? $order->toArray() : [
                                     </div>
                                 </div>
                                 <div class="row g-2 mt-2">
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <label class="form-label-sm">Deskripsi</label>
-                                        <input type="text" name="items[<?= $index ?>][description]" 
-                                               class="form-control form-control-sm" 
-                                               value="<?= e($item['description']) ?>" 
+                                        <input type="text" name="items[<?= $index ?>][description]"
+                                               class="form-control form-control-sm"
+                                               value="<?= e($item['description']) ?>"
                                                placeholder="Nama hotel/maskapai/kendaraan" required>
                                     </div>
-                                    <div class="col-4 col-md-2">
+                                    <div class="col-3 col-md-2">
+                                        <label class="form-label-sm">Cashback/Unit <i class="fas fa-info-circle text-muted" title="Ditambahkan ke Harga/Unit sebelum markup dihitung"></i></label>
+                                        <input type="text" name="items[<?= $index ?>][cashback]"
+                                               class="form-control form-control-sm item-cashback rupiah-input"
+                                               value="<?= number_format($item['cashback'] ?? 0, 0, ',', '.') ?>"
+                                               placeholder="0">
+                                    </div>
+                                    <div class="col-3 col-md-2">
                                         <label class="form-label-sm">Markup</label>
                                         <select name="items[<?= $index ?>][markup_type]" class="form-control form-control-sm item-markup-type">
                                             <option value="percentage" <?= $item['markup_type'] === 'percentage' ? 'selected' : '' ?>>%</option>
                                             <option value="fixed" <?= $item['markup_type'] === 'fixed' ? 'selected' : '' ?>>Rp</option>
                                         </select>
                                     </div>
-                                    <div class="col-4 col-md-2">
+                                    <div class="col-3 col-md-2">
                                         <label class="form-label-sm">Nilai</label>
-                                        <input type="number" name="items[<?= $index ?>][markup_value]" 
-                                               class="form-control form-control-sm item-markup-value" 
+                                        <input type="number" name="items[<?= $index ?>][markup_value]"
+                                               class="form-control form-control-sm item-markup-value"
                                                value="<?= $item['markup_value'] ?>" min="0">
                                     </div>
-                                    <div class="col-4 col-md-2">
+                                    <div class="col-3 col-md-2">
                                         <label class="form-label-sm">Final</label>
-                                        <input type="text" class="form-control form-control-sm item-final-price" 
+                                        <input type="text" class="form-control form-control-sm item-final-price"
                                                value="<?= number_format($item['final_price'] ?? 0, 0, ',', '.') ?>" readonly
                                                style="background: var(--gray-100); font-weight: 600;">
                                     </div>
@@ -204,7 +211,7 @@ $orderData = $order ? $order->toArray() : [
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                
+
                 <div id="emptyItemsMessage" class="empty-items <?= !empty($items) ? 'd-none' : '' ?>">
                     <i class="fas fa-box-open"></i>
                     <p>Belum ada item. Klik tombol "Tambah Item" untuk menambahkan.</p>
@@ -224,6 +231,10 @@ $orderData = $order ? $order->toArray() : [
                     <div class="summary-row">
                         <span>Subtotal (Modal)</span>
                         <span id="subtotalDisplay">Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total Cashback</span>
+                        <span id="cashbackDisplay">Rp 0</span>
                     </div>
                     <div class="summary-row">
                         <span>Total Markup</span>
@@ -295,26 +306,31 @@ $orderData = $order ? $order->toArray() : [
                 </div>
             </div>
             <div class="row g-2 mt-2">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <label class="form-label-sm">Deskripsi</label>
-                    <input type="text" name="items[__INDEX__][description]" 
+                    <input type="text" name="items[__INDEX__][description]"
                            class="form-control form-control-sm" placeholder="Nama hotel/maskapai/kendaraan" required>
                 </div>
-                <div class="col-4 col-md-2">
+                <div class="col-3 col-md-2">
+                    <label class="form-label-sm">Cashback/Unit <i class="fas fa-info-circle text-muted" title="Ditambahkan ke Harga/Unit sebelum markup dihitung"></i></label>
+                    <input type="text" name="items[__INDEX__][cashback]"
+                           class="form-control form-control-sm item-cashback rupiah-input" placeholder="0">
+                </div>
+                <div class="col-3 col-md-2">
                     <label class="form-label-sm">Markup</label>
                     <select name="items[__INDEX__][markup_type]" class="form-control form-control-sm item-markup-type">
                         <option value="percentage">%</option>
                         <option value="fixed">Rp</option>
                     </select>
                 </div>
-                <div class="col-4 col-md-2">
+                <div class="col-3 col-md-2">
                     <label class="form-label-sm">Nilai</label>
-                    <input type="number" name="items[__INDEX__][markup_value]" 
+                    <input type="number" name="items[__INDEX__][markup_value]"
                            class="form-control form-control-sm item-markup-value" value="0" min="0">
                 </div>
-                <div class="col-4 col-md-2">
+                <div class="col-3 col-md-2">
                     <label class="form-label-sm">Final</label>
-                    <input type="text" class="form-control form-control-sm item-final-price" 
+                    <input type="text" class="form-control form-control-sm item-final-price"
                            value="0" readonly style="background: var(--gray-100); font-weight: 600;">
                 </div>
             </div>
@@ -584,20 +600,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Attach listeners to item
     function attachItemListeners(item) {
-        var inputs = item.querySelectorAll('.item-qty, .item-days, .item-base-price, .item-markup-type, .item-markup-value');
+        var inputs = item.querySelectorAll('.item-qty, .item-days, .item-base-price, .item-cashback, .item-markup-type, .item-markup-value');
         inputs.forEach(function(input) {
             input.addEventListener('input', calculateTotals);
             input.addEventListener('change', calculateTotals);
         });
-        
-        // Rupiah formatting
-        var rupiahInput = item.querySelector('.rupiah-input');
-        if (rupiahInput) {
+
+        // Rupiah formatting (Harga/Unit dan Cashback/Unit)
+        item.querySelectorAll('.rupiah-input').forEach(function(rupiahInput) {
             rupiahInput.addEventListener('input', function() {
                 var value = this.value.replace(/\D/g, '');
                 this.value = new Intl.NumberFormat('id-ID').format(value);
             });
-        }
+        });
     }
     
     // Initial listeners
@@ -606,36 +621,44 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calculate totals
     function calculateTotals() {
         var subtotal = 0;
+        var totalCashback = 0;
         var totalMarkup = 0;
         var total = 0;
-        
+
         document.querySelectorAll('.item-card').forEach(function(item) {
             var qty = parseInt(item.querySelector('.item-qty').value) || 0;
             var days = parseInt(item.querySelector('.item-days').value) || 1;
             var basePriceStr = item.querySelector('.item-base-price').value.replace(/\./g, '').replace(/,/g, '');
             var basePrice = parseFloat(basePriceStr) || 0;
+            var cashbackStr = item.querySelector('.item-cashback').value.replace(/\./g, '').replace(/,/g, '');
+            var cashback = parseFloat(cashbackStr) || 0;
             var markupType = item.querySelector('.item-markup-type').value;
             var markupValue = parseFloat(item.querySelector('.item-markup-value').value) || 0;
-            
+
+            // Markup dihitung dari (Harga/Unit + Cashback/Unit), bukan Harga/Unit saja
             var itemBase = qty * days * basePrice;
+            var itemCashback = qty * days * cashback;
+            var markupBase = itemBase + itemCashback;
             var markup = 0;
-            
+
             if (markupType === 'percentage') {
-                markup = itemBase * (markupValue / 100);
+                markup = markupBase * (markupValue / 100);
             } else {
                 markup = markupValue * qty * days;
             }
-            
-            var itemFinal = itemBase + markup;
-            
+
+            var itemFinal = markupBase + markup;
+
             item.querySelector('.item-final-price').value = new Intl.NumberFormat('id-ID').format(itemFinal);
-            
+
             subtotal += itemBase;
+            totalCashback += itemCashback;
             totalMarkup += markup;
             total += itemFinal;
         });
-        
+
         document.getElementById('subtotalDisplay').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
+        document.getElementById('cashbackDisplay').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalCashback);
         document.getElementById('markupDisplay').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalMarkup);
         document.getElementById('totalDisplay').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
         document.getElementById('profitDisplay').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalMarkup);

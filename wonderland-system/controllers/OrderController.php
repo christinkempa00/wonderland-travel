@@ -2219,28 +2219,33 @@ class OrderController {
             }
             
             $basePrice = parseRupiah($item['base_price'] ?? '0');
+            $cashback = parseRupiah($item['cashback'] ?? '0');
             $markupType = $item['markup_type'] ?? 'percentage';
             $markupValue = (float) ($item['markup_value'] ?? 0);
-            
+
             // FIXED: Ambil num_days dari form
             $numDays = max(1, (int) ($item['num_days'] ?? 1));
             $quantity = max(1, (int) ($item['quantity'] ?? 1));
-            
+
             // Calculate final price dengan num_days: qty × days × price
+            // Markup dihitung dari (harga beli + cashback), bukan harga beli saja
             $itemBase = $quantity * $numDays * $basePrice;
+            $itemCashback = $quantity * $numDays * $cashback;
+            $markupBase = $itemBase + $itemCashback;
             if ($markupType === 'percentage') {
-                $markupAmount = $itemBase * ($markupValue / 100);
+                $markupAmount = $markupBase * ($markupValue / 100);
             } else {
                 $markupAmount = $markupValue * $quantity * $numDays;
             }
-            $finalPrice = $itemBase + $markupAmount;
-            
+            $finalPrice = $markupBase + $markupAmount;
+
             $items[] = [
                 'item_type' => $item['item_type'] ?? 'bus',
                 'description' => trim($item['description']),
                 'quantity' => $quantity,
                 'num_days' => $numDays,  // FIXED: Sekarang tersimpan!
                 'base_price' => $basePrice,
+                'cashback' => $cashback,
                 'markup_type' => $markupType,
                 'markup_value' => $markupValue,
                 'markup_amount' => $markupAmount,  // FIXED: Dihitung dengan benar

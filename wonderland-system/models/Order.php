@@ -184,23 +184,25 @@ class Order extends Model {
      * Recalculate totals from items
      */
     public function recalculateTotals(): void {
+        // Markup dihitung dari (harga beli + cashback), bukan harga beli saja —
+        // lihat createWithItems()/updateWithItems() untuk formula yang sama.
         $result = self::db()->fetchOne(
-            "SELECT 
+            "SELECT
                 COALESCE(SUM(quantity * num_days * base_price), 0) as total_base,
                 COALESCE(SUM(
-                    CASE 
-                        WHEN markup_type = 'percentage' THEN 
-                            (quantity * num_days * base_price) * (markup_value / 100)
-                        ELSE 
+                    CASE
+                        WHEN markup_type = 'percentage' THEN
+                            (quantity * num_days * (base_price + cashback)) * (markup_value / 100)
+                        ELSE
                             markup_value * quantity * num_days
                     END
                 ), 0) as total_markup,
                 COALESCE(SUM(
-                    (quantity * num_days * base_price) + 
-                    CASE 
-                        WHEN markup_type = 'percentage' THEN 
-                            (quantity * num_days * base_price) * (markup_value / 100)
-                        ELSE 
+                    (quantity * num_days * (base_price + cashback)) +
+                    CASE
+                        WHEN markup_type = 'percentage' THEN
+                            (quantity * num_days * (base_price + cashback)) * (markup_value / 100)
+                        ELSE
                             markup_value * quantity * num_days
                     END
                 ), 0) as total_final
@@ -410,19 +412,24 @@ class Order extends Model {
                 $qty = (int)($item['quantity'] ?? 1);
                 $days = (int)($item['num_days'] ?? 1);
                 $basePrice = (float)($item['base_price'] ?? 0);
+                $cashback = (float)($item['cashback'] ?? 0);
                 $markupType = $item['markup_type'] ?? 'percentage';
                 $markupValue = (float)($item['markup_value'] ?? 0);
-                
+
+                // Markup dihitung dari (harga beli + cashback), bukan harga beli saja
                 $itemBase = $qty * $days * $basePrice;
+                $itemCashback = $qty * $days * $cashback;
+                $markupBase = $itemBase + $itemCashback;
                 if ($markupType === 'percentage') {
-                    $itemMarkup = $itemBase * ($markupValue / 100);
+                    $itemMarkup = $markupBase * ($markupValue / 100);
                 } else {
                     $itemMarkup = $markupValue * $qty * $days;
                 }
-                
+
+                $item['cashback'] = $cashback;
                 $item['markup_amount'] = $itemMarkup;
-                $item['final_price'] = $itemBase + $itemMarkup;
-                
+                $item['final_price'] = $markupBase + $itemMarkup;
+
                 $order->addItem($item);
             }
             
@@ -482,19 +489,24 @@ class Order extends Model {
                 $qty = (int)($item['quantity'] ?? 1);
                 $days = (int)($item['num_days'] ?? 1);
                 $basePrice = (float)($item['base_price'] ?? 0);
+                $cashback = (float)($item['cashback'] ?? 0);
                 $markupType = $item['markup_type'] ?? 'percentage';
                 $markupValue = (float)($item['markup_value'] ?? 0);
-                
+
+                // Markup dihitung dari (harga beli + cashback), bukan harga beli saja
                 $itemBase = $qty * $days * $basePrice;
+                $itemCashback = $qty * $days * $cashback;
+                $markupBase = $itemBase + $itemCashback;
                 if ($markupType === 'percentage') {
-                    $itemMarkup = $itemBase * ($markupValue / 100);
+                    $itemMarkup = $markupBase * ($markupValue / 100);
                 } else {
                     $itemMarkup = $markupValue * $qty * $days;
                 }
-                
+
+                $item['cashback'] = $cashback;
                 $item['markup_amount'] = $itemMarkup;
-                $item['final_price'] = $itemBase + $itemMarkup;
-                
+                $item['final_price'] = $markupBase + $itemMarkup;
+
                 $newId = $this->addItem($item);
                 
                 $type = $item['item_type'];
