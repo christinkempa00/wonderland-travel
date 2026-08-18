@@ -740,15 +740,9 @@ $mainColor3 = '#7f1d1d';
             <div class="wt-meta-row"><div class="wt-label">Invoice No</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($docNum); ?></div></div>
             <div class="wt-meta-row"><div class="wt-label">Date</div><div class="wt-colon">:</div><div class="wt-value"><?php echo $docDate; ?></div></div>
             <div class="wt-meta-row"><div class="wt-label">Corporate</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($cl); ?></div></div>
-            <?php if ($orderPicName): ?>
             <div class="wt-meta-row"><div class="wt-label">PIC Name</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($orderPicName); ?></div></div>
-            <?php endif; ?>
-            <?php if ($clAddr): ?>
             <div class="wt-meta-row"><div class="wt-label">Address</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($clAddr); ?></div></div>
-            <?php endif; ?>
-            <?php if ($orderPicPhone || $clPhone): ?>
             <div class="wt-meta-row"><div class="wt-label">Phone Number</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($orderPicPhone ?: $clPhone); ?></div></div>
-            <?php endif; ?>
         </div>
 
         <div class="wt-body">
