@@ -668,8 +668,10 @@ $mainColor3 = '#7f1d1d';
         }
         .wt-bottom-contacts span { display: inline-flex; align-items: center; gap: 6px; }
 
-        /* Kwitansi-specific */
-        .wt-kwitansi-fields { padding: 20px 34px 10px; font-size: 12px; }
+        /* Kwitansi-specific — flex:1 sama seperti .wt-body di invoice, supaya
+           amount box + tanda tangan ikut terdorong ke bawah halaman (bukan
+           menumpuk di atas dengan sisa halaman kosong total di bawahnya). */
+        .wt-kwitansi-fields { padding: 20px 34px 10px; font-size: 12px; flex: 1; }
         .wt-kwitansi-row { display: flex; gap: 14px; padding: 7px 0; border-bottom: 1px solid #e5e5e5; }
         .wt-kwitansi-row .wt-label { width: 150px; color: #444; }
         .wt-kwitansi-row .wt-colon { width: 10px; }
