@@ -1,0 +1,57 @@
+{
+    "name": "Travel Management System",
+    "short_name": "TravelMS",
+    "description": "Sistem Manajemen Travel untuk mengelola pesanan, dokumen, dan akuntansi",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "#1e3a8a",
+    "theme_color": "#1e3a8a",
+    "orientation": "any",
+    "scope": "/",
+    "lang": "id",
+    "categories": ["business", "productivity"],
+    "icons": [
+        {
+            "src": "/icon.php?size=72",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/icon.php?size=96",
+            "sizes": "96x96",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/icon.php?size=144",
+            "sizes": "144x144",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/icon.php?size=192",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/icon.php?size=512",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable any"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Pesanan Baru",
+            "short_name": "Pesanan",
+            "url": "/orders/create"
+        },
+        {
+            "name": "Klien",
+            "short_name": "Klien",
+            "url": "/clients"
+        }
+    ]
+}

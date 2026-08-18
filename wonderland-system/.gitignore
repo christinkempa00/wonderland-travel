@@ -1,0 +1,17 @@
+# Kredensial & state spesifik server — dibuat oleh wizard instalasi (/install)
+# atau manual per lingkungan, jangan pernah di-commit.
+/config/database.env.php
+/config/installed.php
+
+# Data pengguna (dokumen, foto, bukti bayar, dll) — bukan kode, dan sudah ada
+# langsung di server produksi. Jangan sinkron/timpa lewat deploy.
+/uploads/
+
+# Runtime, dibuat otomatis oleh aplikasi.
+/cache/*
+!/cache/.gitkeep
+/logs/*
+!/logs/.gitkeep
+
+# State tool lokal, tidak relevan untuk deploy.
+/.claude/
