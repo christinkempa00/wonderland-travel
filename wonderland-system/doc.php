@@ -86,6 +86,14 @@ foreach ($items as $item) {
 $items = $calculatedItems;
 $total = $calcTotalFinal;
 
+// Total peserta lintas item, dipakai di baris "Untuk Pembayaran" kwitansi
+// (mis. "... ( 5 Orang )").
+$totalParticipantQty = 0;
+foreach ($items as $__pItem) {
+    $totalParticipantQty += (int) ($__pItem['participant_qty'] ?? 0);
+}
+unset($__pItem);
+
 // ============================================
 // GROUPING ITEMS UNTUK PENAWARAN & KESEPAKATAN
 // ============================================
@@ -279,10 +287,15 @@ $clAddr = isset($client['address']) ? $client['address'] : '';
 $clPhone = isset($client['phone']) ? $client['phone'] : '';
 $orderPicName = isset($order['pic_name']) ? $order['pic_name'] : '';
 $orderPicPhone = isset($order['pic_phone']) ? $order['pic_phone'] : '';
+// Label Divisi untuk klien PELNI (uses_divisi) — dipakai di tabel item invoice
+// ("Team {label}") dan baris "Untuk Pembayaran" di kwitansi ("{label} PELNI").
+$divisiLabels = ['JM' => 'JM', 'OFFICE' => 'Office', 'TIKOM' => 'Tikom'];
+$orderDivisiLabel = !empty($order['divisi']) ? ($divisiLabels[$order['divisi']] ?? $order['divisi']) : '';
 // Klien PELNI (uses_divisi) punya penomoran invoice persisten sendiri,
 // dibuat sekali saat order dibuat/diedit — lihat Order::generatePelniInvoiceNumber().
+// Dipakai juga di kwitansi (sesuai contoh template, No kwitansi = No invoice).
 // Klien lain tetap pakai skema lama (dibuat ulang tiap render, tidak persisten).
-if ($docType === 'invoice' && !empty($order['divisi']) && !empty($order['pelni_invoice_number'])) {
+if (($docType === 'invoice' || $docType === 'kwitansi') && !empty($order['divisi']) && !empty($order['pelni_invoice_number'])) {
     $docNum = $order['pelni_invoice_number'];
 } else {
     $docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
@@ -622,6 +635,8 @@ $mainColor3 = '#7f1d1d';
         .wt-table td { padding: 9px 10px; border: 1px solid #ddd; vertical-align: top; }
         .wt-table .wt-item-sub { display: block; font-size: 9px; color: #777; margin-top: 2px; }
         .wt-table tbody tr:nth-child(even) { background: #fafafa; }
+        .wt-participant-list { list-style: disc; margin: 4px 0 0 16px; padding: 0; font-size: 9.5px; color: #333; }
+        .wt-participant-list li { margin-bottom: 1px; }
 
         .wt-subtotal-row {
             display: flex; justify-content: flex-end; gap: 20px;
@@ -746,6 +761,18 @@ $mainColor3 = '#7f1d1d';
                         <td>
                             <?php echo e($item['description']); ?>
                             <span class="wt-item-sub"><?php echo isset($types[$item['item_type']]) ? $types[$item['item_type']] : $item['item_type']; ?></span>
+                            <?php if ($orderDivisiLabel): ?>
+                            <span class="wt-item-sub">Team <?php echo e($orderDivisiLabel); ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($item['participant_names'])): ?>
+                            <ul class="wt-participant-list">
+                                <?php foreach (preg_split('/\r\n|\r|\n/', trim($item['participant_names'])) as $pName): ?>
+                                <?php if (trim($pName) !== ''): ?>
+                                <li><?php echo e(trim($pName)); ?></li>
+                                <?php endif; ?>
+                                <?php endforeach; ?>
+                            </ul>
+                            <?php endif; ?>
                         </td>
                         <td class="wt-price"><?php echo rp($item['calc_unit_price_with_markup']); ?></td>
                         <td class="wt-price"><?php echo rp($item['calc_final_price']); ?></td>
@@ -786,7 +813,10 @@ $mainColor3 = '#7f1d1d';
             </div>
             <div class="wt-kwitansi-row">
                 <div class="wt-label">Untuk Pembayaran</div><div class="wt-colon">:</div>
-                <div class="wt-value"><?php echo e(isset($order['description']) && $order['description'] ? $order['description'] : 'Pembayaran layanan'); ?></div>
+                <div class="wt-value">
+                    <?php echo e(isset($order['description']) && $order['description'] ? $order['description'] : 'Pembayaran layanan'); ?><?php if ($totalParticipantQty > 0): ?> ( <?php echo $totalParticipantQty; ?> Orang )<?php endif; ?>
+                    <?php if ($orderDivisiLabel): ?><br><?php echo e($orderDivisiLabel); ?> PELNI<?php endif; ?>
+                </div>
             </div>
         </div>
 

@@ -115,15 +115,16 @@ class Order extends Model {
 
     /**
      * Generate PELNI's persisted per-divisi invoice number.
-     * Format: INV-PLNI{TAHUN ROMAWI}{INFIX}-{00001}, mis. INV-PLNIXXVI-00001 (JM),
-     * INV-PLNIXXVIOF-00001 (Office), INV-PLNIXXVITI-00001 (Tikom). Counter dimulai
+     * Format: INV-PLNI{INFIX}{TAHUN ROMAWI}-{00001}, mis. INV-PLNIXXVI-00001 (JM),
+     * INV-PLNIOFXXVI-00001 (Office), INV-PLNITIXXVI-00001 (Tikom) — infix divisi
+     * di depan angka romawi tahun (sesuai contoh template resmi). Counter dimulai
      * ulang tiap tahun & terpisah per divisi.
      */
     public static function generatePelniInvoiceNumber(int $companyId, string $divisi): string {
         // 2 digit terakhir tahun (mis. 2026 -> 26 -> "XXVI"), bukan tahun penuh.
         $yy = (int) date('y');
         $infix = DIVISI_INVOICE_INFIX[$divisi] ?? '';
-        $prefix = 'INV-PLNI' . intToRoman($yy) . $infix . '-';
+        $prefix = 'INV-PLNI' . $infix . intToRoman($yy) . '-';
 
         $lastNumber = self::db()->fetchColumn(
             "SELECT MAX(CAST(SUBSTRING_INDEX(pelni_invoice_number, '-', -1) AS UNSIGNED))
