@@ -1050,6 +1050,58 @@ function setCompanySetting(int $companyId, string $key, $value, string $type = '
 }
 
 // ================================================================
+// PAGE ACCESS HELPERS (Super Admin → kontrol halaman per role)
+// ================================================================
+
+/**
+ * Whether a page is visible/accessible for a role, per Super Admin's
+ * settings in role_page_access. No row = visible (safe default: an empty
+ * or missing table never locks anyone out). Super Admin always sees
+ * everything regardless of this table.
+ */
+function isPageEnabledForRole(string $role, string $pageKey, ?int $companyId = null): bool {
+    if ($role === ROLE_SUPERADMIN) {
+        return true;
+    }
+
+    $companyId = $companyId ?? Session::companyId();
+    if (!$companyId) {
+        return true;
+    }
+
+    try {
+        $disabled = db()->fetchOne(
+            "SELECT id FROM role_page_access WHERE company_id = ? AND role = ? AND page_key = ?",
+            [$companyId, $role, $pageKey]
+        );
+        return empty($disabled);
+    } catch (Exception $e) {
+        // Tabel belum ada (migrasi belum dijalankan) -- jangan mengunci siapa pun.
+        return true;
+    }
+}
+
+/**
+ * Set of page_key's currently disabled for a role (for rendering checkboxes).
+ */
+function getDisabledPagesForRole(string $role, ?int $companyId = null): array {
+    $companyId = $companyId ?? Session::companyId();
+    if (!$companyId) {
+        return [];
+    }
+
+    try {
+        $rows = db()->fetchAll(
+            "SELECT page_key FROM role_page_access WHERE company_id = ? AND role = ?",
+            [$companyId, $role]
+        );
+        return array_column($rows, 'page_key');
+    } catch (Exception $e) {
+        return [];
+    }
+}
+
+// ================================================================
 // MISC HELPERS
 // ================================================================
 

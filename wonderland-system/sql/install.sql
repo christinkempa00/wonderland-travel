@@ -76,6 +76,24 @@ CREATE TABLE IF NOT EXISTS `user_companies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ================================================================
+-- TABLE: role_page_access
+-- Halaman mana yang boleh diakses/ditampilkan untuk role tertentu,
+-- diatur oleh Super Admin. Baris hanya dibuat untuk page yang
+-- DINONAKTIFKAN — page yang tidak ada barisnya tetap terlihat (default
+-- aman: menonaktifkan fitur ini / tabel kosong tidak mengunci siapa pun).
+-- ================================================================
+CREATE TABLE IF NOT EXISTS `role_page_access` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `company_id` INT UNSIGNED NOT NULL,
+    `role` VARCHAR(30) NOT NULL,
+    `page_key` VARCHAR(50) NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `company_role_page` (`company_id`, `role`, `page_key`),
+    CONSTRAINT `fk_rpa_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ================================================================
 -- TABLE: clients
 -- Data client/customer per company
 -- ================================================================
@@ -118,6 +136,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
     `event_date` DATE NULL,
     `event_end_date` DATE NULL,
     `event_location` VARCHAR(255) NULL,
+    `pic_name` VARCHAR(100) NULL COMMENT 'PIC pesanan ini, diisi manual (bisa beda dari PIC klien)',
+    `pic_phone` VARCHAR(50) NULL,
     `description` TEXT NULL,
     `total_base_price` DECIMAL(15,2) NOT NULL DEFAULT 0,
     `total_markup` DECIMAL(15,2) NOT NULL DEFAULT 0,

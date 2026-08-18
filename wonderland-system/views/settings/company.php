@@ -16,6 +16,11 @@
         <a href="<?= url('/settings/integrations') ?>" class="tab-link <?= $activeTab === 'integrations' ? 'active' : '' ?>">
             <i class="fas fa-plug"></i> Integrasi
         </a>
+        <?php if (Session::isSuperAdmin()): ?>
+        <a href="<?= url('/settings/page-access') ?>" class="tab-link <?= $activeTab === 'page-access' ? 'active' : '' ?>">
+            <i class="fas fa-shield-alt"></i> Akses Halaman
+        </a>
+        <?php endif; ?>
     </div>
 </div>
 

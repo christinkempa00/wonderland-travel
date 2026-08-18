@@ -177,17 +177,29 @@ class Router {
 
 /**
  * Handle Middleware
+ * Supports comma-separated middleware, e.g. 'auth,feature:passenger' —
+ * each one runs in order, first failure wins.
  */
 function handleMiddleware(?string $middleware): bool {
     if (!$middleware) {
         return true;
     }
-    
+
+    foreach (explode(',', $middleware) as $single) {
+        if (!handleSingleMiddleware(trim($single))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function handleSingleMiddleware(string $middleware): bool {
     // Parse middleware
     $parts = explode(':', $middleware);
     $type = $parts[0];
     $param = $parts[1] ?? null;
-    
+
     switch ($type) {
         case 'auth':
             if (!Session::isLoggedIn()) {
@@ -226,6 +238,32 @@ function handleMiddleware(?string $middleware): bool {
             if (Session::isLoggedIn()) {
                 redirect('/dashboard');
                 return false;
+            }
+            break;
+
+        case 'feature':
+            // Route gated behind a feature flag constant, e.g. 'feature:passenger'
+            // -> checks FEATURE_PASSENGER_MANAGEMENT. Kept separate from 'auth'
+            // so a disabled feature 404s cleanly instead of looking like a
+            // permission error.
+            $flagName = 'FEATURE_' . strtoupper($param ?? '');
+            if (defined($flagName) && !constant($flagName)) {
+                show404('Fitur ini sedang tidak aktif.');
+                return false;
+            }
+            break;
+
+        case 'page':
+            // Route gated by Super Admin's per-role page access (Pengaturan >
+            // Akses Halaman), e.g. 'page:orders'. Requires 'auth' to run first
+            // (needs a logged-in user) — always pair as 'auth,page:xxx'.
+            if (Session::isLoggedIn() && !Session::isSuperAdmin()) {
+                $role = Session::userRole();
+                if ($role && !isPageEnabledForRole($role, (string)$param)) {
+                    Session::flash('error', 'Anda tidak memiliki akses ke halaman ini.');
+                    redirect('/dashboard');
+                    return false;
+                }
             }
             break;
     }

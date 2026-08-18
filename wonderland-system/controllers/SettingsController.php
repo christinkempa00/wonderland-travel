@@ -236,6 +236,50 @@ class SettingsController {
     }
     
     /**
+     * Page access settings (Super Admin only) — which sidebar pages are
+     * visible/reachable for the "admin" role.
+     */
+    public function pageAccess(): void {
+        $disabled = getDisabledPagesForRole(ROLE_ADMIN);
+
+        $data = [
+            'pageTitle' => 'Akses Halaman',
+            'pageHeader' => true,
+            'pageSubtitle' => 'Atur halaman yang bisa diakses role Admin',
+            'pages' => PAGE_ACCESS_PAGES,
+            'disabledPages' => $disabled,
+            'activeTab' => 'page-access'
+        ];
+
+        render('settings/page-access', $data);
+    }
+
+    /**
+     * Update page access settings (Super Admin only)
+     */
+    public function updatePageAccess(): void {
+        $companyId = Session::companyId();
+        $enabledKeys = $_POST['pages'] ?? []; // checked = tetap terlihat
+
+        db()->delete('role_page_access', 'company_id = ? AND role = ?', [$companyId, ROLE_ADMIN]);
+
+        foreach (array_keys(PAGE_ACCESS_PAGES) as $pageKey) {
+            if (!in_array($pageKey, $enabledKeys, true)) {
+                db()->insert('role_page_access', [
+                    'company_id' => $companyId,
+                    'role' => ROLE_ADMIN,
+                    'page_key' => $pageKey
+                ]);
+            }
+        }
+
+        logActivity('update', 'settings', 0, 'settings', 'Updated page access for role admin');
+
+        Session::flash('success', 'Akses halaman berhasil disimpan.');
+        redirect('/settings/page-access');
+    }
+
+    /**
      * Upload file helper
      */
     private function uploadFile(array $file, string $folder): ?string {

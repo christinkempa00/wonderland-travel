@@ -43,35 +43,41 @@ $calcTotalFinal = 0;
 
 foreach ($items as $item) {
     $basePrice = (float)($item['base_price'] ?? 0);
+    $cashback = (float)($item['cashback'] ?? 0);
     $quantity = (int)($item['quantity'] ?? 1);
     $numDays = (int)($item['num_days'] ?? 1);
     $markupType = $item['markup_type'] ?? 'percentage';
     $markupValue = (float)($item['markup_value'] ?? 0);
-    
+
+    // Markup dihitung dari (harga beli + cashback), bukan harga beli saja --
+    // sama seperti OrderController::parseItems()/Order::recalculateTotals().
     $itemBaseTotal = $quantity * $numDays * $basePrice;
-    
+    $itemCashbackTotal = $quantity * $numDays * $cashback;
+    $markupBaseTotal = $itemBaseTotal + $itemCashbackTotal;
+
     $markupAmount = 0;
     if ($markupType === 'percentage') {
-        $markupAmount = $itemBaseTotal * ($markupValue / 100);
+        $markupAmount = $markupBaseTotal * ($markupValue / 100);
     } else {
         $markupAmount = $markupValue * $quantity * $numDays;
     }
-    
-    $finalPrice = $itemBaseTotal + $markupAmount;
-    
+
+    $finalPrice = $markupBaseTotal + $markupAmount;
+
     if ($markupType === 'percentage') {
-        $unitPriceWithMarkup = $basePrice + ($basePrice * ($markupValue / 100));
+        $unitPriceWithMarkup = ($basePrice + $cashback) + (($basePrice + $cashback) * ($markupValue / 100));
     } else {
-        $unitPriceWithMarkup = $basePrice + $markupValue;
+        $unitPriceWithMarkup = ($basePrice + $cashback) + $markupValue;
     }
-    
+
     $calculatedItems[] = array_merge($item, [
         'calc_base_total' => $itemBaseTotal,
+        'calc_cashback_total' => $itemCashbackTotal,
         'calc_markup_amount' => $markupAmount,
         'calc_final_price' => $finalPrice,
         'calc_unit_price_with_markup' => $unitPriceWithMarkup,
     ]);
-    
+
     $calcTotalBase += $itemBaseTotal;
     $calcTotalMarkup += $markupAmount;
     $calcTotalFinal += $finalPrice;
@@ -267,6 +273,8 @@ $ce = isset($company['email']) ? $company['email'] : '';
 $cl = isset($client['name']) ? $client['name'] : 'Pelanggan';
 $clAddr = isset($client['address']) ? $client['address'] : '';
 $clPhone = isset($client['phone']) ? $client['phone'] : '';
+$orderPicName = isset($order['pic_name']) ? $order['pic_name'] : '';
+$orderPicPhone = isset($order['pic_phone']) ? $order['pic_phone'] : '';
 $docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
 $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 
@@ -564,7 +572,8 @@ $mainColor3 = '#7f1d1d';
                 <div class="client-name"><?php echo e($cl); ?></div>
                 <div class="client-details">
                     <?php if ($clAddr): ?><?php echo e($clAddr); ?><br><?php endif; ?>
-                    <?php if ($clPhone): ?>📞 <?php echo e($clPhone); ?><?php endif; ?>
+                    <?php if ($orderPicName): ?>U.p. <?php echo e($orderPicName); ?><br><?php endif; ?>
+                    <?php if ($orderPicPhone): ?>📞 <?php echo e($orderPicPhone); ?><?php elseif ($clPhone): ?>📞 <?php echo e($clPhone); ?><?php endif; ?>
                 </div>
             </div>
         </div>
@@ -622,7 +631,7 @@ $mainColor3 = '#7f1d1d';
 
 <?php elseif ($docType == 'kwitansi'): ?>
             <div class="kwitansi-content">
-                <div class="kwitansi-row"><div class="label">Telah Terima Dari</div><div>:</div><div class="val"><strong><?php echo e($cl); ?></strong></div></div>
+                <div class="kwitansi-row"><div class="label">Telah Terima Dari</div><div>:</div><div class="val"><strong><?php echo e($cl); ?></strong><?php if ($orderPicName): ?> (U.p. <?php echo e($orderPicName); ?>)<?php endif; ?></div></div>
                 <div class="kwitansi-row"><div class="label">Uang Sejumlah</div><div>:</div><div class="val highlight"><?php echo trim(bilang($total)); ?> Rupiah</div></div>
                 <div class="kwitansi-row"><div class="label">Untuk Pembayaran</div><div>:</div><div class="val"><?php echo e(isset($order['description']) ? $order['description'] : 'Pembayaran layanan'); ?></div></div>
                 

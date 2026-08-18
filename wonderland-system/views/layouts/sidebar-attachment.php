@@ -63,51 +63,19 @@ if (!function_exists('isMenuActive')) {
     
     <!-- Sidebar Navigation -->
     <nav class="sidebar-nav">
-        <!-- Dashboard Lampiran -->
+        <!-- Fitur Lampiran sedang dinonaktifkan (FEATURE_PASSENGER_MANAGEMENT
+             di config/constants.php) — jangan tampilkan menu yang menuju ke
+             route yang sekarang 404. -->
         <div class="nav-section">
             <div class="nav-section-title">Menu Utama</div>
-            
             <div class="nav-item">
-                <a href="<?= url('/attachment-dashboard') ?>" class="nav-link <?= isMenuActive('/attachment-dashboard', $currentPath) ? 'active' : '' ?>">
+                <span class="nav-link text-muted" style="cursor: default;">
                     <i class="fas fa-clipboard-list"></i>
-                    <span>Dashboard Lampiran</span>
-                </a>
+                    <span>Fitur lampiran sedang tidak aktif</span>
+                </span>
             </div>
         </div>
-        
-        <!-- Input Lampiran -->
-        <div class="nav-section">
-            <div class="nav-section-title">Input Lampiran</div>
-            
-            <div class="nav-item">
-                <a href="<?= url('/attachment-dashboard?filter=hotel') ?>" class="nav-link <?= isset($_GET['filter']) && $_GET['filter'] === 'hotel' ? 'active' : '' ?>">
-                    <i class="fas fa-hotel"></i>
-                    <span>Hotel</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="<?= url('/attachment-dashboard?filter=flight') ?>" class="nav-link <?= isset($_GET['filter']) && $_GET['filter'] === 'flight' ? 'active' : '' ?>">
-                    <i class="fas fa-plane"></i>
-                    <span>Pesawat</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="<?= url('/attachment-dashboard?filter=vehicle') ?>" class="nav-link <?= isset($_GET['filter']) && $_GET['filter'] === 'vehicle' ? 'active' : '' ?>">
-                    <i class="fas fa-car"></i>
-                    <span>Kendaraan</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="<?= url('/attachment-dashboard?filter=rental') ?>" class="nav-link <?= isset($_GET['filter']) && $_GET['filter'] === 'rental' ? 'active' : '' ?>">
-                    <i class="fas fa-key"></i>
-                    <span>Rental</span>
-                </a>
-            </div>
-        </div>
-        
+
         <!-- Account -->
         <div class="nav-section">
             <div class="nav-section-title">Akun</div>

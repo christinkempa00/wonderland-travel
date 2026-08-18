@@ -27,6 +27,8 @@ class Order extends Model {
         'event_date',
         'event_end_date',
         'event_name',
+        'pic_name',
+        'pic_phone',
         'description',
         'notes',
         'total_base_price',

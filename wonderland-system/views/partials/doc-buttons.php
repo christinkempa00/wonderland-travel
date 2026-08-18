@@ -68,14 +68,6 @@ $orderId = $order['id'] ?? $order->id ?? 0;
     background: linear-gradient(135deg, #7c3aed, #6d28d9);
 }
 
-.doc-btn.penawaran {
-    background: linear-gradient(135deg, #a67f20, #85661a);
-}
-
-.doc-btn.kesepakatan {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-}
-
 @media (max-width: 768px) {
     .doc-buttons {
         grid-template-columns: 1fr;
@@ -97,22 +89,6 @@ $orderId = $order['id'] ?? $order->id ?? 0;
         <div class="text">
             Kwitansi
             <span>Bukti pembayaran</span>
-        </div>
-    </a>
-    
-    <a href="<?= url('/doc.php?order=' . $orderId . '&type=penawaran') ?>" target="_blank" class="doc-btn penawaran">
-        <div class="icon">📋</div>
-        <div class="text">
-            Surat Penawaran
-            <span>Penawaran harga awal</span>
-        </div>
-    </a>
-    
-    <a href="<?= url('/doc.php?order=' . $orderId . '&type=kesepakatan') ?>" target="_blank" class="doc-btn kesepakatan">
-        <div class="icon">✅</div>
-        <div class="text">
-            Surat Kesepakatan
-            <span>Harga yang disepakati</span>
         </div>
     </a>
 </div>

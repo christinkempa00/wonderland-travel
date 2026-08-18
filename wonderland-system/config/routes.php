@@ -50,7 +50,7 @@ $routes = [
     // CLIENT MANAGEMENT
     // ============================================
     
-    'GET /clients' => ['ClientController', 'index', 'auth'],
+    'GET /clients' => ['ClientController', 'index', 'auth,page:clients'],
     'GET /clients/create' => ['ClientController', 'create', 'auth'],
     'POST /clients' => ['ClientController', 'store', 'auth'],
     'GET /clients/{id:\d+}' => ['ClientController', 'show', 'auth'],
@@ -64,7 +64,7 @@ $routes = [
     // ORDER MANAGEMENT
     // ============================================
     
-    'GET /orders' => ['OrderController', 'index', 'auth'],
+    'GET /orders' => ['OrderController', 'index', 'auth,page:orders'],
     'GET /orders/create' => ['OrderController', 'create', 'auth'],
     'POST /orders' => ['OrderController', 'store', 'auth'],
     'GET /orders/{id:\d+}' => ['OrderController', 'show', 'auth'],
@@ -90,41 +90,41 @@ $routes = [
     // HOTEL GUESTS MANAGEMENT
     // ============================================
     
-    'GET /orders/{id:\d+}/hotel-guests' => ['OrderController', 'hotelGuests', 'auth'],
-    'POST /orders/{id:\d+}/hotel-guests' => ['OrderController', 'saveHotelGuests', 'auth'],
-    'GET /orders/{id:\d+}/hotel-attachment' => ['OrderController', 'hotelAttachment', 'auth'],
-    'POST /orders/{id:\d+}/upload-hotel-logo' => ['OrderController', 'uploadHotelLogo', 'auth'],
-    'POST /orders/{id:\d+}/delete-hotel-logo' => ['OrderController', 'deleteHotelLogo', 'auth'],
+    'GET /orders/{id:\d+}/hotel-guests' => ['OrderController', 'hotelGuests', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/hotel-guests' => ['OrderController', 'saveHotelGuests', 'auth,feature:passenger'],
+    'GET /orders/{id:\d+}/hotel-attachment' => ['OrderController', 'hotelAttachment', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/upload-hotel-logo' => ['OrderController', 'uploadHotelLogo', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/delete-hotel-logo' => ['OrderController', 'deleteHotelLogo', 'auth,feature:passenger'],
     
     // ============================================
     // FLIGHT PASSENGERS/DETAILS MANAGEMENT
     // ============================================
     
-    'GET /orders/{id:\d+}/flight-guests' => ['OrderController', 'flightGuests', 'auth'],
-    'POST /orders/{id:\d+}/flight-guests' => ['OrderController', 'saveFlightGuests', 'auth'],
-    'GET /orders/{id:\d+}/flight-attachment' => ['OrderController', 'flightAttachment', 'auth'],
-    'POST /orders/{id:\d+}/upload-flight-logo' => ['OrderController', 'uploadFlightLogo', 'auth'],
-    'POST /orders/{id:\d+}/delete-flight-logo' => ['OrderController', 'deleteFlightLogo', 'auth'],
+    'GET /orders/{id:\d+}/flight-guests' => ['OrderController', 'flightGuests', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/flight-guests' => ['OrderController', 'saveFlightGuests', 'auth,feature:passenger'],
+    'GET /orders/{id:\d+}/flight-attachment' => ['OrderController', 'flightAttachment', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/upload-flight-logo' => ['OrderController', 'uploadFlightLogo', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/delete-flight-logo' => ['OrderController', 'deleteFlightLogo', 'auth,feature:passenger'],
     
     // ============================================
     // RENTAL/VEHICLE MANAGEMENT
     // ============================================
     
-    'GET /orders/{id:\d+}/rental-vehicles' => ['OrderController', 'rentalVehicles', 'auth'],
-    'POST /orders/{id:\d+}/rental-vehicles' => ['OrderController', 'saveRentalVehicles', 'auth'],
-    'GET /orders/{id:\d+}/rental-attachment' => ['OrderController', 'rentalAttachment', 'auth'],
-    'POST /orders/{id:\d+}/upload-rental-logo' => ['OrderController', 'uploadRentalLogo', 'auth'],
-    'POST /orders/{id:\d+}/delete-rental-logo' => ['OrderController', 'deleteRentalLogo', 'auth'],
+    'GET /orders/{id:\d+}/rental-vehicles' => ['OrderController', 'rentalVehicles', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/rental-vehicles' => ['OrderController', 'saveRentalVehicles', 'auth,feature:passenger'],
+    'GET /orders/{id:\d+}/rental-attachment' => ['OrderController', 'rentalAttachment', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/upload-rental-logo' => ['OrderController', 'uploadRentalLogo', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/delete-rental-logo' => ['OrderController', 'deleteRentalLogo', 'auth,feature:passenger'],
     
     // ============================================
     // VEHICLE DOCUMENTS MANAGEMENT
     // ============================================
     
-    'GET /orders/{id:\d+}/vehicle-documents' => ['OrderController', 'vehicleDocuments', 'auth'],
-    'POST /orders/{id:\d+}/vehicle-documents' => ['OrderController', 'saveVehicleDocuments', 'auth'],
-    'POST /orders/{id:\d+}/upload-vehicle-photo' => ['OrderController', 'uploadVehiclePhoto', 'auth'],
-    'POST /orders/{id:\d+}/delete-vehicle-photo' => ['OrderController', 'deleteVehiclePhoto', 'auth'],
-    'GET /orders/{id:\d+}/vehicle-documents-print' => ['OrderController', 'vehicleDocumentsPrint', 'auth'],
+    'GET /orders/{id:\d+}/vehicle-documents' => ['OrderController', 'vehicleDocuments', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/vehicle-documents' => ['OrderController', 'saveVehicleDocuments', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/upload-vehicle-photo' => ['OrderController', 'uploadVehiclePhoto', 'auth,feature:passenger'],
+    'POST /orders/{id:\d+}/delete-vehicle-photo' => ['OrderController', 'deleteVehiclePhoto', 'auth,feature:passenger'],
+    'GET /orders/{id:\d+}/vehicle-documents-print' => ['OrderController', 'vehicleDocumentsPrint', 'auth,feature:passenger'],
     
     // ============================================
     // ORDER DOCUMENTS
@@ -155,7 +155,7 @@ $routes = [
     // DOCUMENTS
     // ============================================
     
-    'GET /documents' => ['DocumentController', 'index', 'auth'],
+    'GET /documents' => ['DocumentController', 'index', 'auth,page:documents'],
     'GET /documents/search' => ['DocumentController', 'search', 'auth'],
     
     // ============================================
@@ -201,7 +201,7 @@ $routes = [
     // PROFIT SHARING
     // ============================================
     
-    'GET /profit' => ['ProfitController', 'index', 'auth'],
+    'GET /profit' => ['ProfitController', 'index', 'auth,page:profit'],
     'GET /profit/create' => ['ProfitController', 'create', 'auth'],
     'POST /profit' => ['ProfitController', 'store', 'auth'],
     'GET /profit/{id:\d+}' => ['ProfitController', 'show', 'auth'],
@@ -291,7 +291,7 @@ $routes = [
     // SETTINGS
     // ============================================
     
-    'GET /settings' => ['SettingsController', 'index', 'auth'],
+    'GET /settings' => ['SettingsController', 'index', 'auth,page:settings'],
     'GET /settings/company' => ['SettingsController', 'company', 'auth'],
     'POST /settings/company' => ['SettingsController', 'updateCompany', 'auth'],
     'GET /settings/documents' => ['SettingsController', 'documents', 'auth'],
@@ -299,14 +299,16 @@ $routes = [
     'GET /settings/integrations' => ['SettingsController', 'integrations', 'auth'],
     'POST /settings/integrations' => ['SettingsController', 'updateIntegrations', 'auth'],
     'POST /settings/test-dripsender' => ['SettingsController', 'testDripsender', 'auth'],
+    'GET /settings/page-access' => ['SettingsController', 'pageAccess', 'auth:superadmin'],
+    'POST /settings/page-access' => ['SettingsController', 'updatePageAccess', 'auth:superadmin'],
     
     // ============================================
     // USER MANAGEMENT
     // ============================================
     
-    'GET /users' => ['UserController', 'index', 'auth'],
-    'GET /users/create' => ['UserController', 'create', 'auth'],
-    'POST /users' => ['UserController', 'store', 'auth'],
+    'GET /users' => ['UserController', 'index', 'auth,page:users'],
+    'GET /users/create' => ['UserController', 'create', 'auth:superadmin'],
+    'POST /users' => ['UserController', 'store', 'auth:superadmin'],
     'GET /users/{id:\d+}/edit' => ['UserController', 'edit', 'auth'],
     'PUT /users/{id:\d+}' => ['UserController', 'update', 'auth'],
     'DELETE /users/{id:\d+}' => ['UserController', 'destroy', 'auth'],
@@ -320,7 +322,7 @@ $routes = [
     // ACTIVITY LOG
     // ============================================
     
-    'GET /activity-logs' => ['ActivityLogController', 'index', 'auth'],
+    'GET /activity-logs' => ['ActivityLogController', 'index', 'auth,page:activity_logs'],
     'GET /activity-logs/export' => ['ActivityLogController', 'export', 'auth'],
     
     // ============================================
@@ -335,36 +337,36 @@ $routes = [
     // ATTACHMENT STAFF (Staff Lampiran)
     // ============================================
     
-    'GET /attachment-dashboard' => ['AttachmentController', 'dashboard', 'auth'],
-    'GET /attachment-order/{id:\d+}' => ['AttachmentController', 'viewOrder', 'auth'],
+    'GET /attachment-dashboard' => ['AttachmentController', 'dashboard', 'auth,feature:passenger'],
+    'GET /attachment-order/{id:\d+}' => ['AttachmentController', 'viewOrder', 'auth,feature:passenger'],
     
     // Attachment - Hotel
-    'GET /attachment-order/{id:\d+}/hotel-guests' => ['AttachmentController', 'hotelGuests', 'auth'],
-    'POST /attachment-order/{id:\d+}/hotel-guests' => ['AttachmentController', 'saveHotelGuests', 'auth'],
-    'GET /attachment-order/{id:\d+}/hotel-attachment' => ['AttachmentController', 'hotelAttachment', 'auth'],
-    'POST /attachment-order/{id:\d+}/upload-hotel-logo' => ['AttachmentController', 'uploadHotelLogo', 'auth'],
-    'POST /attachment-order/{id:\d+}/delete-hotel-logo' => ['AttachmentController', 'deleteHotelLogo', 'auth'],
+    'GET /attachment-order/{id:\d+}/hotel-guests' => ['AttachmentController', 'hotelGuests', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/hotel-guests' => ['AttachmentController', 'saveHotelGuests', 'auth,feature:passenger'],
+    'GET /attachment-order/{id:\d+}/hotel-attachment' => ['AttachmentController', 'hotelAttachment', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/upload-hotel-logo' => ['AttachmentController', 'uploadHotelLogo', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/delete-hotel-logo' => ['AttachmentController', 'deleteHotelLogo', 'auth,feature:passenger'],
     
     // Attachment - Flight
-    'GET /attachment-order/{id:\d+}/flight-guests' => ['AttachmentController', 'flightGuests', 'auth'],
-    'POST /attachment-order/{id:\d+}/flight-guests' => ['AttachmentController', 'saveFlightGuests', 'auth'],
-    'GET /attachment-order/{id:\d+}/flight-attachment' => ['AttachmentController', 'flightAttachment', 'auth'],
-    'POST /attachment-order/{id:\d+}/upload-flight-logo' => ['AttachmentController', 'uploadFlightLogo', 'auth'],
-    'POST /attachment-order/{id:\d+}/delete-flight-logo' => ['AttachmentController', 'deleteFlightLogo', 'auth'],
+    'GET /attachment-order/{id:\d+}/flight-guests' => ['AttachmentController', 'flightGuests', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/flight-guests' => ['AttachmentController', 'saveFlightGuests', 'auth,feature:passenger'],
+    'GET /attachment-order/{id:\d+}/flight-attachment' => ['AttachmentController', 'flightAttachment', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/upload-flight-logo' => ['AttachmentController', 'uploadFlightLogo', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/delete-flight-logo' => ['AttachmentController', 'deleteFlightLogo', 'auth,feature:passenger'],
     
     // Attachment - Vehicle
-    'GET /attachment-order/{id:\d+}/vehicle-documents' => ['AttachmentController', 'vehicleDocuments', 'auth'],
-    'POST /attachment-order/{id:\d+}/vehicle-documents' => ['AttachmentController', 'saveVehicleDocuments', 'auth'],
-    'POST /attachment-order/{id:\d+}/upload-vehicle-photo' => ['AttachmentController', 'uploadVehiclePhoto', 'auth'],
-    'POST /attachment-order/{id:\d+}/delete-vehicle-photo' => ['AttachmentController', 'deleteVehiclePhoto', 'auth'],
-    'GET /attachment-order/{id:\d+}/vehicle-documents-print' => ['AttachmentController', 'vehicleDocumentsPrint', 'auth'],
+    'GET /attachment-order/{id:\d+}/vehicle-documents' => ['AttachmentController', 'vehicleDocuments', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/vehicle-documents' => ['AttachmentController', 'saveVehicleDocuments', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/upload-vehicle-photo' => ['AttachmentController', 'uploadVehiclePhoto', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/delete-vehicle-photo' => ['AttachmentController', 'deleteVehiclePhoto', 'auth,feature:passenger'],
+    'GET /attachment-order/{id:\d+}/vehicle-documents-print' => ['AttachmentController', 'vehicleDocumentsPrint', 'auth,feature:passenger'],
     
     // Attachment - Rental
-    'GET /attachment-order/{id:\d+}/rental-vehicles' => ['AttachmentController', 'rentalVehicles', 'auth'],
-    'POST /attachment-order/{id:\d+}/rental-vehicles' => ['AttachmentController', 'saveRentalVehicles', 'auth'],
-    'GET /attachment-order/{id:\d+}/rental-attachment' => ['AttachmentController', 'rentalAttachment', 'auth'],
-    'POST /attachment-order/{id:\d+}/upload-rental-logo' => ['AttachmentController', 'uploadRentalLogo', 'auth'],
-    'POST /attachment-order/{id:\d+}/delete-rental-logo' => ['AttachmentController', 'deleteRentalLogo', 'auth'],
+    'GET /attachment-order/{id:\d+}/rental-vehicles' => ['AttachmentController', 'rentalVehicles', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/rental-vehicles' => ['AttachmentController', 'saveRentalVehicles', 'auth,feature:passenger'],
+    'GET /attachment-order/{id:\d+}/rental-attachment' => ['AttachmentController', 'rentalAttachment', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/upload-rental-logo' => ['AttachmentController', 'uploadRentalLogo', 'auth,feature:passenger'],
+    'POST /attachment-order/{id:\d+}/delete-rental-logo' => ['AttachmentController', 'deleteRentalLogo', 'auth,feature:passenger'],
     
 ];
 

@@ -13,6 +13,15 @@ if (!defined('BASE_PATH')) {
 }
 
 /**
+ * Feature flags
+ */
+// Kelola Data Penumang (tamu hotel, penumpang pesawat, rental, dokumen
+// kendaraan) — dinonaktifkan sesuai permintaan, TIDAK dihapus. Set ke true
+// untuk mengaktifkan lagi (juga mempengaruhi role Staff Lampiran, yang
+// seluruh fiturnya berbasis ini).
+define('FEATURE_PASSENGER_MANAGEMENT', false);
+
+/**
  * Application Info
  */
 define('APP_NAME', 'Wonderland Travel');
@@ -136,6 +145,22 @@ define('PERMISSIONS', [
         'attachments.*',
         'orders.view_limited'
     ]
+]);
+
+/**
+ * Pages that Super Admin can individually show/hide per role, via
+ * Pengaturan > Akses Halaman. Key => sidebar label + the route prefix its
+ * middleware checks (see 'page:' case in index.php's handleSingleMiddleware).
+ * Dashboard is intentionally excluded — it's the post-login landing page.
+ */
+define('PAGE_ACCESS_PAGES', [
+    'orders' => 'Pesanan',
+    'clients' => 'Klien',
+    'documents' => 'Dokumen',
+    'profit' => 'Bagi Hasil',
+    'settings' => 'Pengaturan',
+    'users' => 'Pengguna',
+    'activity_logs' => 'Log Aktivitas',
 ]);
 
 /**

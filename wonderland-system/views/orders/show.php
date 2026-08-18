@@ -34,22 +34,25 @@ foreach ($items as $item) {
     $qty = (int)($item['quantity'] ?? 1);
     $days = (int)($item['num_days'] ?? 1); // Use item's num_days directly - NO FALLBACK
     $basePrice = (float)($item['base_price'] ?? 0);
+    $cashback = (float)($item['cashback'] ?? 0);
     $markupType = $item['markup_type'] ?? 'percentage';
     $markupValue = (float)($item['markup_value'] ?? 0);
-    
+
     // Calculate item base (qty * days * base_price)
     $itemBase = $qty * $days * $basePrice;
-    
-    // Calculate markup
+    $itemCashback = $qty * $days * $cashback;
+
+    // Markup dihitung dari (harga beli + cashback), bukan harga beli saja
+    $markupBase = $itemBase + $itemCashback;
     if ($markupType === 'percentage') {
-        $itemMarkup = $itemBase * ($markupValue / 100);
+        $itemMarkup = $markupBase * ($markupValue / 100);
     } else {
         $itemMarkup = $markupValue * $qty * $days;
     }
-    
+
     // Calculate item final
-    $itemFinal = $itemBase + $itemMarkup;
-    
+    $itemFinal = $markupBase + $itemMarkup;
+
     $calculatedSubtotal += $itemBase;
     $calculatedMarkup += $itemMarkup;
     $calculatedTotal += $itemFinal;
@@ -156,27 +159,30 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             </div>
             <?php else: ?>
             <div class="items-list">
-                <?php foreach ($items as $idx => $item): 
+                <?php foreach ($items as $idx => $item):
                     // Calculate item final price for display
                     $qty = (int)($item['quantity'] ?? 1);
                     $days = (int)($item['num_days'] ?? 1); // Use item's num_days directly - NO FALLBACK
                     $basePrice = (float)($item['base_price'] ?? 0);
+                    $cashback = (float)($item['cashback'] ?? 0);
                     $markupType = $item['markup_type'] ?? 'percentage';
                     $markupValue = (float)($item['markup_value'] ?? 0);
-                    
+
                     // Calculate base total (qty × days × unit_price)
                     $itemBaseTotal = $qty * $days * $basePrice;
-                    
-                    // Calculate markup
+                    $itemCashbackTotal = $qty * $days * $cashback;
+
+                    // Markup dihitung dari (harga beli + cashback)
+                    $markupBaseTotal = $itemBaseTotal + $itemCashbackTotal;
                     if ($markupType === 'percentage') {
-                        $itemMarkup = $itemBaseTotal * ($markupValue / 100);
+                        $itemMarkup = $markupBaseTotal * ($markupValue / 100);
                     } else {
                         $itemMarkup = $markupValue * $qty * $days;
                     }
-                    
-                    // Final price = base + markup
-                    $itemFinal = $itemBaseTotal + $itemMarkup;
-                    
+
+                    // Final price = base + cashback + markup
+                    $itemFinal = $markupBaseTotal + $itemMarkup;
+
                     // Use stored final_price if > 0, otherwise use calculated
                     $displayItemFinal = ($item['final_price'] > 0) ? $item['final_price'] : $itemFinal;
                     $displayItemMarkup = ($item['markup_amount'] > 0) ? $item['markup_amount'] : $itemMarkup;
@@ -204,11 +210,21 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                             </span>
                         </div>
                         
+                        <?php if ($cashback > 0): ?>
+                        <div class="item-markup-info">
+                            <small class="text-warning-dark">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                Cashback: <?= formatRupiah($cashback) ?>/unit/hari × <?= $qty ?> × <?= $days ?> = <?= formatRupiah($itemCashbackTotal) ?>
+                                <span class="text-muted">(masuk ke dasar perhitungan markup)</span>
+                            </small>
+                        </div>
+                        <?php endif; ?>
+
                         <?php if ($markupValue > 0): ?>
                         <div class="item-markup-info">
                             <small class="text-success">
                                 <i class="fas fa-plus-circle"></i>
-                                Markup: 
+                                Markup<?= $cashback > 0 ? ' (dari harga beli + cashback)' : '' ?>:
                                 <?php if ($markupType === 'percentage'): ?>
                                     <?= number_format($markupValue, 0) ?>% = <?= formatRupiah($displayItemMarkup) ?>
                                 <?php else: ?>
@@ -296,6 +312,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             <?php endif; ?>
         </div>
         
+        <?php if (FEATURE_PASSENGER_MANAGEMENT): ?>
         <!-- Hotel Guests Section -->
         <?php if (!empty($hasHotelItems)): ?>
         <div class="glass-card mb-4">
@@ -407,6 +424,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             </div>
         </div>
         <?php endif; ?>
+        <?php endif; // FEATURE_PASSENGER_MANAGEMENT ?>
         
         <!-- Documents -->
         <div class="glass-card mb-4">
@@ -425,22 +443,6 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                     <span class="doc-text">
                         <strong>Kwitansi</strong>
                         <small>Bukti Pembayaran</small>
-                    </span>
-                    <i class="fas fa-external-link-alt"></i>
-                </a>
-                <a href="<?= url('/doc.php?order=' . $order->id . '&type=penawaran') ?>" target="_blank" class="doc-btn doc-penawaran">
-                    <span class="doc-icon"><i class="fas fa-file-alt"></i></span>
-                    <span class="doc-text">
-                        <strong>Penawaran</strong>
-                        <small>Surat Penawaran Harga</small>
-                    </span>
-                    <i class="fas fa-external-link-alt"></i>
-                </a>
-                <a href="<?= url('/doc.php?order=' . $order->id . '&type=kesepakatan') ?>" target="_blank" class="doc-btn doc-kesepakatan">
-                    <span class="doc-icon"><i class="fas fa-handshake"></i></span>
-                    <span class="doc-text">
-                        <strong>Kesepakatan</strong>
-                        <small>Surat Kesepakatan Harga</small>
                     </span>
                     <i class="fas fa-external-link-alt"></i>
                 </a>
@@ -888,8 +890,6 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
 
 .doc-invoice { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 .doc-kwitansi { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
-.doc-penawaran { background: linear-gradient(135deg, #a67f20, #85661a); }
-.doc-kesepakatan { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
 /* Notes & Client */
 .notes-box {

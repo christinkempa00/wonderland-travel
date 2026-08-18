@@ -7,6 +7,16 @@
 $currentPath = $_GET['_url'] ?? '';
 $currentPath = '/' . trim($currentPath, '/');
 
+// Super Admin bisa atur halaman mana yang terlihat untuk role lain
+// (Pengaturan > Akses Halaman) — lihat helpers/functions.php.
+$__role = Session::userRole();
+if (!function_exists('pageVisible')) {
+    function pageVisible(string $pageKey): bool {
+        global $__role;
+        return isPageEnabledForRole($__role, $pageKey);
+    }
+}
+
 // Get current company for logo
 $companyId = Session::companyId();
 $company = null;
@@ -82,35 +92,42 @@ if (!function_exists('isSubmenuActive')) {
             </div>
             
             <!-- Orders -->
+            <?php if (pageVisible('orders')): ?>
             <div class="nav-item">
                 <a href="<?= url('/orders') ?>" class="nav-link <?= isMenuActive('/orders', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-file-alt"></i>
                     <span>Pesanan</span>
                 </a>
             </div>
-            
+            <?php endif; ?>
+
             <!-- Clients -->
+            <?php if (pageVisible('clients')): ?>
             <div class="nav-item">
                 <a href="<?= url('/clients') ?>" class="nav-link <?= isMenuActive('/clients', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-users"></i>
                     <span>Klien</span>
                 </a>
             </div>
-            
+            <?php endif; ?>
+
             <!-- Documents -->
+            <?php if (pageVisible('documents')): ?>
             <div class="nav-item">
                 <a href="<?= url('/documents') ?>" class="nav-link <?= isMenuActive('/documents', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-file-invoice"></i>
                     <span>Dokumen</span>
                 </a>
             </div>
+            <?php endif; ?>
         </div>
-        
-        
+
+
         <!-- Profit Sharing -->
+        <?php if (pageVisible('profit')): ?>
         <div class="nav-section">
             <div class="nav-section-title">Bagi Hasil</div>
-            
+
             <div class="nav-item">
                 <a href="<?= url('/profit') ?>" class="nav-link <?= isMenuActive('/profit', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-hand-holding-usd"></i>
@@ -118,33 +135,42 @@ if (!function_exists('isSubmenuActive')) {
                 </a>
             </div>
         </div>
-        
+        <?php endif; ?>
+
         <!-- Settings -->
+        <?php if (pageVisible('settings') || pageVisible('users') || pageVisible('activity_logs')): ?>
         <div class="nav-section">
             <div class="nav-section-title">Pengaturan</div>
-            
+
+            <?php if (pageVisible('settings')): ?>
             <div class="nav-item">
                 <a href="<?= url('/settings') ?>" class="nav-link <?= isMenuActive('/settings', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-cog"></i>
                     <span>Pengaturan</span>
                 </a>
             </div>
-            
+            <?php endif; ?>
+
+            <?php if (pageVisible('users')): ?>
             <div class="nav-item">
                 <a href="<?= url('/users') ?>" class="nav-link <?= isMenuActive('/users', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-user-cog"></i>
                     <span>Pengguna</span>
                 </a>
             </div>
-            
+            <?php endif; ?>
+
+            <?php if (pageVisible('activity_logs')): ?>
             <div class="nav-item">
                 <a href="<?= url('/activity-logs') ?>" class="nav-link <?= isMenuActive('/activity-logs', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-history"></i>
                     <span>Log Aktivitas</span>
                 </a>
             </div>
+            <?php endif; ?>
         </div>
-        
+        <?php endif; // Settings section wrapper ?>
+
         <!-- User Section -->
         <div class="nav-section mt-auto">
             <div class="nav-section-title">Akun</div>

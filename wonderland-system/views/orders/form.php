@@ -13,6 +13,8 @@ $orderData = $order ? $order->toArray() : [
     'event_date' => '',
     'event_end_date' => '',
     'event_name' => '',
+    'pic_name' => '',
+    'pic_phone' => '',
     'description' => '',
     'notes' => ''
 ];
@@ -35,48 +37,41 @@ $orderData = $order ? $order->toArray() : [
                     Informasi Pesanan
                 </h4>
                 
+                <input type="hidden" name="order_date" value="<?= e($orderData['order_date'] ?: date('Y-m-d')) ?>">
                 <div class="row g-3">
-                    <div class="col-6 col-md-3">
-                        <div class="form-group">
-                            <label class="form-label required">Tgl Pesanan</label>
-                            <input type="date" name="order_date" class="form-control" 
-                                   value="<?= e(old('order_date', $orderData['order_date'])) ?>" required>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="form-group">
                             <label class="form-label">Tgl Mulai Event</label>
                             <input type="date" name="event_date" class="form-control" id="eventStartDate"
                                    value="<?= e(old('event_date', $orderData['event_date'])) ?>">
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="form-group">
                             <label class="form-label">Tgl Selesai Event</label>
                             <input type="date" name="event_end_date" class="form-control" id="eventEndDate"
                                    value="<?= e(old('event_end_date', $orderData['event_end_date'] ?? '')) ?>">
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="form-group">
                             <label class="form-label">Durasi Event</label>
                             <div class="input-group">
-                                <input type="number" id="numDaysDisplay" class="form-control" value="1" readonly 
+                                <input type="number" id="numDaysDisplay" class="form-control" value="1" readonly
                                        style="background: var(--gray-100);">
                                 <span class="input-group-text">hari</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Tombol Terapkan ke Semua Item -->
                 <div class="sync-days-row mt-2">
                     <button type="button" class="btn btn-outline-primary btn-sm" id="syncDaysBtn" title="Terapkan durasi event ke semua item">
                         <i class="fas fa-sync-alt"></i> Terapkan Durasi ke Semua Item
                     </button>
-                    <small class="text-muted ms-2">Klik untuk menyamakan jumlah hari semua item dengan durasi event</small>
                 </div>
-                
+
                 <div class="row g-3 mt-2">
                     <div class="col-12 col-md-6">
                         <div class="form-group">
@@ -96,14 +91,33 @@ $orderData = $order ? $order->toArray() : [
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Nama Event/Kegiatan</label>
-                            <input type="text" name="event_name" class="form-control" 
+                            <label class="form-label">Nama Kegiatan</label>
+                            <input type="text" name="event_name" class="form-control"
                                    value="<?= e(old('event_name', $orderData['event_name'])) ?>"
-                                   placeholder="Contoh: Tour Bali 3D2N">
+                                   placeholder="Contoh: Open Trip ke Bogor">
                         </div>
                     </div>
                 </div>
-                
+
+                <div class="row g-3 mt-2">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">PIC Name</label>
+                            <input type="text" name="pic_name" class="form-control"
+                                   value="<?= e(old('pic_name', $orderData['pic_name'] ?? '')) ?>"
+                                   placeholder="Nama PIC pesanan ini">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="pic_phone" class="form-control"
+                                   value="<?= e(old('pic_phone', $orderData['pic_phone'] ?? '')) ?>"
+                                   placeholder="08xx xxxx xxxx">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group mt-3">
                     <label class="form-label">Deskripsi</label>
                     <textarea name="description" class="form-control" rows="2" 

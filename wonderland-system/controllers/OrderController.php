@@ -152,6 +152,8 @@ class OrderController {
                 'event_date' => $_POST['event_date'] ?: null,
                 'event_end_date' => $_POST['event_end_date'] ?: null,
                 'event_name' => trim($_POST['event_name'] ?? ''),
+                'pic_name' => trim($_POST['pic_name'] ?? ''),
+                'pic_phone' => trim($_POST['pic_phone'] ?? ''),
                 'description' => trim($_POST['description'] ?? ''),
                 'notes' => trim($_POST['notes'] ?? ''),
                 'status' => 'invoiced',
@@ -410,6 +412,8 @@ class OrderController {
                 'event_date' => $_POST['event_date'] ?: null,
                 'event_end_date' => $_POST['event_end_date'] ?: null,
                 'event_name' => trim($_POST['event_name'] ?? ''),
+                'pic_name' => trim($_POST['pic_name'] ?? ''),
+                'pic_phone' => trim($_POST['pic_phone'] ?? ''),
                 'description' => trim($_POST['description'] ?? ''),
                 'notes' => trim($_POST['notes'] ?? ''),
                 'status' => 'invoiced'
