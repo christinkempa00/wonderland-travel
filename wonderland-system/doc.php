@@ -14,6 +14,10 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+// TEMP DEBUG — hapus setelah dipakai untuk cari akar masalah 500 di doc.php
+if (($_GET['_dbg'] ?? '') === 'wtdbg08192026') {
+    ini_set('display_errors', 1);
+}
 date_default_timezone_set('Asia/Jakarta');
 
 define('BASE_PATH', __DIR__);
