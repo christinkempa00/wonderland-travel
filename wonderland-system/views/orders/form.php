@@ -38,9 +38,9 @@ $orderData = $order ? $order->toArray() : [
                 <div class="row g-3">
                     <div class="col-6 col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Tgl Mulai Event</label>
+                            <label class="form-label required">Tgl Mulai Event</label>
                             <input type="date" name="event_date" class="form-control" id="eventStartDate"
-                                   value="<?= e(old('event_date', $orderData['event_date'])) ?>">
+                                   value="<?= e(old('event_date', $orderData['event_date'])) ?>" required>
                         </div>
                     </div>
                     <div class="col-6 col-md-4">
@@ -65,8 +65,8 @@ $orderData = $order ? $order->toArray() : [
                 <div class="row g-3 mt-2">
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Klien</label>
-                            <select name="client_id" class="form-control" id="clientSelect">
+                            <label class="form-label required">Klien</label>
+                            <select name="client_id" class="form-control" id="clientSelect" required>
                                 <option value="">-- Pilih Klien --</option>
                                 <?php foreach ($clients as $id => $name): ?>
                                 <option value="<?= $id ?>" <?= old('client_id', $orderData['client_id']) == $id ? 'selected' : '' ?>>
@@ -81,10 +81,10 @@ $orderData = $order ? $order->toArray() : [
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Nama Kegiatan</label>
+                            <label class="form-label required">Nama Kegiatan</label>
                             <input type="text" name="event_name" class="form-control"
                                    value="<?= e(old('event_name', $orderData['event_name'])) ?>"
-                                   placeholder="Contoh: Open Trip ke Bogor">
+                                   placeholder="Contoh: Open Trip ke Bogor" required>
                         </div>
                     </div>
                 </div>
@@ -92,7 +92,7 @@ $orderData = $order ? $order->toArray() : [
                 <div class="row g-3 mt-2" id="divisiRow" style="display: none;">
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Divisi</label>
+                            <label class="form-label required">Divisi</label>
                             <select name="divisi" class="form-control" id="divisiSelect">
                                 <option value="">-- Pilih Divisi --</option>
                                 <?php foreach (DIVISI_OPTIONS as $key => $label): ?>
@@ -109,26 +109,26 @@ $orderData = $order ? $order->toArray() : [
                 <div class="row g-3 mt-2">
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label class="form-label">PIC Name</label>
+                            <label class="form-label required">PIC Name</label>
                             <input type="text" name="pic_name" class="form-control"
                                    value="<?= e(old('pic_name', $orderData['pic_name'] ?? '')) ?>"
-                                   placeholder="Nama PIC pesanan ini">
+                                   placeholder="Nama PIC pesanan ini" required>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Phone Number</label>
+                            <label class="form-label required">Phone Number</label>
                             <input type="text" name="pic_phone" class="form-control"
                                    value="<?= e(old('pic_phone', $orderData['pic_phone'] ?? '')) ?>"
-                                   placeholder="08xx xxxx xxxx">
+                                   placeholder="08xx xxxx xxxx" required>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group mt-3">
-                    <label class="form-label">Deskripsi</label>
-                    <textarea name="description" class="form-control" rows="2" 
-                              placeholder="Deskripsi singkat pesanan"><?= e(old('description', $orderData['description'])) ?></textarea>
+                    <label class="form-label required">Deskripsi</label>
+                    <textarea name="description" class="form-control" rows="2"
+                              placeholder="Deskripsi singkat pesanan" required><?= e(old('description', $orderData['description'])) ?></textarea>
                 </div>
             </div>
             
@@ -534,11 +534,14 @@ document.addEventListener('DOMContentLoaded', function() {
     var clientSelect = document.getElementById('clientSelect');
     var divisiRow = document.getElementById('divisiRow');
     function toggleDivisiRow() {
+        var divisiSelect = document.getElementById('divisiSelect');
         if (clientSelect.value && clientsUsesDivisi[clientSelect.value]) {
             divisiRow.style.display = '';
+            divisiSelect.required = true;
         } else {
             divisiRow.style.display = 'none';
-            document.getElementById('divisiSelect').value = '';
+            divisiSelect.required = false;
+            divisiSelect.value = '';
         }
     }
     clientSelect.addEventListener('change', toggleDivisiRow);

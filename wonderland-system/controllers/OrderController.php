@@ -2309,11 +2309,39 @@ class OrderController {
      */
     private function validateOrder(array $data): array {
         $errors = [];
-        
+
         if (empty($data['order_date'])) {
             $errors[] = 'Tanggal pesanan wajib diisi.';
         }
-        
+
+        // Bagian Informasi Pesanan wajib diisi semua, kecuali Tgl Selesai Event.
+        if (empty($data['event_date'])) {
+            $errors[] = 'Tgl Mulai Event wajib diisi.';
+        }
+        if (empty($data['client_id'])) {
+            $errors[] = 'Klien wajib dipilih.';
+        }
+        if (trim($data['event_name'] ?? '') === '') {
+            $errors[] = 'Nama Kegiatan wajib diisi.';
+        }
+        if (trim($data['pic_name'] ?? '') === '') {
+            $errors[] = 'PIC Name wajib diisi.';
+        }
+        if (trim($data['pic_phone'] ?? '') === '') {
+            $errors[] = 'Phone Number wajib diisi.';
+        }
+        if (trim($data['description'] ?? '') === '') {
+            $errors[] = 'Deskripsi wajib diisi.';
+        }
+
+        // Divisi hanya wajib untuk klien PELNI-style (uses_divisi = 1).
+        if (!empty($data['client_id'])) {
+            $client = Client::find((int) $data['client_id']);
+            if ($client && !empty($client->uses_divisi) && empty($data['divisi'])) {
+                $errors[] = 'Divisi wajib dipilih untuk klien ini.';
+            }
+        }
+
         return $errors;
     }
     
