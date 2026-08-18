@@ -92,25 +92,11 @@ foreach ($orders as $order) {
             </select>
         </div>
         
-        <!-- Filter by Dukungan -->
-        <div style="min-width: 180px;">
-            <select name="support_for" class="form-control">
-                <option value="">Semua Dukungan</option>
-                <?php if (!empty($supportForOptions)): ?>
-                <?php foreach ($supportForOptions as $support): ?>
-                <option value="<?= e($support) ?>" <?= ($filters['support_for'] ?? '') === $support ? 'selected' : '' ?>>
-                    <?= e(truncate($support, 25)) ?>
-                </option>
-                <?php endforeach; ?>
-                <?php endif; ?>
-            </select>
-        </div>
-        
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-filter"></i> Filter
         </button>
         
-        <?php if (($filters['search'] ?? '') || ($filters['status'] ?? '') || ($filters['payment_status'] ?? '') || ($filters['support_for'] ?? '')): ?>
+        <?php if (($filters['search'] ?? '') || ($filters['status'] ?? '') || ($filters['payment_status'] ?? '')): ?>
         <a href="<?= url('/orders') ?>" class="btn btn-secondary">
             <i class="fas fa-times"></i> Reset
         </a>
@@ -145,7 +131,6 @@ foreach ($orders as $order) {
                     <th>Klien</th>
                     <th>Tanggal Event</th>
                     <th>Event</th>
-                    <th>Dukungan</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th>Pembayaran</th>
@@ -197,16 +182,6 @@ foreach ($orders as $order) {
                         </span>
                         <?php else: ?>
                         -
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if (!empty($order['support_for'])): ?>
-                        <span class="support-badge" title="<?= e($order['support_for']) ?>">
-                            <i class="fas fa-hands-helping"></i>
-                            <?= e(truncate($order['support_for'], 20)) ?>
-                        </span>
-                        <?php else: ?>
-                        <span class="text-muted">-</span>
                         <?php endif; ?>
                     </td>
                     <td class="font-medium"><?= formatRupiah($displayTotal) ?></td>
@@ -356,23 +331,6 @@ foreach ($orders as $order) {
 </div>
 
 <style>
-/* Support badge */
-.support-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: linear-gradient(135deg, #faefd0, #f4dfa3);
-    color: #6b5216;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.support-badge i {
-    font-size: 0.65rem;
-}
-
 /* Event date display */
 .event-date-display {
     display: flex;

@@ -118,7 +118,6 @@ CREATE TABLE IF NOT EXISTS `orders` (
     `event_date` DATE NULL,
     `event_end_date` DATE NULL,
     `event_location` VARCHAR(255) NULL,
-    `support_for` VARCHAR(150) NULL COMMENT 'Dukungan/sponsor kegiatan',
     `description` TEXT NULL,
     `total_base_price` DECIMAL(15,2) NOT NULL DEFAULT 0,
     `total_markup` DECIMAL(15,2) NOT NULL DEFAULT 0,
@@ -141,7 +140,6 @@ CREATE TABLE IF NOT EXISTS `orders` (
     KEY `status` (`status`),
     KEY `order_date` (`order_date`),
     KEY `created_by` (`created_by`),
-    KEY `support_for` (`support_for`),
     CONSTRAINT `fk_orders_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_orders_client` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_orders_user` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL

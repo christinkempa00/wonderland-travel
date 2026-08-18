@@ -13,21 +13,9 @@ $orderData = $order ? $order->toArray() : [
     'event_date' => '',
     'event_end_date' => '',
     'event_name' => '',
-    'support_for' => '',
     'description' => '',
     'notes' => ''
 ];
-
-// Get unique support_for values for datalist suggestions
-$supportSuggestions = [];
-try {
-    $supportResults = db()->fetchAll("SELECT DISTINCT support_for FROM orders WHERE support_for IS NOT NULL AND support_for != '' ORDER BY support_for");
-    foreach ($supportResults as $row) {
-        $supportSuggestions[] = $row['support_for'];
-    }
-} catch (Exception $e) {
-    // Ignore if column doesn't exist yet
-}
 ?>
 
 <form method="POST" 

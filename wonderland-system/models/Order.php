@@ -27,7 +27,6 @@ class Order extends Model {
         'event_date',
         'event_end_date',
         'event_name',
-        'support_for',
         'description',
         'notes',
         'total_base_price',

@@ -50,9 +50,6 @@ class AttachmentController {
                 $filterLabel = 'Semua';
         }
         
-        // Filter dukungan
-        $supportFor = $_GET['support_for'] ?? '';
-        
         $itemTypesStr = "'" . implode("','", $itemTypes) . "'";
         
         $where = "o.company_id = ? AND o.status NOT IN ('cancelled', 'draft')";
@@ -65,20 +62,6 @@ class AttachmentController {
             $params[] = "%{$search}%";
         }
         
-        // Filter by support_for
-        if (!empty($supportFor)) {
-            $where .= " AND o.support_for = ?";
-            $params[] = $supportFor;
-        }
-        
-        // Get list of support_for options
-        $supportForOptions = db()->fetchAll("
-            SELECT DISTINCT support_for FROM orders 
-            WHERE company_id = ? AND support_for IS NOT NULL AND support_for != ''
-            ORDER BY support_for
-        ", [$companyId]);
-        $supportForOptions = array_column($supportForOptions, 'support_for');
-        
         $total = (int) db()->fetchColumn("
             SELECT COUNT(DISTINCT o.id) FROM orders o 
             LEFT JOIN clients c ON o.client_id = c.id
@@ -90,7 +73,7 @@ class AttachmentController {
         
         $orders = db()->fetchAll("
             SELECT o.id, o.order_number, o.event_name, o.event_date, o.event_end_date, o.status,
-                   o.support_for, c.name as client_name, GROUP_CONCAT(DISTINCT oi.item_type) as item_types
+                   c.name as client_name, GROUP_CONCAT(DISTINCT oi.item_type) as item_types
             FROM orders o
             LEFT JOIN clients c ON o.client_id = c.id
             INNER JOIN order_items oi ON o.id = oi.order_id AND oi.item_type IN ({$itemTypesStr})
@@ -118,8 +101,6 @@ class AttachmentController {
             'filter' => $filter,
             'filterLabel' => $filterLabel,
             'search' => $search,
-            'supportFor' => $supportFor,
-            'supportForOptions' => $supportForOptions,
             'stats' => $this->getAttachmentStats($companyId)
         ];
         

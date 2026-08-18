@@ -69,7 +69,6 @@ try {
             o.order_number,
             o.order_date,
             o.event_name,
-            o.support_for,
             COALESCE(o.total_base_price, 0) as modal_total,
             COALESCE(o.expense_paid_amount, 0) as sudah_dibayar,
             (COALESCE(o.total_base_price, 0) - COALESCE(o.expense_paid_amount, 0)) as sisa_hutang
@@ -391,7 +390,7 @@ $categoryLabels = [
                     <th width="50">#</th>
                     <th width="100">Tanggal</th>
                     <th width="120">No. Order</th>
-                    <th>Event / Dukungan</th>
+                    <th>Event</th>
                     <th class="text-end" width="120">Modal</th>
                     <th class="text-end" width="120">Dibayar</th>
                     <th class="text-end" width="120">Sisa Hutang</th>
@@ -406,9 +405,6 @@ $categoryLabels = [
                     <td><a href="<?= url('/orders/' . $vp['id']) ?>"><?= e($vp['order_number']) ?></a></td>
                     <td>
                         <?= e($vp['event_name'] ?: '-') ?>
-                        <?php if ($vp['support_for']): ?>
-                        <br><small class="text-muted"><?= e($vp['support_for']) ?></small>
-                        <?php endif; ?>
                     </td>
                     <td class="text-end"><?= formatRupiah($vp['modal_total']) ?></td>
                     <td class="text-end text-success"><?= formatRupiah($vp['sudah_dibayar']) ?></td>

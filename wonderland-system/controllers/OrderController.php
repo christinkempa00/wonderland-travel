@@ -35,8 +35,7 @@ class OrderController {
         $filters = [
             'search' => trim($_GET['search'] ?? ''),
             'status' => $_GET['status'] ?? '',
-            'payment_status' => $_GET['payment_status'] ?? '',
-            'support_for' => $_GET['support_for'] ?? ''
+            'payment_status' => $_GET['payment_status'] ?? ''
         ];
         
         // Get orders with client info directly
@@ -53,14 +52,8 @@ class OrderController {
             $params[] = $filters['payment_status'];
         }
         
-        if (!empty($filters['support_for'])) {
-            $where .= " AND o.support_for = ?";
-            $params[] = $filters['support_for'];
-        }
-        
         if (!empty($filters['search'])) {
-            $where .= " AND (o.order_number LIKE ? OR o.event_name LIKE ? OR c.name LIKE ? OR o.support_for LIKE ?)";
-            $params[] = "%{$filters['search']}%";
+            $where .= " AND (o.order_number LIKE ? OR o.event_name LIKE ? OR c.name LIKE ?)";
             $params[] = "%{$filters['search']}%";
             $params[] = "%{$filters['search']}%";
             $params[] = "%{$filters['search']}%";
@@ -92,18 +85,6 @@ class OrderController {
             'to' => min($offset + $perPage, $total)
         ];
         
-        // Get distinct support_for values for filter dropdown
-        $supportForOptions = [];
-        try {
-            $supportResults = db()->fetchAll(
-                "SELECT DISTINCT support_for FROM orders WHERE company_id = ? AND support_for IS NOT NULL AND support_for != '' ORDER BY support_for",
-                [$companyId]
-            );
-            foreach ($supportResults as $row) {
-                $supportForOptions[] = $row['support_for'];
-            }
-        } catch (Exception $e) {}
-        
         $data = [
             'pageTitle' => 'Daftar Pesanan',
             'pageHeader' => true,
@@ -113,8 +94,7 @@ class OrderController {
             'pagination' => $pagination,
             'filters' => $filters,
             'statuses' => ORDER_STATUSES,
-            'paymentStatuses' => PAYMENT_STATUSES,
-            'supportForOptions' => $supportForOptions
+            'paymentStatuses' => PAYMENT_STATUSES
         ];
         
         render('orders/index', $data);
@@ -125,19 +105,7 @@ class OrderController {
      */
     public function create(): void {
         $companyId = Session::companyId();
-        
-        // Get support_for suggestions
-        $supportSuggestions = [];
-        try {
-            $supportResults = db()->fetchAll(
-                "SELECT DISTINCT support_for FROM orders WHERE company_id = ? AND support_for IS NOT NULL AND support_for != '' ORDER BY support_for",
-                [$companyId]
-            );
-            foreach ($supportResults as $row) {
-                $supportSuggestions[] = $row['support_for'];
-            }
-        } catch (Exception $e) {}
-        
+
         $data = [
             'pageTitle' => 'Buat Pesanan',
             'pageHeader' => true,
@@ -152,13 +120,12 @@ class OrderController {
             'markupTypes' => MARKUP_TYPES,
             'defaultMarkupType' => getCompanySetting($companyId, 'default_markup_type', 'percentage'),
             'defaultMarkupValue' => getCompanySetting($companyId, 'default_markup_value', 10),
-            'isEdit' => false,
-            'supportSuggestions' => $supportSuggestions
+            'isEdit' => false
         ];
-        
+
         render('orders/form', $data);
     }
-    
+
     /**
      * Store new order
      */
@@ -185,7 +152,6 @@ class OrderController {
                 'event_date' => $_POST['event_date'] ?: null,
                 'event_end_date' => $_POST['event_end_date'] ?: null,
                 'event_name' => trim($_POST['event_name'] ?? ''),
-                'support_for' => trim($_POST['support_for'] ?? '') ?: null,
                 'description' => trim($_POST['description'] ?? ''),
                 'notes' => trim($_POST['notes'] ?? ''),
                 'status' => 'invoiced',
@@ -384,19 +350,7 @@ class OrderController {
         }
         
         $companyId = Session::companyId();
-        
-        // Get support_for suggestions
-        $supportSuggestions = [];
-        try {
-            $supportResults = db()->fetchAll(
-                "SELECT DISTINCT support_for FROM orders WHERE company_id = ? AND support_for IS NOT NULL AND support_for != '' ORDER BY support_for",
-                [$companyId]
-            );
-            foreach ($supportResults as $row) {
-                $supportSuggestions[] = $row['support_for'];
-            }
-        } catch (Exception $e) {}
-        
+
         $data = [
             'pageTitle' => 'Edit Pesanan',
             'pageHeader' => true,
@@ -412,13 +366,12 @@ class OrderController {
             'markupTypes' => MARKUP_TYPES,
             'defaultMarkupType' => getCompanySetting($companyId, 'default_markup_type', 'percentage'),
             'defaultMarkupValue' => getCompanySetting($companyId, 'default_markup_value', 10),
-            'isEdit' => true,
-            'supportSuggestions' => $supportSuggestions
+            'isEdit' => true
         ];
-        
+
         render('orders/form', $data);
     }
-    
+
     /**
      * Update order
      */
@@ -457,7 +410,6 @@ class OrderController {
                 'event_date' => $_POST['event_date'] ?: null,
                 'event_end_date' => $_POST['event_end_date'] ?: null,
                 'event_name' => trim($_POST['event_name'] ?? ''),
-                'support_for' => trim($_POST['support_for'] ?? '') ?: null,
                 'description' => trim($_POST['description'] ?? ''),
                 'notes' => trim($_POST['notes'] ?? ''),
                 'status' => 'invoiced'

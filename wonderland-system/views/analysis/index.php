@@ -1,6 +1,6 @@
 <?php
 /**
- * Analysis Index View - Grouped by Dukungan
+ * Analysis Index View - Grouped by Event
  * File: views/analysis/index.php
  * 
  * MODIFIKASI v7:
@@ -36,7 +36,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
             <div class="summary-icon bg-primary-soft"><i class="fas fa-layer-group"></i></div>
             <div class="summary-content">
                 <span class="summary-value"><?= number_format($summary['total_groups']) ?></span>
-                <span class="summary-label">Dukungan</span>
+                <span class="summary-label">Event</span>
                 <small class="text-muted"><?= number_format($summary['total_orders']) ?> order</small>
             </div>
         </div>
@@ -101,12 +101,12 @@ $filingCounts = $summary['filing_counts'] ?? [];
                        value="<?= e($filters['search'] ?? '') ?>">
             </div>
             <div class="col-6 col-md-3 col-lg-2">
-                <label class="form-label small">Dukungan</label>
-                <select name="support_for" class="form-control form-control-sm">
+                <label class="form-label small">Event</label>
+                <select name="event_name" class="form-control form-control-sm">
                     <option value="">Semua</option>
-                    <?php foreach ($supportForOptions as $support): ?>
-                    <option value="<?= e($support) ?>" <?= ($filters['support_for'] ?? '') === $support ? 'selected' : '' ?>>
-                        <?= e(truncate($support, 25)) ?>
+                    <?php foreach ($eventNameOptions as $eventOption): ?>
+                    <option value="<?= e($eventOption) ?>" <?= ($filters['event_name'] ?? '') === $eventOption ? 'selected' : '' ?>>
+                        <?= e(truncate($eventOption, 25)) ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
@@ -181,15 +181,15 @@ $filingCounts = $summary['filing_counts'] ?? [];
 </div>
 <?php else: ?>
 
-<?php foreach ($groupedOrders as $supportName => $orders): 
-    $totals = $groupTotals[$supportName];
+<?php foreach ($groupedOrders as $eventGroupName => $orders):
+    $totals = $groupTotals[$eventGroupName];
 ?>
 <div class="glass-card mb-4 group-card">
     <!-- Group Header -->
     <div class="group-header">
         <div class="group-title">
-            <i class="fas fa-hands-helping text-primary"></i>
-            <h5><?= e($supportName) ?></h5>
+            <i class="fas fa-calendar-day text-primary"></i>
+            <h5><?= e($eventGroupName) ?></h5>
             <span class="badge badge-primary"><?= count($orders) ?></span>
         </div>
         <div class="group-summary d-none d-md-flex">
@@ -220,7 +220,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
         <table class="table analysis-table mb-0">
             <thead>
                 <tr>
-                    <th style="width:30px"><input type="checkbox" class="group-select-all" data-group="<?= md5($supportName) ?>"></th>
+                    <th style="width:30px"><input type="checkbox" class="group-select-all" data-group="<?= md5($eventGroupName) ?>"></th>
                     <th>Layanan</th>
                     <th>Event</th>
                     <th class="text-center">Qty×Hari</th>
@@ -279,7 +279,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
                         $expenseBadgeText = 'Pending';
                     }
                 ?>
-                <tr data-order-id="<?= $order['id'] ?>" data-group="<?= md5($supportName) ?>">
+                <tr data-order-id="<?= $order['id'] ?>" data-group="<?= md5($eventGroupName) ?>">
                     <td><input type="checkbox" class="order-checkbox" value="<?= $order['id'] ?>"></td>
                     <td>
                         <a href="<?= url('/orders/' . $order['id']) ?>" class="service-badge service-<?= $serviceType['color'] ?>">
@@ -490,7 +490,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     </div>
     <div class="col-md-4 mb-4">
         <div class="glass-card h-100">
-            <h6 class="fw-bold mb-3"><i class="fas fa-chart-pie text-primary me-2"></i>Per Dukungan</h6>
+            <h6 class="fw-bold mb-3"><i class="fas fa-chart-pie text-primary me-2"></i>Per Event</h6>
             <div style="height: 300px">
                 <canvas id="supportChart"></canvas>
             </div>
@@ -1554,10 +1554,6 @@ $filingCounts = $summary['filing_counts'] ?? [];
     font-weight: 600;
     color: #1e293b;
 }
-.vr-table .support-cell {
-    font-size: 0.8rem;
-    color: #64748b;
-}
 .vr-table .date-cell {
     color: #94a3b8;
     font-size: 0.8rem;
@@ -2248,7 +2244,7 @@ function renderVRTable(trx, filter) {
     var html = '<table class="vr-table">';
     html += '<thead><tr>';
     html += '<th width="90">Tanggal</th>';
-    html += '<th>Event / Dukungan</th>';
+    html += '<th>Event</th>';
     if (filter === 'all') {
         html += '<th width="100">Kategori</th>';
     }
@@ -2264,7 +2260,7 @@ function renderVRTable(trx, filter) {
         
         html += '<tr>';
         html += '<td class="date-cell">' + fmtDate(x.order_date) + '</td>';
-        html += '<td><div class="event-cell">' + truncate(x.event_name || '-', 28) + '</div><div class="support-cell">' + truncate(x.support_for || '-', 25) + '</div></td>';
+        html += '<td><div class="event-cell">' + truncate(x.event_name || '-', 28) + '</div></td>';
         if (filter === 'all') {
             html += '<td><span class="cat-badge ' + x.item_type + '">' + catIcon(x.item_type) + ' ' + catLabel(x.item_type) + '</span></td>';
         }
@@ -2396,25 +2392,23 @@ function printVendorRecap() {
     h += '<table><thead><tr>';
     h += '<th width="70">Tanggal</th>';
     h += '<th>Event</th>';
-    h += '<th>Dukungan</th>';
     if (vrFilter === 'all') h += '<th width="70">Kategori</th>';
     h += '<th>Deskripsi</th>';
     h += '<th class="text-end" width="100">Jumlah</th>';
     h += '</tr></thead><tbody>';
-    
+
     filtered.forEach(function(x) {
         h += '<tr>';
         h += '<td>' + fmtDate(x.order_date) + '</td>';
         h += '<td>' + (x.event_name || '-') + '</td>';
-        h += '<td>' + (x.support_for || '-') + '</td>';
         if (vrFilter === 'all') h += '<td>' + catIcon(x.item_type) + ' ' + catLabel(x.item_type) + '</td>';
         h += '<td>' + (x.description || '-') + '</td>';
         h += '<td class="text-end amount">' + fmtRp(x.amount) + '</td>';
         h += '</tr>';
     });
-    
+
     h += '<tr class="total-row">';
-    h += '<td colspan="' + (vrFilter === 'all' ? '5' : '4') + '" class="text-end">TOTAL HUTANG:</td>';
+    h += '<td colspan="' + (vrFilter === 'all' ? '4' : '3') + '" class="text-end">TOTAL HUTANG:</td>';
     h += '<td class="text-end amount">' + fmtRp(total) + '</td>';
     h += '</tr>';
     
@@ -2592,8 +2586,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(function() {});
     
-    // Support Chart
-    fetch(baseUrl + '/analysis/chart-data?type=by_support')
+    // Event Chart
+    fetch(baseUrl + '/analysis/chart-data?type=by_event')
         .then(function(r) { return r.json(); })
         .then(function(res) {
             if (res.success && res.data && res.data.length > 0) {

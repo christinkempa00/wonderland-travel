@@ -248,12 +248,6 @@
                     <span class="info-value"><?= e($order->event_name) ?></span>
                 </div>
                 <?php endif; ?>
-                <?php if ($order->support_for): ?>
-                <div class="info-row">
-                    <span class="info-label">Dukungan</span>
-                    <span class="info-value"><?= e($order->support_for) ?></span>
-                </div>
-                <?php endif; ?>
                 <div class="info-row">
                     <span class="info-label">Status</span>
                     <span class="info-value">

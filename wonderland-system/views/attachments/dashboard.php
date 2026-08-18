@@ -107,35 +107,22 @@ if (!function_exists('truncateText')) {
                 </button>
             </div>
             
-            <!-- Search & Dukungan Filter -->
+            <!-- Search Filter -->
             <form method="get" class="filter-form">
                 <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
                 <div class="row g-2 align-items-end">
-                    <div class="col-md-5">
+                    <div class="col-md-9">
                         <label class="form-label small text-muted">Cari Pesanan</label>
-                        <input type="text" name="search" class="form-control" 
+                        <input type="text" name="search" class="form-control"
                                placeholder="No. pesanan, event, atau klien..."
                                value="<?= htmlspecialchars($search ?? '') ?>">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted">Filter Dukungan</label>
-                        <select name="support_for" class="form-control">
-                            <option value="">Semua Dukungan</option>
-                            <?php if (!empty($supportForOptions)): ?>
-                            <?php foreach ($supportForOptions as $support): ?>
-                            <option value="<?= htmlspecialchars($support) ?>" <?= ($supportFor ?? '') === $support ? 'selected' : '' ?>>
-                                <?= htmlspecialchars(truncateText($support, 30)) ?>
-                            </option>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary flex-grow-1">
                                 <i class="fas fa-filter"></i> Filter
                             </button>
-                            <?php if (!empty($search) || !empty($supportFor) || $filter !== 'all'): ?>
+                            <?php if (!empty($search) || $filter !== 'all'): ?>
                             <a href="<?= url('/attachment-dashboard') ?>" class="btn btn-outline-secondary">
                                 <i class="fas fa-times"></i>
                             </a>
@@ -146,20 +133,14 @@ if (!function_exists('truncateText')) {
             </form>
         </div>
     </div>
-    
+
     <!-- Active Filters Info -->
-    <?php if ($filter !== 'all' || !empty($supportFor)): ?>
+    <?php if ($filter !== 'all'): ?>
     <div class="alert alert-info mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
         <span>
             <i class="fas fa-filter"></i>
-            Filter aktif: 
-            <?php if ($filter !== 'all'): ?>
-                <strong>Tipe: <?= htmlspecialchars($filterLabel ?? ucfirst($filter)) ?></strong>
-            <?php endif; ?>
-            <?php if (!empty($supportFor)): ?>
-                <?php if ($filter !== 'all'): ?> | <?php endif; ?>
-                <strong>Dukungan: <?= htmlspecialchars(truncateText($supportFor, 25)) ?></strong>
-            <?php endif; ?>
+            Filter aktif:
+            <strong>Tipe: <?= htmlspecialchars($filterLabel ?? ucfirst($filter)) ?></strong>
         </span>
         <a href="<?= url('/attachment-dashboard') ?>" class="btn btn-sm btn-outline-info">
             <i class="fas fa-times"></i> Reset Filter
@@ -183,7 +164,6 @@ if (!function_exists('truncateText')) {
                     <tr>
                         <th>No. Pesanan</th>
                         <th>Klien / Event</th>
-                        <th>Dukungan</th>
                         <th>Tanggal</th>
                         <th class="text-center">Jenis Lampiran</th>
                         <th class="text-center">Status</th>
@@ -200,16 +180,6 @@ if (!function_exists('truncateText')) {
                             <div><?= htmlspecialchars($order['client_name'] ?? '-') ?></div>
                             <?php if (!empty($order['event_name'])): ?>
                             <small class="text-muted"><?= htmlspecialchars(truncateText($order['event_name'], 25)) ?></small>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if (!empty($order['support_for'])): ?>
-                            <span class="support-badge" title="<?= htmlspecialchars($order['support_for']) ?>">
-                                <i class="fas fa-hands-helping"></i>
-                                <?= htmlspecialchars(truncateText($order['support_for'], 20)) ?>
-                            </span>
-                            <?php else: ?>
-                            <span class="text-muted">-</span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -301,7 +271,7 @@ if (!function_exists('truncateText')) {
                 <ul class="pagination pagination-sm mb-0">
                     <?php if ($pagination['current_page'] > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?>&filter=<?= $filter ?>&search=<?= urlencode($search ?? '') ?>&support_for=<?= urlencode($supportFor ?? '') ?>">
+                        <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?>&filter=<?= $filter ?>&search=<?= urlencode($search ?? '') ?>">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     </li>
@@ -309,13 +279,13 @@ if (!function_exists('truncateText')) {
                     
                     <?php for ($i = max(1, $pagination['current_page'] - 2); $i <= min($pagination['last_page'], $pagination['current_page'] + 2); $i++): ?>
                     <li class="page-item <?= $i === $pagination['current_page'] ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>&filter=<?= $filter ?>&search=<?= urlencode($search ?? '') ?>&support_for=<?= urlencode($supportFor ?? '') ?>"><?= $i ?></a>
+                        <a class="page-link" href="?page=<?= $i ?>&filter=<?= $filter ?>&search=<?= urlencode($search ?? '') ?>"><?= $i ?></a>
                     </li>
                     <?php endfor; ?>
                     
                     <?php if ($pagination['current_page'] < $pagination['last_page']): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?>&filter=<?= $filter ?>&search=<?= urlencode($search ?? '') ?>&support_for=<?= urlencode($supportFor ?? '') ?>">
+                        <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?>&filter=<?= $filter ?>&search=<?= urlencode($search ?? '') ?>">
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>
@@ -415,23 +385,6 @@ if (!function_exists('truncateText')) {
 
 .filter-tab i {
     font-size: 0.8rem;
-}
-
-/* Support Badge */
-.support-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: linear-gradient(135deg, #faefd0, #f4dfa3);
-    color: #6b5216;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.support-badge i {
-    font-size: 0.65rem;
 }
 
 /* Attachment Badges */

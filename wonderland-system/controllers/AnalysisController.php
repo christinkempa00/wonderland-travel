@@ -4,7 +4,7 @@
  * TRAVEL MANAGEMENT SYSTEM - Analysis Controller
  * ================================================================
  * 
- * Halaman Analisa Keuangan - Grouped by Support For (Dukungan)
+ * Halaman Analisa Keuangan - Grouped by Event
  * PROFIT = Tagihan - Modal (bukan sisa pembayaran)
  * 
  * MODIFIKASI v2:
@@ -37,7 +37,7 @@ class AnalysisController {
         // Filters
         $filters = [
             'search' => trim($_GET['search'] ?? ''),
-            'support_for' => $_GET['support_for'] ?? '',
+            'event_name' => $_GET['event_name'] ?? '',
             'payment_status' => $_GET['payment_status'] ?? '',
             'filing_status' => $_GET['filing_status'] ?? '',
             'date_from' => $_GET['date_from'] ?? '',
@@ -48,9 +48,9 @@ class AnalysisController {
         $where = "o.company_id = ?";
         $params = [$companyId];
         
-        if (!empty($filters['support_for'])) {
-            $where .= " AND o.support_for = ?";
-            $params[] = $filters['support_for'];
+        if (!empty($filters['event_name'])) {
+            $where .= " AND o.event_name = ?";
+            $params[] = $filters['event_name'];
         }
         
         if (!empty($filters['payment_status'])) {
@@ -74,10 +74,8 @@ class AnalysisController {
         }
         
         if (!empty($filters['search'])) {
-            $where .= " AND (o.event_name LIKE ? OR o.support_for LIKE ?)";
-            $searchTerm = "%{$filters['search']}%";
-            $params[] = $searchTerm;
-            $params[] = $searchTerm;
+            $where .= " AND o.event_name LIKE ?";
+            $params[] = "%{$filters['search']}%";
         }
         
         // Check columns
@@ -95,17 +93,16 @@ class AnalysisController {
         
         // Get orders with item_type from order_items
         // PROFIT = tagihan - modal (bukan sisa pembayaran)
-        // Order by: dukungan dengan tanggal terbaru di atas
-        // 
+        // Order by: event dengan tanggal terbaru di atas
+        //
         // MODIFIKASI v2: Tambahkan unit_price, total_quantity, total_days
         // untuk tampilan harga satuan di view
         // MODIFIKASI v4: Tambahkan expense_status dan expense_paid untuk tracking bayar vendor
-        $sql = "SELECT 
+        $sql = "SELECT
                     o.id,
                     o.order_number,
                     o.order_date,
                     o.event_name,
-                    o.support_for,
                     o.status,
                     o.payment_status,
                     {$filingSelect}
@@ -139,40 +136,40 @@ class AnalysisController {
                     COALESCE(o.expense_paid_amount, 0) as expense_paid,
                     
                     -- Group ordering
-                    (SELECT MAX(o2.order_date) FROM orders o2 WHERE o2.support_for = o.support_for AND o2.company_id = o.company_id) as group_latest_date
-                FROM orders o 
-                WHERE {$where} 
-                ORDER BY group_latest_date DESC, o.support_for ASC, o.order_date DESC, o.id DESC";
+                    (SELECT MAX(o2.order_date) FROM orders o2 WHERE o2.event_name = o.event_name AND o2.company_id = o.company_id) as group_latest_date
+                FROM orders o
+                WHERE {$where}
+                ORDER BY group_latest_date DESC, o.event_name ASC, o.order_date DESC, o.id DESC";
         
         $allOrders = db()->fetchAll($sql, $params);
         
-        // Group orders by support_for
+        // Group orders by event_name
         $groupedOrders = [];
         $groupTotals = [];
-        
+
         // Filing status counts
         $filingCounts = ['none' => 0, 'incomplete' => 0, 'processing' => 0, 'complete' => 0, 'submitted' => 0];
-        
+
         foreach ($allOrders as $order) {
-            $supportKey = $order['support_for'] ?: '(Tanpa Dukungan)';
-            
-            if (!isset($groupedOrders[$supportKey])) {
-                $groupedOrders[$supportKey] = [];
-                $groupTotals[$supportKey] = [
+            $eventKey = $order['event_name'] ?: '(Tanpa Nama Event)';
+
+            if (!isset($groupedOrders[$eventKey])) {
+                $groupedOrders[$eventKey] = [];
+                $groupTotals[$eventKey] = [
                     'modal' => 0, 'sbm' => 0, 'markup' => 0,
                     'tagihan' => 0, 'dibayar' => 0, 'profit' => 0, 'count' => 0,
                     'latest_date' => $order['group_latest_date'] ?? $order['order_date']
                 ];
             }
-            
-            $groupedOrders[$supportKey][] = $order;
-            $groupTotals[$supportKey]['modal'] += (float)$order['modal'];
-            $groupTotals[$supportKey]['sbm'] += (float)$order['sbm_price'];
-            $groupTotals[$supportKey]['markup'] += (float)$order['markup'];
-            $groupTotals[$supportKey]['tagihan'] += (float)$order['tagihan'];
-            $groupTotals[$supportKey]['dibayar'] += (float)$order['dibayar'];
-            $groupTotals[$supportKey]['profit'] += (float)$order['profit'];
-            $groupTotals[$supportKey]['count']++;
+
+            $groupedOrders[$eventKey][] = $order;
+            $groupTotals[$eventKey]['modal'] += (float)$order['modal'];
+            $groupTotals[$eventKey]['sbm'] += (float)$order['sbm_price'];
+            $groupTotals[$eventKey]['markup'] += (float)$order['markup'];
+            $groupTotals[$eventKey]['tagihan'] += (float)$order['tagihan'];
+            $groupTotals[$eventKey]['dibayar'] += (float)$order['dibayar'];
+            $groupTotals[$eventKey]['profit'] += (float)$order['profit'];
+            $groupTotals[$eventKey]['count']++;
             
             // Count filing status
             $fs = $order['filing_status'] ?? 'none';
@@ -210,14 +207,14 @@ class AnalysisController {
             ? ($filingInProgress / $summary['total_orders']) * 100 : 0;
         $summary['filing_in_progress'] = $filingInProgress;
         
-        // Support options
-        $supportForOptions = [];
-        $supportResults = db()->fetchAll(
-            "SELECT DISTINCT support_for FROM orders WHERE company_id = ? AND support_for IS NOT NULL AND support_for != '' ORDER BY support_for",
+        // Event name options (for filter dropdown)
+        $eventNameOptions = [];
+        $eventResults = db()->fetchAll(
+            "SELECT DISTINCT event_name FROM orders WHERE company_id = ? AND event_name IS NOT NULL AND event_name != '' ORDER BY event_name",
             [$companyId]
         );
-        foreach ($supportResults as $row) {
-            $supportForOptions[] = $row['support_for'];
+        foreach ($eventResults as $row) {
+            $eventNameOptions[] = $row['event_name'];
         }
         
         // ========== TAMBAHAN: Get Bank/Cash accounts untuk expense modal ==========
@@ -245,7 +242,7 @@ class AnalysisController {
             'paymentStatuses' => PAYMENT_STATUSES,
             'filingStatuses' => self::$filingStatuses,
             'itemTypes' => ITEM_TYPES,
-            'supportForOptions' => $supportForOptions,
+            'eventNameOptions' => $eventNameOptions,
             'hasSbmColumns' => $hasSbm,
             'hasFilingColumn' => $hasFiling,
             'bankCashAccounts' => $bankCashAccounts
@@ -519,10 +516,10 @@ class AnalysisController {
             $dateParams[] = $reportFilters['month'];
         }
 
-        // 1. REKAP DUKUNGAN - Diurutkan berdasarkan tanggal pesanan terakhir (terbaru di atas)
-        $supportStats = db()->fetchAll(
-            "SELECT 
-                COALESCE(support_for, '(Tanpa Dukungan)') as support_name,
+        // 1. REKAP EVENT - Diurutkan berdasarkan tanggal pesanan terakhir (terbaru di atas)
+        $eventStats = db()->fetchAll(
+            "SELECT
+                COALESCE(event_name, '(Tanpa Nama Event)') as event_label,
                 COUNT(*) as total_orders,
                 COALESCE(SUM(total_base_price), 0) as total_modal,
                 COALESCE(SUM(total_final_price), 0) as total_tagihan,
@@ -530,33 +527,33 @@ class AnalysisController {
                 COALESCE(SUM(paid_amount), 0) as total_dibayar,
                 MIN(order_date) as first_order,
                 MAX(order_date) as last_order
-            FROM orders 
+            FROM orders
             WHERE {$dateWhere}
-            GROUP BY support_for
+            GROUP BY event_name
             ORDER BY last_order DESC",
             $dateParams
         );
 
         // 2. SUMMARY TOTALS
         $grandTotals = db()->fetchOne(
-            "SELECT 
+            "SELECT
                 COUNT(*) as total_orders,
-                COUNT(DISTINCT support_for) as total_dukungan,
+                COUNT(DISTINCT event_name) as total_events,
                 COALESCE(SUM(total_base_price), 0) as total_modal,
                 COALESCE(SUM(total_final_price), 0) as total_tagihan,
                 COALESCE(SUM(total_final_price - total_base_price), 0) as total_profit,
                 COALESCE(SUM(paid_amount), 0) as total_dibayar,
                 COALESCE(SUM(total_final_price - paid_amount), 0) as total_sisa
-            FROM orders 
+            FROM orders
             WHERE {$dateWhere}",
             $dateParams
         );
-        
+
         // Default jika null
         if (!$grandTotals) {
             $grandTotals = [
                 'total_orders' => 0,
-                'total_dukungan' => 0,
+                'total_events' => 0,
                 'total_modal' => 0,
                 'total_tagihan' => 0,
                 'total_profit' => 0,
@@ -653,7 +650,7 @@ class AnalysisController {
         // Render view dengan semua data
         render('analysis/report', [
             'reportFilters' => $reportFilters,
-            'supportStats' => $supportStats,
+            'eventStats' => $eventStats,
             'grandTotals' => $grandTotals,
             'monthlyStats' => $monthlyStats,
             'serviceStats' => $serviceStats,
@@ -816,8 +813,7 @@ class AnalysisController {
         }
         
         $data = db()->fetchAll(
-            "SELECT 
-                support_for as 'Dukungan',
+            "SELECT
                 event_name as 'Event',
                 order_date as 'Tanggal',
                 total_base_price as 'Modal',
@@ -825,9 +821,9 @@ class AnalysisController {
                 (total_final_price - total_base_price) as 'Profit',
                 paid_amount as 'Dibayar',
                 payment_status as 'Status Bayar'
-            FROM orders 
-            WHERE {$where} 
-            ORDER BY support_for, order_date DESC",
+            FROM orders
+            WHERE {$where}
+            ORDER BY event_name, order_date DESC",
             $params
         );
         
@@ -1172,9 +1168,9 @@ class AnalysisController {
         $where = "o.company_id = ?";
         $params = [$companyId];
         
-        if (!empty($_GET['support_for'])) {
-            $where .= " AND o.support_for = ?";
-            $params[] = $_GET['support_for'];
+        if (!empty($_GET['event_name'])) {
+            $where .= " AND o.event_name = ?";
+            $params[] = $_GET['event_name'];
         }
         if (!empty($_GET['payment_status'])) {
             $where .= " AND o.payment_status = ?";
@@ -1185,8 +1181,8 @@ class AnalysisController {
         $sbmSelect = $hasSbm ? "o.sbm_price," : "0 as sbm_price,";
         
         // Export dengan data harga satuan
-        $sql = "SELECT 
-                    o.support_for, o.event_name, 
+        $sql = "SELECT
+                    o.event_name,
                     (SELECT oi.item_type FROM order_items oi WHERE oi.order_id = o.id LIMIT 1) as item_type,
                     o.order_date,
                     
@@ -1201,9 +1197,9 @@ class AnalysisController {
                     o.total_final_price as tagihan, 
                     (o.total_final_price - o.total_base_price) as profit,
                     o.payment_status
-                FROM orders o 
-                WHERE {$where} 
-                ORDER BY o.support_for, o.order_date DESC";
+                FROM orders o
+                WHERE {$where}
+                ORDER BY o.event_name, o.order_date DESC";
         
         $orders = db()->fetchAll($sql, $params);
         
@@ -1215,15 +1211,14 @@ class AnalysisController {
         
         // Header dengan kolom harga satuan
         fputcsv($output, [
-            'Dukungan', 'Event', 'Layanan', 'Tanggal', 
-            'Harga Satuan', 'Qty', 'Hari', 
-            'Total Modal', 'SBM', 'Markup', 'Tagihan', 'Profit', 
+            'Event', 'Layanan', 'Tanggal',
+            'Harga Satuan', 'Qty', 'Hari',
+            'Total Modal', 'SBM', 'Markup', 'Tagihan', 'Profit',
             'Status Bayar'
         ], ';');
-        
+
         foreach ($orders as $row) {
             fputcsv($output, [
-                $row['support_for'],
                 $row['event_name'],
                 ITEM_TYPES[$row['item_type']]['label'] ?? $row['item_type'],
                 $row['order_date'],
@@ -1267,14 +1262,14 @@ class AnalysisController {
                      ORDER BY period",
                     [$companyId]
                 );
-            } elseif ($type === 'by_support') {
+            } elseif ($type === 'by_event') {
                 $data = db()->fetchAll(
-                    "SELECT 
-                        COALESCE(support_for, 'Lainnya') as label,
+                    "SELECT
+                        COALESCE(event_name, 'Lainnya') as label,
                         COALESCE(SUM(total_final_price), 0) as tagihan
-                     FROM orders 
+                     FROM orders
                      WHERE company_id = ?
-                     GROUP BY support_for
+                     GROUP BY event_name
                      ORDER BY tagihan DESC
                      LIMIT 10",
                     [$companyId]
@@ -1896,7 +1891,6 @@ class AnalysisController {
                         o.order_number,
                         o.order_date,
                         o.event_name,
-                        o.support_for,
                         COALESCE(o.total_base_price, 0) as total_modal,
                         COALESCE(o.expense_paid_amount, 0) as paid_amount,
                         (COALESCE(o.total_base_price, 0) - COALESCE(o.expense_paid_amount, 0)) as pending_amount,
@@ -1962,7 +1956,6 @@ class AnalysisController {
                     'order_number' => $order['order_number'],
                     'order_date' => $order['order_date'],
                     'event_name' => $order['event_name'],
-                    'support_for' => $order['support_for'],
                     'item_type' => $itemType,
                     'description' => $order['item_description'],
                     'total_modal' => $modal,

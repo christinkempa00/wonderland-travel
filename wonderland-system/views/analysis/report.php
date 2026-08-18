@@ -55,7 +55,7 @@ if (!function_exists('formatRupiahShort')) {
 <div class="d-flex justify-content-between align-items-center mb-4 no-print">
     <div>
         <h4 class="mb-1"><i class="fas fa-file-invoice-dollar text-primary me-2"></i>Laporan Keuangan</h4>
-        <p class="text-muted mb-0">Rekap dukungan, modal, dan rencana pengeluaran</p>
+        <p class="text-muted mb-0">Rekap event, modal, dan rencana pengeluaran</p>
     </div>
     <a href="<?= url('/analysis') ?>" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left me-1"></i> Kembali
@@ -107,10 +107,10 @@ if (!function_exists('formatRupiahShort')) {
 <div class="row mb-4 summary-row">
     <div class="col-6 col-md-4 col-xl-2 mb-3">
         <div class="summary-card">
-            <div class="summary-icon bg-primary-soft"><i class="fas fa-hands-helping"></i></div>
+            <div class="summary-icon bg-primary-soft"><i class="fas fa-calendar-day"></i></div>
             <div class="summary-content">
-                <span class="summary-value"><?= number_format($grandTotals['total_dukungan'] ?? 0) ?></span>
-                <span class="summary-label">Dukungan</span>
+                <span class="summary-value"><?= number_format($grandTotals['total_events'] ?? 0) ?></span>
+                <span class="summary-label">Event</span>
                 <small class="text-muted"><?= number_format($grandTotals['total_orders'] ?? 0) ?> order</small>
             </div>
         </div>
@@ -164,25 +164,25 @@ if (!function_exists('formatRupiahShort')) {
 
 <!-- Main Content Grid -->
 <div class="row print-stack">
-    <!-- Rekap per Dukungan -->
+    <!-- Rekap per Event -->
     <div class="col-lg-8 mb-4">
         <div class="glass-card">
             <div class="card-header-custom">
-                <h6 class="mb-0"><i class="fas fa-list-alt text-primary me-2"></i>Rekap per Dukungan</h6>
+                <h6 class="mb-0"><i class="fas fa-list-alt text-primary me-2"></i>Rekap per Event</h6>
             </div>
-            
-            <?php if (empty($supportStats)): ?>
+
+            <?php if (empty($eventStats)): ?>
             <div class="empty-state py-4">
                 <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
-                <p class="text-muted mb-0">Tidak ada data dukungan</p>
+                <p class="text-muted mb-0">Tidak ada data event</p>
             </div>
             <?php else: ?>
             <div class="table-responsive">
-                <table class="table table-hover mb-0" id="tabelDukungan">
+                <table class="table table-hover mb-0" id="tabelEvent">
                     <thead>
                         <tr>
                             <th class="text-center" style="width:35px;">No</th>
-                            <th>Dukungan</th>
+                            <th>Event</th>
                             <th class="text-center no-print">Orders</th>
                             <th class="text-end">Modal</th>
                             <th class="text-end">Tagihan</th>
@@ -194,14 +194,14 @@ if (!function_exists('formatRupiahShort')) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $noUrut = 1; foreach ($supportStats as $stat): 
+                        <?php $noUrut = 1; foreach ($eventStats as $stat):
                             $profitPct = ($stat['total_modal'] > 0) ? (($stat['total_profit'] / $stat['total_modal']) * 100) : 0;
-                            $supportKey = md5($stat['support_name']); // Key untuk checklist
+                            $eventKey = md5($stat['event_label']); // Key untuk checklist
                         ?>
-                        <tr data-support-key="<?= $supportKey ?>" data-support-name="<?= e($stat['support_name']) ?>" data-tagihan="<?= $stat['total_tagihan'] ?>">
+                        <tr data-event-key="<?= $eventKey ?>" data-event-name="<?= e($stat['event_label']) ?>" data-tagihan="<?= $stat['total_tagihan'] ?>">
                             <td class="text-center"><?= $noUrut++ ?></td>
                             <td>
-                                <strong><?= e($stat['support_name']) ?></strong>
+                                <strong><?= e($stat['event_label']) ?></strong>
                             </td>
                             <td class="text-center no-print">
                                 <span class="badge badge-primary"><?= $stat['total_orders'] ?></span>
@@ -213,32 +213,32 @@ if (!function_exists('formatRupiahShort')) {
                                 <small class="d-block text-muted profit-pct">(<?= number_format($profitPct, 1) ?>%)</small>
                             </td>
                             <td class="text-center checklist-col">
-                                <button type="button" class="btn btn-sm checklist-btn clear-btn" 
-                                        data-key="<?= $supportKey ?>" 
+                                <button type="button" class="btn btn-sm checklist-btn clear-btn"
+                                        data-key="<?= $eventKey ?>"
                                         data-type="clear"
                                         onclick="toggleCheck(this)">
                                     <i class="far fa-square"></i>
                                 </button>
-                                <span class="print-check" data-key="<?= $supportKey ?>" data-type="clear">☐</span>
+                                <span class="print-check" data-key="<?= $eventKey ?>" data-type="clear">☐</span>
                             </td>
                             <td class="text-center checklist-col">
-                                <button type="button" class="btn btn-sm checklist-btn submitted-btn" 
-                                        data-key="<?= $supportKey ?>" 
+                                <button type="button" class="btn btn-sm checklist-btn submitted-btn"
+                                        data-key="<?= $eventKey ?>"
                                         data-type="submitted"
                                         onclick="toggleCheck(this)">
                                     <i class="far fa-square"></i>
                                 </button>
-                                <span class="print-check" data-key="<?= $supportKey ?>" data-type="submitted">☐</span>
+                                <span class="print-check" data-key="<?= $eventKey ?>" data-type="submitted">☐</span>
                             </td>
                             <td class="catatan-col">
-                                <input type="text" class="form-control form-control-sm catatan-input" 
-                                       data-key="<?= $supportKey ?>"
+                                <input type="text" class="form-control form-control-sm catatan-input"
+                                       data-key="<?= $eventKey ?>"
                                        placeholder="Catatan..."
                                        onchange="saveCatatanRow(this)">
-                                <span class="catatan-print-text" data-key="<?= $supportKey ?>"></span>
+                                <span class="catatan-print-text" data-key="<?= $eventKey ?>"></span>
                             </td>
                             <td class="text-center no-print">
-                                <button type="button" class="btn btn-sm btn-outline-secondary btn-print-checklist" onclick="printChecklist('<?= e(addslashes($stat['support_name'])) ?>')" title="Print Checklist">
+                                <button type="button" class="btn btn-sm btn-outline-secondary btn-print-checklist" onclick="printChecklist('<?= e(addslashes($stat['event_label'])) ?>')" title="Print Checklist">
                                     <i class="fas fa-print"></i>
                                 </button>
                             </td>
@@ -613,8 +613,8 @@ if (!function_exists('formatRupiahShort')) {
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Dukungan Terkait</label>
-                    <input type="text" name="support_for" id="draft_support_for" class="form-control" placeholder="Nama dukungan jika ada...">
+                    <label class="form-label">Event Terkait</label>
+                    <input type="text" name="support_for" id="draft_event_name" class="form-control" placeholder="Nama event jika ada...">
                 </div>
             </div>
             <div class="custom-modal-footer">
@@ -1793,8 +1793,8 @@ function toggleCheck(btn) {
     var key = btn.dataset.key;
     var type = btn.dataset.type;
     var row = btn.closest('tr');
-    var supportName = row.dataset.supportName || row.querySelector('td:nth-child(2) strong').textContent;
-    
+    var eventName = row.dataset.eventName || row.querySelector('td:nth-child(2) strong').textContent;
+
     // Get current state
     if (!checklistCache[key]) {
         checklistCache[key] = { clear: false, submitted: false, catatan: '' };
@@ -1811,8 +1811,10 @@ function toggleCheck(btn) {
     
     // Save to database
     var formData = new FormData();
+    // Nama kolom "support_key"/"support_name" di tabel report_checklist bersifat
+    // generik (dulu dipakai untuk grup Dukungan) — sekarang diisi data Event.
     formData.append('support_key', key);
-    formData.append('support_name', supportName);
+    formData.append('support_name', eventName);
     formData.append('type', type);
     formData.append('value', newValue);
     formData.append('year', currentYear);
@@ -1877,7 +1879,7 @@ function updateCheckUI(key, type, isChecked) {
 }
 
 function updateRowComplete(key, statuses) {
-    var row = document.querySelector('tr[data-support-key="' + key + '"]');
+    var row = document.querySelector('tr[data-event-key="' + key + '"]');
     if (row) {
         if (statuses.clear && statuses.submitted) {
             row.classList.add('row-complete');
@@ -1893,11 +1895,11 @@ function updateChecklistTotals() {
     var totalSubmitted = 0;
     var totalTagihanSubmitted = 0;
     var totalTagihanAll = 0;
-    var totalRows = document.querySelectorAll('#tabelDukungan tbody tr').length;
-    
+    var totalRows = document.querySelectorAll('#tabelEvent tbody tr').length;
+
     // Loop through all rows
-    document.querySelectorAll('#tabelDukungan tbody tr').forEach(function(row) {
-        var key = row.dataset.supportKey;
+    document.querySelectorAll('#tabelEvent tbody tr').forEach(function(row) {
+        var key = row.dataset.eventKey;
         var tagihan = parseFloat(row.dataset.tagihan) || 0;
         
         totalTagihanAll += tagihan;
@@ -2027,8 +2029,8 @@ function saveCatatanRow(input) {
     var key = input.dataset.key;
     var catatan = input.value;
     var row = input.closest('tr');
-    var supportName = row.dataset.supportName || row.querySelector('td:nth-child(2) strong').textContent;
-    
+    var eventName = row.dataset.eventName || row.querySelector('td:nth-child(2) strong').textContent;
+
     // Update cache
     if (!checklistCache[key]) {
         checklistCache[key] = { clear: false, submitted: false, catatan: '' };
@@ -2044,7 +2046,7 @@ function saveCatatanRow(input) {
     catatanTimeout = setTimeout(function() {
         var formData = new FormData();
         formData.append('support_key', key);
-        formData.append('support_name', supportName);
+        formData.append('support_name', eventName);
         formData.append('catatan', catatan);
         formData.append('year', currentYear);
         formData.append('month', currentMonth);
@@ -2104,7 +2106,7 @@ function openDraftModal(data) {
         document.getElementById('draft_priority').value = data.priority || 'medium';
         document.getElementById('draft_planned_date').value = data.planned_date || '';
         document.getElementById('draft_estimated_amount').value = data.estimated_amount ? parseInt(data.estimated_amount).toLocaleString('id-ID') : '';
-        document.getElementById('draft_support_for').value = data.support_for || '';
+        document.getElementById('draft_event_name').value = data.support_for || '';
     }
     
     document.getElementById('draftModal').classList.add('show');
@@ -2212,17 +2214,17 @@ function createDraftTable() {
 }
 
 // Print Checklist Function - Compact A4 dengan Kop PIM Travel
-function printChecklist(supportName) {
+function printChecklist(eventName) {
     var today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     var logoPath = document.getElementById('companyLogoPath') ? document.getElementById('companyLogoPath').value : '';
-    
+
     // Open new window for print
     var printWindow = window.open('', '_blank');
     printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Checklist - ${supportName}</title>
+            <title>Checklist - ${eventName}</title>
             <style>
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 @page { size: A4; margin: 10mm 15mm; }
@@ -2264,7 +2266,7 @@ function printChecklist(supportName) {
                     letter-spacing: 1px;
                     margin-bottom: 4px;
                 }
-                .doc-title .dukungan {
+                .doc-title .event-name {
                     font-size: 11px;
                     color: #6b5216;
                     font-weight: 600;
@@ -2375,7 +2377,7 @@ function printChecklist(supportName) {
                 <!-- Document Title -->
                 <div class="doc-title">
                     <h2>Checklist Kelengkapan Dokumen</h2>
-                    <div class="dukungan">Dukungan: ${supportName}</div>
+                    <div class="event-name">Event: ${eventName}</div>
                     <div class="tanggal">Tanggal: ${today}</div>
                 </div>
                 
