@@ -188,37 +188,6 @@
             </div>
             <?php endif; ?>
         </div>
-
-        <!-- Related Invoices -->
-        <div class="glass-card mt-4">
-            <h4 class="card-title mb-4">
-                <i class="fas fa-file-invoice-dollar text-primary"></i>
-                Invoice Terkait
-            </h4>
-            <?php if (empty($invoices)): ?>
-            <div class="text-center py-3 text-muted">
-                <p class="mb-0">Belum ada invoice</p>
-            </div>
-            <?php else: ?>
-            <?php
-            $invStatusColors = ['unpaid' => 'danger', 'partial' => 'warning', 'paid' => 'success'];
-            $invStatusLabels = ['unpaid' => 'Belum Bayar', 'partial' => 'Sebagian', 'paid' => 'Lunas'];
-            ?>
-            <div class="d-flex flex-column gap-2">
-                <?php foreach ($invoices as $inv): ?>
-                <a href="<?= url('/invoices/' . $inv['id']) ?>" class="d-flex justify-content-between align-items-center info-item text-decoration-none">
-                    <span>
-                        <strong><?= e($inv['invoice_number']) ?></strong>
-                        <br><small class="text-muted"><?= e($inv['order_number']) ?> &middot; <?= formatRupiah($inv['total']) ?></small>
-                    </span>
-                    <span class="badge badge-<?= $invStatusColors[$inv['payment_status']] ?? 'secondary' ?>">
-                        <?= $invStatusLabels[$inv['payment_status']] ?? $inv['payment_status'] ?>
-                    </span>
-                </a>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-        </div>
     </div>
 
     <!-- Stats Sidebar -->

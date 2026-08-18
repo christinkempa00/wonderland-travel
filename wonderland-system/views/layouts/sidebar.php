@@ -104,14 +104,6 @@ if (!function_exists('isSubmenuActive')) {
                     <span>Dokumen</span>
                 </a>
             </div>
-
-            <!-- Invoices -->
-            <div class="nav-item">
-                <a href="<?= url('/invoices') ?>" class="nav-link <?= isMenuActive('/invoices', $currentPath) ? 'active' : '' ?>">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <span>Invoice</span>
-                </a>
-            </div>
         </div>
         
         

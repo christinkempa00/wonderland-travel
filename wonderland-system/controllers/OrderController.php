@@ -740,7 +740,6 @@ class OrderController {
         $result = recordPayment(
             (int)$orderArray['company_id'],
             $id,
-            null,
             $amount,
             $paymentDate,
             $paymentMethod,

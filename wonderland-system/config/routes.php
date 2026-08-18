@@ -87,16 +87,6 @@ $routes = [
     'POST /orders/{id:\d+}/payment/{paymentId:\d+}/void' => ['OrderController', 'voidPayment', 'auth'],
 
     // ============================================
-    // INVOICE MANAGEMENT
-    // ============================================
-
-    'GET /invoices' => ['InvoiceController', 'index', 'auth'],
-    'GET /invoices/create' => ['InvoiceController', 'create', 'auth'],
-    'POST /invoices' => ['InvoiceController', 'store', 'auth'],
-    'GET /invoices/{id:\d+}' => ['InvoiceController', 'show', 'auth'],
-    'POST /invoices/{id:\d+}/payment' => ['InvoiceController', 'storePayment', 'auth'],
-
-    // ============================================
     // HOTEL GUESTS MANAGEMENT
     // ============================================
     

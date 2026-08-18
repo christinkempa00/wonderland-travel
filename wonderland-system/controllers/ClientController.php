@@ -7,7 +7,6 @@
 
 require_once MODELS_PATH . '/Client.php';
 require_once MODELS_PATH . '/ClientCommunication.php';
-require_once MODELS_PATH . '/Invoice.php';
 
 class ClientController {
     
@@ -112,7 +111,6 @@ class ClientController {
             'client' => $client,
             'orders' => $client->getRecentOrders(10),
             'communications' => ClientCommunication::getForClient($id),
-            'invoices' => Invoice::getForClient($id),
             'stats' => [
                 'total_orders' => $client->getOrderCount(),
                 'total_revenue' => $client->getTotalRevenue()

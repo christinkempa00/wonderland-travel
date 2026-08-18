@@ -447,38 +447,6 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             </div>
         </div>
 
-        <!-- Invoice Resmi -->
-        <div class="glass-card mb-4">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <h3 class="mb-0"><i class="fas fa-file-invoice-dollar text-primary"></i> Invoice Resmi</h3>
-                <a href="<?= url('/invoices/create?order_id=' . $order->id) ?>" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i> Buat Invoice Resmi
-                </a>
-            </div>
-            <?php
-            $orderInvoices = [];
-            try {
-                $orderInvoices = db()->fetchAll("SELECT * FROM invoices WHERE order_id = ? ORDER BY created_at DESC", [$order->id]);
-            } catch (Exception $e) {}
-            $invStatusColors = ['unpaid' => 'danger', 'partial' => 'warning', 'paid' => 'success'];
-            $invStatusLabels = ['unpaid' => 'Belum Bayar', 'partial' => 'Sebagian', 'paid' => 'Lunas'];
-            ?>
-            <?php if (empty($orderInvoices)): ?>
-            <p class="text-muted mb-0">Belum ada invoice resmi untuk order ini.</p>
-            <?php else: ?>
-            <div class="d-flex flex-column gap-2">
-                <?php foreach ($orderInvoices as $inv): ?>
-                <a href="<?= url('/invoices/' . $inv['id']) ?>" class="d-flex justify-content-between align-items-center info-item text-decoration-none">
-                    <span><strong><?= e($inv['invoice_number']) ?></strong> &middot; <?= formatRupiah($inv['total']) ?></span>
-                    <span class="badge badge-<?= $invStatusColors[$inv['payment_status']] ?? 'secondary' ?>">
-                        <?= $invStatusLabels[$inv['payment_status']] ?? $inv['payment_status'] ?>
-                    </span>
-                </a>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-        </div>
-
         <!-- Notes -->
         <?php if ($order->notes): ?>
         <div class="glass-card mb-4">

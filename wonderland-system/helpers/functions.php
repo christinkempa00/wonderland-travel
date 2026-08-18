@@ -781,19 +781,17 @@ function logError(string $message, array $context = []): void {
 // ================================================================
 
 /**
- * Record a payment against an order or an invoice.
- * Tries the full accounting-journal path (order-level payments only) first;
- * falls back to a plain order_payments record (no journal/bank_cash side
- * effects) if accounting isn't configured or its tables aren't available.
- * Shared by OrderController::storePayment() and InvoiceController::storePayment()
- * so both go through one source of truth.
+ * Record a payment against an order.
+ * Tries the full accounting-journal path first; falls back to a plain
+ * order_payments record (no journal/bank_cash side effects) if accounting
+ * isn't configured or its tables aren't available.
+ * Used by OrderController::storePayment().
  *
  * @return array{success:bool, payment_id?:int, message:string}
  */
 function recordPayment(
     int $companyId,
     int $orderId,
-    ?int $invoiceId,
     float $amount,
     string $paymentDate,
     string $paymentMethod,
@@ -802,8 +800,7 @@ function recordPayment(
     ?string $notes,
     ?string $proofImage
 ): array {
-    // Accounting-journal path only applies to order-level payments today
-    if ($invoiceId === null && function_exists('createOrderPaymentJournal')) {
+    if (function_exists('createOrderPaymentJournal')) {
         $order = db()->fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
         if ($order) {
             if (empty($order['invoice_journal_id']) && function_exists('createOrderInvoiceJournal')) {
@@ -830,7 +827,6 @@ function recordPayment(
     $paymentId = db()->insert('order_payments', [
         'company_id' => $companyId,
         'order_id' => $orderId,
-        'invoice_id' => $invoiceId,
         'journal_id' => null,
         'amount' => $amount,
         'payment_date' => $paymentDate,
@@ -843,15 +839,9 @@ function recordPayment(
         'created_by' => Session::userId()
     ]);
 
-    if ($invoiceId === null) {
-        require_once MODELS_PATH . '/Order.php';
-        $order = Order::find($orderId);
-        if ($order) $order->updatePaidAmount();
-    } else {
-        require_once MODELS_PATH . '/Invoice.php';
-        $invoice = Invoice::find($invoiceId);
-        if ($invoice) $invoice->updatePaidAmount();
-    }
+    require_once MODELS_PATH . '/Order.php';
+    $order = Order::find($orderId);
+    if ($order) $order->updatePaidAmount();
 
     return [
         'success' => true,
