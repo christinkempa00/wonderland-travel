@@ -1,10 +1,7 @@
 <?php
 /**
- * Order Form View (Create/Edit) - FIXED v3
- * - Better responsive layout
- * - FIXED: Jumlah hari per item INDEPENDEN (tidak auto-sync dengan tanggal event)
- * - Added: Tombol "Terapkan ke Semua Item" untuk sync manual
- * - Added: Kolom Dukungan (support_for)
+ * Order Form View (Create/Edit)
+ * - Jumlah hari per item independen (tidak auto-sync dengan tanggal event)
  */
 
 $orderData = $order ? $order->toArray() : [
@@ -63,13 +60,6 @@ $orderData = $order ? $order->toArray() : [
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Tombol Terapkan ke Semua Item -->
-                <div class="sync-days-row mt-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm" id="syncDaysBtn" title="Terapkan durasi event ke semua item">
-                        <i class="fas fa-sync-alt"></i> Terapkan Durasi ke Semua Item
-                    </button>
                 </div>
 
                 <div class="row g-3 mt-2">
@@ -157,9 +147,9 @@ $orderData = $order ? $order->toArray() : [
                 <!-- Info box tentang jumlah hari -->
                 <div class="alert alert-info mb-3" style="font-size: 0.85rem;">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Catatan:</strong> Jumlah hari setiap item dapat diatur berbeda-beda. Gunakan tombol "Terapkan Durasi ke Semua Item" di atas jika ingin menyamakan semua.
+                    <strong>Catatan:</strong> Jumlah hari setiap item dapat diatur berbeda-beda.
                 </div>
-                
+
                 <div id="itemsContainer">
                     <?php if (!empty($items)): ?>
                         <?php foreach ($items as $index => $item): ?>
@@ -397,22 +387,6 @@ $orderData = $order ? $order->toArray() : [
 </template>
 
 <style>
-/* Sync days row */
-.sync-days-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-    border: 1px solid #bae6fd;
-    border-radius: 8px;
-}
-
-.sync-days-row .btn {
-    white-space: nowrap;
-}
-
 /* Summary styles */
 .summary-rows {
     border: 1px solid var(--gray-200);
@@ -545,15 +519,6 @@ $orderData = $order ? $order->toArray() : [
     .form-label-sm {
         font-size: 0.7rem;
     }
-    
-    .sync-days-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .sync-days-row small {
-        margin-left: 0 !important;
-    }
 }
 </style>
 
@@ -593,39 +558,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (startDate && !endDate) {
             document.getElementById('numDaysDisplay').value = 1;
         }
-        
-        // TIDAK lagi auto-update semua item days
-        // User harus klik tombol "Terapkan ke Semua Item" jika mau sync
     }
-    
-    // Sync days to all items (MANUAL - via tombol)
-    function syncDaysToAllItems() {
-        var days = parseInt(document.getElementById('numDaysDisplay').value) || 1;
-        document.querySelectorAll('.item-days').forEach(function(input) {
-            input.value = days;
-        });
-        calculateTotals();
-        
-        // Show feedback
-        var btn = document.getElementById('syncDaysBtn');
-        var originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i> Berhasil!';
-        btn.classList.remove('btn-outline-primary');
-        btn.classList.add('btn-success');
-        setTimeout(function() {
-            btn.innerHTML = originalText;
-            btn.classList.remove('btn-success');
-            btn.classList.add('btn-outline-primary');
-        }, 1500);
-    }
-    
+
     // Event listeners untuk tanggal
     document.getElementById('eventStartDate').addEventListener('change', calculateDays);
     document.getElementById('eventEndDate').addEventListener('change', calculateDays);
-    
-    // Event listener untuk tombol sync
-    document.getElementById('syncDaysBtn').addEventListener('click', syncDaysToAllItems);
-    
+
     // Add item
     document.getElementById('addItemBtn').addEventListener('click', function() {
         var html = template.innerHTML
