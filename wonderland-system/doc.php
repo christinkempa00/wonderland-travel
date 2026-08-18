@@ -278,15 +278,17 @@ $orderPicPhone = isset($order['pic_phone']) ? $order['pic_phone'] : '';
 $docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
 $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 
+// event_date sering NULL (pesanan tanpa tanggal event) — jangan biarkan jatuh
+// ke epoch (1 Jan 1970), pakai order_date sebagai dasar kalau kosong.
+$eventDateBase = !empty($order['event_date']) ? strtotime($order['event_date']) : strtotime($order['order_date']);
+
 if ($docType == 'penawaran' || $docType == 'kesepakatan') {
     $docDate = tgl($order['order_date']);
 } elseif ($docType == 'invoice') {
-    $eventDate = strtotime($order['event_date']);
-    $invoiceDate = date('Y-m-d', strtotime('+1 day', $eventDate));
+    $invoiceDate = date('Y-m-d', strtotime('+1 day', $eventDateBase));
     $docDate = tgl($invoiceDate);
 } else {
-    $eventDate = strtotime($order['event_date']);
-    $kwitansiDate = date('Y-m-d', strtotime('+2 days', $eventDate));
+    $kwitansiDate = date('Y-m-d', strtotime('+2 days', $eventDateBase));
     $docDate = tgl($kwitansiDate);
 }
 
@@ -524,6 +526,140 @@ $mainColor3 = '#7f1d1d';
             body { padding: 0; background: white; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .print-btn, .back-btn { display: none !important; }
             .invoice-container { box-shadow: none; margin: 0; height: 297mm; min-height: 297mm; max-height: 297mm; overflow: hidden; }
+            .wt-container { box-shadow: none !important; margin: 0 !important; }
+        }
+
+        /* ================================================================
+           WONDERLAND TRAVEL — Invoice & Kwitansi (gold/black brand)
+           ================================================================ */
+        :root {
+            --wt-gold: #c9a227;
+            --wt-gold-dark: #a8841c;
+            --wt-ink: #1a1a1a;
+        }
+
+        .wt-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: #fff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--wt-ink);
+        }
+
+        /* Diagonal gold/black brand band, used top and bottom */
+        .wt-band { position: relative; height: 26px; background: var(--wt-gold); overflow: hidden; flex-shrink: 0; }
+        .wt-band::before, .wt-band::after {
+            content: ""; position: absolute; top: -40%; height: 180%; width: 26%; background: var(--wt-ink);
+            transform: skewX(-28deg);
+        }
+        .wt-band::before { right: 22%; }
+        .wt-band::after { right: 4%; width: 10%; }
+        .wt-band.wt-band-bottom { margin-top: auto; }
+
+        .wt-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 22px 34px 14px;
+        }
+
+        .wt-logo { display: flex; align-items: center; gap: 12px; }
+        .wt-logo-mark {
+            width: 46px; height: 46px; border-radius: 6px;
+            background: linear-gradient(135deg, var(--wt-gold) 0%, var(--wt-gold-dark) 100%);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 800; font-size: 22px; font-style: italic; flex-shrink: 0;
+        }
+        .wt-logo img.wt-logo-img { width: 46px; height: 46px; object-fit: contain; border-radius: 6px; flex-shrink: 0; }
+        .wt-logo-text { line-height: 1.35; }
+        .wt-logo-text .wt-brand { font-size: 15px; font-weight: 800; letter-spacing: 0.5px; }
+        .wt-logo-text .wt-brand-sub { font-size: 8px; letter-spacing: 3px; color: #6b6b6b; text-transform: uppercase; }
+        .wt-company-block { font-size: 10px; line-height: 1.5; color: #333; }
+        .wt-company-block strong { display: block; font-size: 11px; color: var(--wt-ink); margin-bottom: 2px; }
+
+        .wt-doc-title { text-align: right; }
+        .wt-doc-title h1 { font-size: 26px; font-weight: 800; letter-spacing: 1px; margin: 0; color: var(--wt-ink); }
+        .wt-doc-title .wt-doc-no { font-size: 10px; color: #666; margin-top: 4px; }
+
+        .wt-meta-rule { border: none; border-top: 3px double var(--wt-ink); margin: 0 34px; }
+
+        .wt-meta {
+            padding: 14px 34px 4px;
+            font-size: 11px;
+            line-height: 1.9;
+        }
+        .wt-meta-row { display: flex; gap: 10px; }
+        .wt-meta-row .wt-label { width: 110px; color: #444; flex-shrink: 0; }
+        .wt-meta-row .wt-colon { width: 10px; flex-shrink: 0; }
+        .wt-meta-row .wt-value { font-weight: 600; }
+
+        .wt-body { padding: 16px 34px; flex: 1; }
+
+        .wt-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+        .wt-table th {
+            background: var(--wt-ink); color: #fff; text-align: left;
+            padding: 9px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+            border: 1px solid var(--wt-ink);
+        }
+        .wt-table th.wt-num, .wt-table td.wt-num { text-align: center; width: 60px; }
+        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 110px; }
+        .wt-table td { padding: 9px 10px; border: 1px solid #ddd; vertical-align: top; }
+        .wt-table .wt-item-sub { display: block; font-size: 9px; color: #777; margin-top: 2px; }
+        .wt-table tbody tr:nth-child(even) { background: #fafafa; }
+
+        .wt-subtotal-row {
+            display: flex; justify-content: flex-end; gap: 20px;
+            padding: 12px 4px 0; font-size: 13px; font-weight: 700;
+        }
+        .wt-subtotal-row .wt-subtotal-value { min-width: 130px; text-align: right; color: var(--wt-gold-dark); }
+
+        .wt-terbilang { font-size: 10px; font-style: italic; color: #555; margin-top: 4px; text-align: right; }
+
+        .wt-footer-block {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            padding: 10px 34px 20px;
+            gap: 20px;
+        }
+
+        .wt-payment-box {
+            border: 2px solid var(--wt-gold); border-radius: 10px;
+            padding: 10px 16px; font-size: 10px; line-height: 1.7; max-width: 260px;
+        }
+        .wt-payment-box strong { display: block; font-size: 10.5px; margin-bottom: 3px; }
+
+        .wt-signature { text-align: center; font-size: 11px; min-width: 200px; }
+        .wt-signature .wt-hormat { margin-bottom: 45px; }
+        .wt-signature .wt-sign-name { font-weight: 700; text-decoration: underline; }
+
+        .wt-bottom-contacts {
+            display: flex; justify-content: center; gap: 26px;
+            padding: 10px 20px; font-size: 9.5px; color: #333;
+        }
+        .wt-bottom-contacts span { display: inline-flex; align-items: center; gap: 6px; }
+
+        /* Kwitansi-specific */
+        .wt-kwitansi-fields { padding: 20px 34px 10px; font-size: 12px; }
+        .wt-kwitansi-row { display: flex; gap: 14px; padding: 7px 0; border-bottom: 1px solid #e5e5e5; }
+        .wt-kwitansi-row .wt-label { width: 150px; color: #444; }
+        .wt-kwitansi-row .wt-colon { width: 10px; }
+        .wt-kwitansi-row .wt-value { font-weight: 700; flex: 1; }
+        .wt-kwitansi-row.wt-highlight .wt-value { color: var(--wt-gold-dark); font-style: italic; }
+
+        .wt-amount-row { display: flex; align-items: center; gap: 14px; padding: 30px 34px 10px; }
+        .wt-amount-box {
+            background: #4a4a4a; color: #fff; font-weight: 800; font-size: 20px;
+            padding: 14px 30px 14px 22px; border-radius: 0 6px 6px 0;
+            clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+        }
+        .wt-amount-value { font-size: 22px; font-weight: 800; color: var(--wt-ink); }
+
+        .wt-kwitansi-signoff {
+            display: flex; justify-content: flex-end; padding: 20px 34px 30px;
         }
     </style>
 </head>
@@ -531,8 +667,148 @@ $mainColor3 = '#7f1d1d';
     <a href="javascript:history.back()" class="back-btn">← Kembali</a>
     <button onclick="window.print()" class="print-btn">🖨️ Cetak</button>
 
+    <?php if ($docType === 'invoice' || $docType === 'kwitansi'): ?>
+    <!-- ================================================================
+         WONDERLAND TRAVEL TEMPLATE (Invoice & Kwitansi)
+         ================================================================ -->
+    <?php
+        $bankAccounts = [];
+        if (!empty($company['bank_accounts'])) {
+            $decoded = json_decode($company['bank_accounts'], true);
+            if (is_array($decoded)) $bankAccounts = $decoded;
+        }
+        $primaryBank = $bankAccounts[0] ?? ['bank_name' => 'BNI', 'account_no' => '2019709091', 'account_name' => 'PT. NUSA ERA ARTHA'];
+        $companyName = $cn ?: 'PT. Nusa Era Artha';
+        $signatoryName = 'Dian Novianti';
+        $signatoryTitle = 'Direktur';
+    ?>
+    <div class="wt-container">
+        <div class="wt-band"></div>
+
+        <div class="wt-header">
+            <div class="wt-logo">
+                <?php if ($logoUrl): ?>
+                <img src="<?php echo e($logoUrl); ?>" alt="Logo" class="wt-logo-img">
+                <?php else: ?>
+                <div class="wt-logo-mark">W</div>
+                <?php endif; ?>
+                <div class="wt-logo-text">
+                    <div class="wt-brand">WONDERLAND<br>TRAVEL</div>
+                </div>
+            </div>
+            <div class="wt-doc-title">
+                <h1><?php echo $docType === 'invoice' ? 'INVOICE' : 'KWITANSI'; ?></h1>
+                <div class="wt-doc-no">No: <?php echo e($docNum); ?></div>
+            </div>
+        </div>
+
+        <?php if ($docType === 'invoice'): ?>
+        <div class="wt-meta">
+            <div class="wt-meta-row"><div class="wt-label">Invoice No</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($docNum); ?></div></div>
+            <div class="wt-meta-row"><div class="wt-label">Date</div><div class="wt-colon">:</div><div class="wt-value"><?php echo $docDate; ?></div></div>
+            <div class="wt-meta-row"><div class="wt-label">Corporate</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($cl); ?></div></div>
+            <?php if ($orderPicName): ?>
+            <div class="wt-meta-row"><div class="wt-label">PIC Name</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($orderPicName); ?></div></div>
+            <?php endif; ?>
+            <?php if ($clAddr): ?>
+            <div class="wt-meta-row"><div class="wt-label">Address</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($clAddr); ?></div></div>
+            <?php endif; ?>
+            <?php if ($orderPicPhone || $clPhone): ?>
+            <div class="wt-meta-row"><div class="wt-label">Phone Number</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($orderPicPhone ?: $clPhone); ?></div></div>
+            <?php endif; ?>
+        </div>
+
+        <div class="wt-body">
+            <table class="wt-table">
+                <thead>
+                    <tr>
+                        <th class="wt-num">QTY</th>
+                        <th>Description</th>
+                        <th class="wt-price">Unit Price</th>
+                        <th class="wt-price">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($items as $item): ?>
+                    <tr>
+                        <td class="wt-num"><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?></td>
+                        <td>
+                            <?php echo e($item['description']); ?>
+                            <span class="wt-item-sub"><?php echo isset($types[$item['item_type']]) ? $types[$item['item_type']] : $item['item_type']; ?></span>
+                        </td>
+                        <td class="wt-price"><?php echo rp($item['calc_unit_price_with_markup']); ?></td>
+                        <td class="wt-price"><?php echo rp($item['calc_final_price']); ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <div class="wt-subtotal-row">
+                <span>Sub TOTAL</span>
+                <span class="wt-subtotal-value"><?php echo rp($total); ?></span>
+            </div>
+            <div class="wt-terbilang"><?php echo trim(bilang($total)); ?> Rupiah</div>
+        </div>
+
+        <div class="wt-footer-block">
+            <div class="wt-payment-box">
+                <strong>Payment Detail</strong>
+                ○ Cash&nbsp;&nbsp;&nbsp;○ Transfer<br>
+                <?php echo e($primaryBank['bank_name'] ?? 'BNI'); ?> <?php echo e($primaryBank['account_no'] ?? ''); ?><br>
+                A/N: <?php echo e($primaryBank['account_name'] ?? ''); ?>
+            </div>
+            <div class="wt-signature">
+                <p class="wt-hormat">Hormat Kami</p>
+                <div class="wt-sign-name"><?php echo e($companyName); ?></div>
+                <div><?php echo e($signatoryName); ?></div>
+            </div>
+        </div>
+        <?php else: /* kwitansi */ ?>
+        <div class="wt-kwitansi-fields">
+            <div class="wt-kwitansi-row">
+                <div class="wt-label">Sudah diterima dari</div><div class="wt-colon">:</div>
+                <div class="wt-value"><?php echo e($cl); ?><?php if ($orderPicName): ?> (U.p. <?php echo e($orderPicName); ?>)<?php endif; ?></div>
+            </div>
+            <div class="wt-kwitansi-row wt-highlight">
+                <div class="wt-label">Banyaknya Uang</div><div class="wt-colon">:</div>
+                <div class="wt-value"><?php echo trim(bilang($total)); ?> Rupiah</div>
+            </div>
+            <div class="wt-kwitansi-row">
+                <div class="wt-label">Untuk Pembayaran</div><div class="wt-colon">:</div>
+                <div class="wt-value"><?php echo e(isset($order['description']) && $order['description'] ? $order['description'] : 'Pembayaran layanan'); ?></div>
+            </div>
+        </div>
+
+        <div class="wt-amount-row">
+            <div class="wt-amount-box">Rp.</div>
+            <div class="wt-amount-value"><?php echo number_format($total, 0, ',', '.'); ?></div>
+        </div>
+
+        <div class="wt-kwitansi-signoff">
+            <div class="wt-signature">
+                <p>Jakarta, <?php echo $docDate; ?></p>
+                <p class="wt-hormat">Yang menerima</p>
+                <div class="wt-sign-name"><?php echo e($signatoryName); ?></div>
+                <div><?php echo e($signatoryTitle); ?></div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <div class="wt-bottom-contacts">
+            <span>@wonderland__traveling</span>
+            <span>&bull;</span>
+            <span><?php echo e($ce ?: 'travelingwithwonderland@gmail.com'); ?></span>
+            <span>&bull;</span>
+            <span>www.wonderlandtrips.com</span>
+            <span>&bull;</span>
+            <span><?php echo e($cp ?: '0878-0486-1367'); ?></span>
+        </div>
+
+        <div class="wt-band wt-band-bottom"></div>
+    </div>
+    <?php else: ?>
     <div class="invoice-container">
-        <!-- ===== WAVE HEADER ===== -->
+        <!-- ===== WAVE HEADER (Penawaran/Kesepakatan — tidak lagi dipakai, tombolnya sudah dihapus dari order detail) ===== -->
         <div class="wave-header">
             <div class="gradient-overlay"></div>
             <div class="organic-shapes">
@@ -732,5 +1008,6 @@ $mainColor3 = '#7f1d1d';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </body>
 </html>
