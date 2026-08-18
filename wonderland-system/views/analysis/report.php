@@ -651,7 +651,7 @@ if (!function_exists('formatRupiahShort')) {
 .screen-only { display: inline !important; }
 
 /* Background colors */
-.bg-primary-soft { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+.bg-primary-soft { background: rgba(200, 155, 44, 0.1); color: #a67f20; }
 .bg-info-soft { background: rgba(6, 182, 212, 0.1); color: #0891b2; }
 .bg-warning-soft { background: rgba(245, 158, 11, 0.1); color: #d97706; }
 .bg-success-soft { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
@@ -675,8 +675,8 @@ if (!function_exists('formatRupiahShort')) {
 }
 
 .info-box-primary {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border-color: #93c5fd;
+    background: linear-gradient(135deg, #fdf8ec 0%, #faefd0 100%);
+    border-color: #ecc96c;
 }
 
 .info-box-success {
@@ -702,7 +702,7 @@ if (!function_exists('formatRupiahShort')) {
 }
 
 .info-box-primary .info-box-icon {
-    background: #3b82f6;
+    background: #c89b2c;
     color: #fff;
 }
 
@@ -801,8 +801,8 @@ if (!function_exists('formatRupiahShort')) {
 }
 
 .catatan-input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+    border-color: #c89b2c;
+    box-shadow: 0 0 0 1px rgba(200, 155, 44, 0.2);
     outline: none;
 }
 
@@ -964,7 +964,7 @@ tr.row-complete td {
 
 /* Badges */
 .badge-light { background: #f3f4f6; border: 1px solid #e5e7eb; color: #374151; }
-.badge-primary { background: #3b82f6; color: #fff; }
+.badge-primary { background: #c89b2c; color: #fff; }
 .badge-success { background: #22c55e; color: #fff; }
 .badge-warning { background: #f59e0b; color: #fff; }
 .badge-danger { background: #ef4444; color: #fff; }
@@ -2266,7 +2266,7 @@ function printChecklist(supportName) {
                 }
                 .doc-title .dukungan {
                     font-size: 11px;
-                    color: #1e40af;
+                    color: #6b5216;
                     font-weight: 600;
                 }
                 .doc-title .tanggal {
@@ -2288,7 +2288,7 @@ function printChecklist(supportName) {
                     overflow: hidden;
                 }
                 .section-header {
-                    background: #1e40af;
+                    background: #6b5216;
                     color: white;
                     padding: 5px 8px;
                     font-weight: bold;

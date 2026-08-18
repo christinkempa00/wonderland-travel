@@ -292,7 +292,7 @@ function show404(string $message = 'Page not found'): void {
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 body { 
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+                    background: linear-gradient(135deg, #574314 0%, #c89b2c 100%);
                     min-height: 100vh;
                     display: flex;
                     align-items: center;

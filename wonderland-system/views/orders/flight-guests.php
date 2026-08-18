@@ -151,8 +151,8 @@ if (!function_exists('formatRupiahLocal')) {
 }
 
 .ticket-row:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    border-color: #c89b2c;
+    box-shadow: 0 2px 8px rgba(200, 155, 44, 0.1);
 }
 
 .ticket-header {
@@ -166,7 +166,7 @@ if (!function_exists('formatRupiahLocal')) {
 
 .ticket-num {
     font-weight: 600;
-    color: #3b82f6;
+    color: #c89b2c;
     font-size: 0.9rem;
 }
 
@@ -357,7 +357,7 @@ if (!function_exists('formatRupiahLocal')) {
 }
 
 .a4-preview .service-badge {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #c89b2c, #a67f20);
     color: white;
     padding: 2px 6px;
     border-radius: 3px;
@@ -442,8 +442,8 @@ if (!function_exists('formatRupiahLocal')) {
 
 .quick-action-btn:hover {
     background: #f3f4f6;
-    color: #3b82f6;
-    border-color: #3b82f6;
+    color: #c89b2c;
+    border-color: #c89b2c;
 }
 
 .quick-action-btn i {

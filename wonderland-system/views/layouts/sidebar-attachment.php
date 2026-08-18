@@ -164,7 +164,7 @@ if (!function_exists('isMenuActive')) {
 .user-role {
     font-size: 0.75rem;
     color: var(--sidebar-text);
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(200, 155, 44, 0.1);
     padding: 2px 8px;
     border-radius: 12px;
     display: inline-block;

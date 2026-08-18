@@ -139,7 +139,7 @@ $cashAccounts = $dashboard['cash_accounts'] ?? [];
             
             <div class="summary-list">
                 <div class="summary-item">
-                    <div class="summary-icon" style="background: #dbeafe; color: #2563eb;">
+                    <div class="summary-icon" style="background: #faefd0; color: #a67f20;">
                         <i class="fas fa-arrow-up"></i>
                     </div>
                     <div class="summary-info">

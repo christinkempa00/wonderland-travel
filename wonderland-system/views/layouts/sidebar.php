@@ -181,13 +181,13 @@ if (!function_exists('isSubmenuActive')) {
 :root {
     --sidebar-width: 260px;
     --sidebar-collapsed-width: 70px;
-    --sidebar-bg: #1e293b;
-    --sidebar-text: #94a3b8;
-    --sidebar-text-active: #ffffff;
-    --sidebar-hover-bg: #334155;
-    --sidebar-active-bg: rgba(59, 130, 246, 0.2);
-    --sidebar-border: #334155;
-    --sidebar-section-title: #64748b;
+    --sidebar-bg: #2e230a;
+    --sidebar-text: #c9b896;
+    --sidebar-text-active: #fdf6e3;
+    --sidebar-hover-bg: #4a3a12;
+    --sidebar-active-bg: rgba(200, 155, 44, 0.25);
+    --sidebar-border: #4a3a12;
+    --sidebar-section-title: #9c8a5e;
 }
 
 .sidebar {
@@ -290,7 +290,7 @@ if (!function_exists('isSubmenuActive')) {
 .nav-link.active {
     background: var(--sidebar-active-bg);
     color: var(--sidebar-text-active);
-    border-right: 3px solid #3b82f6;
+    border-right: 3px solid #c89b2c;
 }
 
 .nav-link i {
@@ -340,7 +340,7 @@ if (!function_exists('isSubmenuActive')) {
 
 .nav-submenu .nav-link.active {
     background: var(--sidebar-active-bg);
-    border-right: 3px solid #3b82f6;
+    border-right: 3px solid #c89b2c;
 }
 
 .nav-submenu .nav-link i {
@@ -551,7 +551,7 @@ body.sidebar-collapsed .nav-link[data-tooltip]:hover::after {
     }
     
     .nav-link.active {
-        background: rgba(59, 130, 246, 0.1);
+        background: rgba(200, 155, 44, 0.1);
     }
     
     .nav-submenu {

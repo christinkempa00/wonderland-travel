@@ -166,7 +166,7 @@ $categoryLabels = [
 </div>
 
 <!-- SALDO KAS REAL-TIME -->
-<div class="glass-card mb-4 no-print" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white;">
+<div class="glass-card mb-4 no-print" style="background: linear-gradient(135deg, #574314 0%, #c89b2c 100%); color: white;">
     <div class="p-4">
         <div class="row align-items-center">
             <div class="col-md-6">

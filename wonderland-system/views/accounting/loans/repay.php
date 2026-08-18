@@ -214,20 +214,20 @@ $prefilledAmount = $old['amount'] ?? ($_GET['amount'] ?? '');
 }
 
 .loan-item:hover {
-    border-color: var(--primary-300, #93c5fd);
+    border-color: var(--primary-300, #ecc96c);
     background: var(--gray-50, #f9fafb);
 }
 
 .loan-item.selected,
 .loan-item:has(input:checked) {
-    border-color: var(--primary-500, #3b82f6);
-    background: var(--primary-50, #eff6ff);
+    border-color: var(--primary-500, #c89b2c);
+    background: var(--primary-50, #fdf8ec);
 }
 
 .loan-item input[type="radio"] {
     margin-right: 1rem;
     transform: scale(1.3);
-    accent-color: var(--primary-500, #3b82f6);
+    accent-color: var(--primary-500, #c89b2c);
 }
 
 .loan-info {
@@ -241,7 +241,7 @@ $prefilledAmount = $old['amount'] ?? ($_GET['amount'] ?? '');
 }
 
 .loan-name i {
-    color: var(--primary-500, #3b82f6);
+    color: var(--primary-500, #c89b2c);
     margin-right: 0.5rem;
 }
 

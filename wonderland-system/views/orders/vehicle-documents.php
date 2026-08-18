@@ -122,7 +122,7 @@ foreach ($vehicleItems as $item) {
 }
 
 .photo-item:hover {
-    border-color: #3b82f6;
+    border-color: #c89b2c;
     background: #f0f9ff;
 }
 

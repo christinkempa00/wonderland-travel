@@ -19,10 +19,10 @@ $flashErrors = Session::getFlash('error');
     
     <style>
         :root {
-            --primary-500: #3b82f6;
-            --primary-600: #2563eb;
-            --primary-700: #1d4ed8;
-            --primary-900: #1e3a8a;
+            --primary-500: #c89b2c;
+            --primary-600: #a67f20;
+            --primary-700: #85661a;
+            --primary-900: #574314;
             --success: #10b981;
             --danger: #ef4444;
             --gray-50: #f8fafc;

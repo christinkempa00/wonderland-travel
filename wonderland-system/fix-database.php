@@ -13,12 +13,12 @@ body{font-family:sans-serif;padding:30px;max-width:900px;margin:0 auto;backgroun
 .ok{color:#10b981;background:#d1fae5;padding:10px;border-radius:5px;margin:10px 0;}
 .err{color:#ef4444;background:#fee2e2;padding:10px;border-radius:5px;margin:10px 0;}
 .warn{color:#f59e0b;background:#fef3c7;padding:10px;border-radius:5px;margin:10px 0;}
-.btn{display:inline-block;padding:12px 24px;background:#3b82f6;color:white;text-decoration:none;border-radius:8px;border:none;cursor:pointer;font-size:16px;margin:5px;}
-.btn:hover{background:#2563eb;}
+.btn{display:inline-block;padding:12px 24px;background:#c89b2c;color:white;text-decoration:none;border-radius:8px;border:none;cursor:pointer;font-size:16px;margin:5px;}
+.btn:hover{background:#a67f20;}
 .btn-danger{background:#ef4444;} .btn-danger:hover{background:#dc2626;}
 .btn-success{background:#10b981;} .btn-success:hover{background:#059669;}
 pre{background:#1e293b;color:#e2e8f0;padding:15px;border-radius:8px;overflow:auto;font-size:13px;}
-h1{color:#1e40af;} h2{color:#374151;margin-top:30px;}
+h1{color:#6b5216;} h2{color:#374151;margin-top:30px;}
 </style></head><body>";
 
 echo "<h1>🔧 Database Fix Tool</h1>";

@@ -361,8 +361,8 @@ foreach ($orders as $order) {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: #1e40af;
+    background: linear-gradient(135deg, #faefd0, #f4dfa3);
+    color: #6b5216;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;

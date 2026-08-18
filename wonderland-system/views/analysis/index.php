@@ -687,7 +687,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     justify-content: center;
     font-size: 18px;
 }
-.bg-primary-soft { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+.bg-primary-soft { background: rgba(200, 155, 44, 0.12); color: #c89b2c; }
 .bg-warning-soft { background: rgba(251, 191, 36, 0.15); color: #f59e0b; }
 .bg-info-soft { background: rgba(6, 182, 212, 0.12); color: #06b6d4; }
 .bg-success-soft { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
@@ -802,7 +802,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
 .service-badge:hover {
     transform: scale(1.05);
 }
-.service-primary { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.service-primary { background: rgba(200, 155, 44, 0.1); color: #c89b2c; }
 .service-success { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
 .service-warning { background: rgba(251, 191, 36, 0.1); color: #f59e0b; }
 .service-info { background: rgba(6, 182, 212, 0.1); color: #06b6d4; }
@@ -817,7 +817,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     font-weight: 500;
 }
 .event-link:hover {
-    color: #3b82f6;
+    color: #c89b2c;
 }
 
 /* ================ BADGES ================ */
@@ -828,7 +828,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     font-weight: 600;
     cursor: pointer;
 }
-.badge-primary { background: #3b82f6; color: white; }
+.badge-primary { background: #c89b2c; color: white; }
 .badge-success { background: #22c55e; color: white; }
 .badge-warning { background: #f59e0b; color: white; }
 .badge-danger { background: #ef4444; color: white; }
@@ -872,7 +872,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     min-width: 90px;
 }
 .filing-pending { border-color: #f59e0b; background: rgba(251, 191, 36, 0.1); }
-.filing-in_progress { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+.filing-in_progress { border-color: #c89b2c; background: rgba(200, 155, 44, 0.1); }
 .filing-completed { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
 
 /* ================ MOBILE CARDS ================ */
@@ -1176,12 +1176,12 @@ $filingCounts = $summary['filing_counts'] ?? [];
     box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
 }
 .fab-report {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #c89b2c 0%, #85661a 100%);
+    box-shadow: 0 4px 15px rgba(200, 155, 44, 0.4);
 }
 .fab-report:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+    box-shadow: 0 6px 25px rgba(200, 155, 44, 0.6);
     color: white;
 }
 .fab-tooltip {
@@ -1395,7 +1395,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     height: 3px;
     opacity: 0.8;
 }
-.vr-cat-card.flight::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.vr-cat-card.flight::before { background: linear-gradient(90deg, #c89b2c, #e0b23e); }
 .vr-cat-card.hotel::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 .vr-cat-card.rental::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
 .vr-cat-card.bus::before { background: linear-gradient(90deg, #22c55e, #4ade80); }
@@ -1576,7 +1576,7 @@ $filingCounts = $summary['filing_counts'] ?? [];
     font-size: 0.75rem;
     font-weight: 500;
 }
-.vr-table .cat-badge.flight { background: rgba(59,130,246,0.1); color: #2563eb; }
+.vr-table .cat-badge.flight { background: rgba(200, 155, 44,0.1); color: #a67f20; }
 .vr-table .cat-badge.hotel { background: rgba(245,158,11,0.1); color: #d97706; }
 .vr-table .cat-badge.rental { background: rgba(139,92,246,0.1); color: #7c3aed; }
 .vr-table .cat-badge.bus { background: rgba(34,197,94,0.1); color: #16a34a; }
@@ -2562,7 +2562,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         labels: res.data.map(function(d) { return d.label; }),
                         datasets: [
                             { label: 'Modal', data: res.data.map(function(d) { return d.modal; }), backgroundColor: '#fbbf24', borderRadius: 4 },
-                            { label: 'Tagihan', data: res.data.map(function(d) { return d.tagihan; }), backgroundColor: '#3b82f6', borderRadius: 4 },
+                            { label: 'Tagihan', data: res.data.map(function(d) { return d.tagihan; }), backgroundColor: '#c89b2c', borderRadius: 4 },
                             { label: 'Profit', data: res.data.map(function(d) { return d.profit; }), backgroundColor: '#22c55e', borderRadius: 4 }
                         ]
                     },
@@ -2597,7 +2597,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(function(r) { return r.json(); })
         .then(function(res) {
             if (res.success && res.data && res.data.length > 0) {
-                var colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316', '#6366f1', '#84cc16'];
+                var colors = ['#c89b2c', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316', '#6366f1', '#84cc16'];
                 new Chart(document.getElementById('supportChart'), {
                     type: 'doughnut',
                     data: {

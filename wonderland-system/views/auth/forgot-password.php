@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="<?= Session::getCsrfToken() ?>">
-    <meta name="theme-color" content="#1e3a8a">
+    <meta name="theme-color" content="#574314">
     
     <title><?= e($pageTitle) ?> - <?= e(APP_NAME) ?></title>
     
@@ -146,7 +146,7 @@
             outline: none;
             border-color: var(--primary-500);
             background: white;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 4px rgba(200, 155, 44, 0.1);
         }
         
         .form-control::placeholder {
@@ -164,13 +164,13 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 15px rgba(200, 155, 44, 0.3);
             margin-bottom: 1rem;
         }
         
         .btn-reset:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 8px 25px rgba(200, 155, 44, 0.4);
         }
         
         .btn-reset:disabled {

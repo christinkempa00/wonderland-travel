@@ -20,10 +20,10 @@
     
     <style>
         :root {
-            --primary-500: #3b82f6;
-            --primary-600: #2563eb;
-            --primary-700: #1d4ed8;
-            --primary-900: #1e3a8a;
+            --primary-500: #c89b2c;
+            --primary-600: #a67f20;
+            --primary-700: #85661a;
+            --primary-900: #574314;
             --success: #10b981;
             --danger: #ef4444;
             --gray-50: #f8fafc;
@@ -234,12 +234,12 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 15px rgba(200, 155, 44, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 6px 20px rgba(200, 155, 44, 0.4);
         }
         
         .btn-primary:disabled {

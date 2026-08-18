@@ -11,15 +11,15 @@ $size = max(16, min(512, $size)); // Limit 16-512
 $image = imagecreatetruecolor($size, $size);
 
 // Colors
-$bgColor = imagecolorallocate($image, 30, 64, 175); // Primary blue
+$bgColor = imagecolorallocate($image, 107, 82, 22); // Primary gold
 $textColor = imagecolorallocate($image, 255, 255, 255);
 
-// Fill background with rounded corners effect (blue gradient)
+// Fill background with rounded corners effect (gold gradient)
 imagefilledrectangle($image, 0, 0, $size, $size, $bgColor);
 
 // Add gradient effect
 for ($i = 0; $i < $size / 2; $i++) {
-    $gradColor = imagecolorallocatealpha($image, 59, 130, 246, (int)(127 * ($i / ($size / 2))));
+    $gradColor = imagecolorallocatealpha($image, 200, 155, 44, (int)(127 * ($i / ($size / 2))));
     imagefilledrectangle($image, $i, $i, $size - $i, $size - $i, $gradColor);
 }
 

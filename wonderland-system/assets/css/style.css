@@ -2,7 +2,7 @@
  * ================================================================
  * TRAVEL MANAGEMENT SYSTEM - Main Stylesheet
  * ================================================================
- * Theme: Glass Morphism Blue
+ * Theme: Glass Morphism Gold
  * ================================================================
  */
 
@@ -11,17 +11,17 @@
    ================================================================ */
 :root {
     /* Primary Colors */
-    --primary-50: #eff6ff;
-    --primary-100: #dbeafe;
-    --primary-200: #bfdbfe;
-    --primary-300: #93c5fd;
-    --primary-400: #60a5fa;
-    --primary-500: #3b82f6;
-    --primary-600: #2563eb;
-    --primary-700: #1d4ed8;
-    --primary-800: #1e40af;
-    --primary-900: #1e3a8a;
-    --primary-950: #172554;
+    --primary-50: #fdf8ec;
+    --primary-100: #faefd0;
+    --primary-200: #f4dfa3;
+    --primary-300: #ecc96c;
+    --primary-400: #e0b23e;
+    --primary-500: #c89b2c;
+    --primary-600: #a67f20;
+    --primary-700: #85661a;
+    --primary-800: #6b5216;
+    --primary-900: #574314;
+    --primary-950: #2e230a;
 
     /* Neutral Colors */
     --gray-50: #f8fafc;
@@ -49,7 +49,7 @@
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-bg-dark: rgba(255, 255, 255, 0.9);
     --glass-border: rgba(255, 255, 255, 0.3);
-    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    --glass-shadow: 0 8px 32px rgba(87, 67, 20, 0.15);
     --glass-blur: blur(10px);
 
     /* Layout */
@@ -103,7 +103,7 @@ body {
     font-size: var(--font-size-base);
     line-height: 1.6;
     color: var(--gray-800);
-    background: #f0f4f8;
+    background: #fdfcf7;
     min-height: 100vh;
 }
 
@@ -154,7 +154,7 @@ h6 { font-size: var(--font-size-sm); }
 .h4 { font-size: var(--font-size-lg); font-weight: 600; }
 
 .page-header {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(239, 246, 255, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 248, 236, 0.95) 100%);
 }
 
 .page-header:hover {
@@ -214,17 +214,17 @@ p {
 }
 
 /* ================================================================
-   GLASS CARD - Blue Glass Effect
+   GLASS CARD - Gold Glass Effect
    ================================================================ */
 .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 246, 255, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 248, 236, 0.9) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: var(--border-radius-lg);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(200, 155, 44, 0.15);
     box-shadow: 
-        0 4px 6px -1px rgba(59, 130, 246, 0.1),
-        0 10px 20px -5px rgba(59, 130, 246, 0.15),
+        0 4px 6px -1px rgba(200, 155, 44, 0.1),
+        0 10px 20px -5px rgba(200, 155, 44, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.5) inset;
     padding: 1.5rem;
     transition: transform var(--transition-base), box-shadow var(--transition-base);
@@ -233,8 +233,8 @@ p {
 .glass-card:hover {
     transform: translateY(-3px);
     box-shadow: 
-        0 8px 15px -3px rgba(59, 130, 246, 0.15),
-        0 20px 40px -10px rgba(59, 130, 246, 0.2),
+        0 8px 15px -3px rgba(200, 155, 44, 0.15),
+        0 20px 40px -10px rgba(200, 155, 44, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 
@@ -385,7 +385,7 @@ p {
 .nav-link.active {
     background: var(--primary-500);
     color: white;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 12px rgba(200, 155, 44, 0.4);
 }
 
 .nav-link i {
@@ -725,12 +725,12 @@ p {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(200, 155, 44, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 16px rgba(200, 155, 44, 0.4);
     transform: translateY(-1px);
 }
 
@@ -860,7 +860,7 @@ p {
 .form-control:focus {
     outline: none;
     border-color: var(--primary-500);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(200, 155, 44, 0.1);
 }
 
 .form-control:disabled {
@@ -1243,14 +1243,14 @@ select.form-control {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 246, 255, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 248, 236, 0.9) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: var(--border-radius-lg);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(200, 155, 44, 0.15);
     box-shadow: 
-        0 4px 6px -1px rgba(59, 130, 246, 0.1),
-        0 10px 20px -5px rgba(59, 130, 246, 0.15),
+        0 4px 6px -1px rgba(200, 155, 44, 0.1),
+        0 10px 20px -5px rgba(200, 155, 44, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.5) inset;
     padding: 1.5rem;
     display: flex;
@@ -1262,8 +1262,8 @@ select.form-control {
 .stat-card:hover {
     transform: translateY(-4px);
     box-shadow: 
-        0 8px 15px -3px rgba(59, 130, 246, 0.15),
-        0 20px 40px -10px rgba(59, 130, 246, 0.2),
+        0 8px 15px -3px rgba(200, 155, 44, 0.15),
+        0 20px 40px -10px rgba(200, 155, 44, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 

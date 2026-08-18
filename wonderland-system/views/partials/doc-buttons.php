@@ -69,7 +69,7 @@ $orderId = $order['id'] ?? $order->id ?? 0;
 }
 
 .doc-btn.penawaran {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, #a67f20, #85661a);
 }
 
 .doc-btn.kesepakatan {

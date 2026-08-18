@@ -371,7 +371,7 @@
 
 .modal-card .analysis-icon { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
 .markup-card .analysis-icon { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #059669; }
-.tagihan-card .analysis-icon { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #2563eb; }
+.tagihan-card .analysis-icon { background: linear-gradient(135deg, #faefd0, #f4dfa3); color: #a67f20; }
 .profit-card .analysis-icon { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #7c3aed; }
 
 .analysis-content {
@@ -462,7 +462,7 @@
 
 .progress-percent {
     font-weight: 700;
-    color: #2563eb;
+    color: #a67f20;
 }
 
 .payment-progress {
@@ -722,7 +722,7 @@
    ITEM TYPE COLORS
    ======================================== */
 .badge-hotel { background: #8b5cf6; color: white; }
-.badge-flight { background: #3b82f6; color: white; }
+.badge-flight { background: #c89b2c; color: white; }
 .badge-bus { background: #f59e0b; color: white; }
 .badge-rental { background: #10b981; color: white; }
 .badge-towing { background: #ef4444; color: white; }

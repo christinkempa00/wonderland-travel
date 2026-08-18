@@ -363,7 +363,7 @@ if (!function_exists('truncateText')) {
     font-size: 1.25rem;
 }
 
-.bg-primary-soft { background: rgba(59, 130, 246, 0.1); }
+.bg-primary-soft { background: rgba(200, 155, 44, 0.1); }
 .bg-warning-soft { background: rgba(245, 158, 11, 0.1); }
 .bg-info-soft { background: rgba(6, 182, 212, 0.1); }
 .bg-danger-soft { background: rgba(239, 68, 68, 0.1); }
@@ -402,14 +402,14 @@ if (!function_exists('truncateText')) {
 }
 
 .filter-tab:hover {
-    border-color: #3b82f6;
-    color: #3b82f6;
-    background: #eff6ff;
+    border-color: #c89b2c;
+    color: #c89b2c;
+    background: #fdf8ec;
 }
 
 .filter-tab.active {
-    background: #3b82f6;
-    border-color: #3b82f6;
+    background: #c89b2c;
+    border-color: #c89b2c;
     color: white;
 }
 
@@ -422,8 +422,8 @@ if (!function_exists('truncateText')) {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: #1e40af;
+    background: linear-gradient(135deg, #faefd0, #f4dfa3);
+    color: #6b5216;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;

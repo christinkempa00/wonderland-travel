@@ -238,7 +238,7 @@
                 </div>
                 
                 <div class="summary-item">
-                    <div class="summary-icon" style="background: #dbeafe; color: #2563eb;">
+                    <div class="summary-icon" style="background: #faefd0; color: #a67f20;">
                         <i class="fas fa-file-alt"></i>
                     </div>
                     <div class="summary-info">
@@ -372,14 +372,14 @@
 }
 
 .finance-receivable {
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(200, 155, 44, 0.1);
 }
 .finance-receivable .finance-icon {
-    background: rgba(59, 130, 246, 0.2);
-    color: #2563eb;
+    background: rgba(200, 155, 44, 0.2);
+    color: #a67f20;
 }
 .finance-receivable .finance-value {
-    color: #2563eb;
+    color: #a67f20;
 }
 
 .finance-loan {
@@ -421,8 +421,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     label: 'Pendapatan',
                     data: monthlyData.map(d => d.revenue),
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderColor: '#c89b2c',
+                    backgroundColor: 'rgba(200, 155, 44, 0.1)',
                     fill: true,
                     tension: 0.4
                 },
@@ -475,8 +475,8 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Jumlah Reservasi',
                 data: trendData.map(d => d.total),
-                backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(200, 155, 44, 0.6)',
+                borderColor: '#c89b2c',
                 borderWidth: 1
             }]
         },
@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusColors = {
         draft: '#94a3b8',
         quotation: '#06b6d4',
-        agreed: '#3b82f6',
+        agreed: '#c89b2c',
         invoiced: '#f59e0b',
         paid: '#10b981',
         completed: '#059669',

@@ -29,7 +29,7 @@ $userRole = $_SESSION['user']['role'] ?? null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="<?= Session::getCsrfToken() ?>">
-    <meta name="theme-color" content="#1e3a8a">
+    <meta name="theme-color" content="#574314">
     
     <title><?= e($pageTitle) ?> - <?= e(APP_NAME) ?></title>
     

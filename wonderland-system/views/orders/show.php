@@ -842,8 +842,8 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: #1e40af;
+    background: linear-gradient(135deg, #faefd0, #f4dfa3);
+    color: #6b5216;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-weight: 600;
@@ -920,7 +920,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
 
 .doc-invoice { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 .doc-kwitansi { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
-.doc-penawaran { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+.doc-penawaran { background: linear-gradient(135deg, #a67f20, #85661a); }
 .doc-kesepakatan { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
 /* Notes & Client */

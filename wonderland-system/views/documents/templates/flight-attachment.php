@@ -393,8 +393,8 @@
 
         .service-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            color: #1e40af;
+            background: linear-gradient(135deg, #faefd0, #f4dfa3);
+            color: #6b5216;
             font-size: 7px;
             font-weight: 700;
             padding: 3px 8px;

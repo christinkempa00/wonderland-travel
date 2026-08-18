@@ -64,13 +64,13 @@ foreach ($hotelItems as $hotel) {
 }
 
 .logo-upload-area:hover {
-    border-color: #3b82f6;
+    border-color: #c89b2c;
     background: #f8fafc;
 }
 
 .logo-upload-area.dragover {
-    border-color: #3b82f6;
-    background: #eff6ff;
+    border-color: #c89b2c;
+    background: #fdf8ec;
 }
 
 .logo-placeholder {
@@ -258,8 +258,8 @@ foreach ($hotelItems as $hotel) {
 }
 
 .room-row:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    border-color: #c89b2c;
+    box-shadow: 0 2px 8px rgba(200, 155, 44, 0.1);
 }
 
 .room-header {
@@ -273,7 +273,7 @@ foreach ($hotelItems as $hotel) {
 
 .room-num {
     font-weight: 600;
-    color: #3b82f6;
+    color: #c89b2c;
     font-size: 0.9rem;
 }
 
@@ -309,7 +309,7 @@ foreach ($hotelItems as $hotel) {
 .guest-num {
     width: 28px;
     height: 28px;
-    background: #3b82f6;
+    background: #c89b2c;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -655,8 +655,8 @@ foreach ($hotelItems as $hotel) {
 
 .quick-action-btn:hover {
     background: #f3f4f6;
-    color: #3b82f6;
-    border-color: #3b82f6;
+    color: #c89b2c;
+    border-color: #c89b2c;
 }
 
 .quick-action-btn i {
