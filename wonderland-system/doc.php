@@ -705,8 +705,13 @@ $mainColor3 = '#7f1d1d';
             $decoded = json_decode($company['bank_accounts'], true);
             if (is_array($decoded)) $bankAccounts = $decoded;
         }
-        $primaryBank = $bankAccounts[0] ?? ['bank_name' => 'BNI', 'account_no' => '2019709091', 'account_name' => 'PT. NUSA ERA ARTHA'];
-        $companyName = $cn ?: 'PT. Nusa Era Artha';
+        if (empty($bankAccounts)) {
+            $bankAccounts = [['bank_name' => 'BNI', 'account_no' => '2019709091', 'account_name' => 'PT. NUSA ERA ARTHA']];
+        }
+        // Nama yang tercetak di kolom tanda tangan invoice adalah nama dagang
+        // "Wonderland Traveling", terpisah dari nama badan hukum ($cn) yang
+        // dipakai di kop surat/rekening bank.
+        $signatoryCompanyName = 'Wonderland Traveling';
         $signatoryName = 'Dian Novianti';
         $signatoryTitle = 'Direktur';
     ?>
@@ -784,7 +789,7 @@ $mainColor3 = '#7f1d1d';
             </table>
 
             <div class="wt-subtotal-row">
-                <span>Sub TOTAL</span>
+                <span>Sub TOTAL&nbsp;&nbsp;:</span>
                 <span class="wt-subtotal-value"><?php echo rp($total); ?></span>
             </div>
             <div class="wt-terbilang"><?php echo trim(bilang($total)); ?> Rupiah</div>
@@ -793,13 +798,15 @@ $mainColor3 = '#7f1d1d';
         <div class="wt-footer-block">
             <div class="wt-payment-box">
                 <strong>Payment Detail</strong>
-                ○ Cash&nbsp;&nbsp;&nbsp;○ Transfer<br>
-                <?php echo e($primaryBank['bank_name'] ?? 'BNI'); ?> <?php echo e($primaryBank['account_no'] ?? ''); ?><br>
-                A/N: <?php echo e($primaryBank['account_name'] ?? ''); ?>
+                ○ Cash&nbsp;&nbsp;&nbsp;○ Transfer<br><br>
+                <?php foreach ($bankAccounts as $bankIdx => $bank): ?>
+                <?php echo e($bank['bank_name'] ?? 'BNI'); ?> <?php echo e($bank['account_no'] ?? ''); ?><br>
+                AN : <?php echo e($bank['account_name'] ?? ''); ?><?php if ($bankIdx < count($bankAccounts) - 1): ?><br><br><?php endif; ?>
+                <?php endforeach; ?>
             </div>
             <div class="wt-signature">
                 <p class="wt-hormat">Hormat Kami</p>
-                <div class="wt-sign-name"><?php echo e($companyName); ?></div>
+                <div class="wt-sign-name"><?php echo e($signatoryCompanyName); ?></div>
                 <div><?php echo e($signatoryName); ?></div>
             </div>
         </div>
