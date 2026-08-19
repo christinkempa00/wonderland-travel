@@ -696,12 +696,27 @@ $mainColor3 = '#7f1d1d';
         .kwt-strip {
             width: 100%; flex-shrink: 0;
             background-image: url('/assets/images/doc-templates/kwitansi-band.jpg');
-            background-size: 100% auto; background-repeat: no-repeat;
+            background-repeat: no-repeat;
         }
-        .kwt-strip-top { height: 22px; background-position: top center; }
-        .kwt-strip-bottom { height: 20px; margin-top: auto; background-position: bottom center; }
+        /* Sumber gambar (1280x589) taruh teks "KWITANSI" / "Dian Novianti, Direktur"
+           dekat sekali (vertikal) dengan pola gelombang emasnya, jadi crop tipis
+           dari atas/bawah cepat mentok ke teks. Trik: zoom + geser background ke
+           kiri (background-size lebar > 100%, position left) supaya yang kelihatan
+           cuma bagian kiri gambar (pola gelombang, tanpa teks di kanan) — dengan
+           begitu strip bisa dibuat jauh lebih tinggi/tebal tanpa teks ikut kebawa. */
+        .kwt-strip-top {
+            height: 46px;
+            background-size: 150.6% auto;
+            background-position: left top;
+        }
+        .kwt-strip-bottom {
+            height: 46px;
+            margin-top: auto;
+            background-size: 128% auto;
+            background-position: left bottom;
+        }
 
-        .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 30px 6px; }
+        .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 30px 4px; }
         .kwt-company { display: flex; align-items: flex-start; gap: 10px; }
         .kwt-company img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
         .kwt-company-text { font-size: 9px; line-height: 1.5; font-weight: 700; }
@@ -712,7 +727,7 @@ $mainColor3 = '#7f1d1d';
 
         .kwt-rule { border: none; border-top: 2px solid var(--wt-ink); border-bottom: 1px solid var(--wt-ink); height: 3px; margin: 0 30px; }
 
-        .kwt-fields { padding: 7px 30px; font-size: 10.5px; }
+        .kwt-fields { padding: 5px 30px; font-size: 10.5px; }
         .kwt-row { display: flex; gap: 10px; padding: 3px 0; }
         .kwt-row .kwt-label { width: 140px; }
         .kwt-row .kwt-colon { width: 8px; }
@@ -721,7 +736,7 @@ $mainColor3 = '#7f1d1d';
 
         .kwt-spacer { flex: 1; }
 
-        .kwt-bottom-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 4px 30px 10px; }
+        .kwt-bottom-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 2px 30px 6px; }
         .kwt-amount-box {
             background: #4a4a4a; color: #fff; font-weight: 800;
             display: flex; align-items: center; gap: 26px; min-width: 260px;
@@ -731,8 +746,8 @@ $mainColor3 = '#7f1d1d';
         .kwt-amount-box .kwt-rp { font-size: 15px; }
         .kwt-amount-value { font-size: 21px; font-weight: 800; }
         .kwt-signature { text-align: right; font-size: 9.5px; }
-        .kwt-signature .kwt-date { margin-bottom: 14px; }
-        .kwt-signature .kwt-hormat { margin: 2px 0 90px; }
+        .kwt-signature .kwt-date { margin-bottom: 8px; }
+        .kwt-signature .kwt-hormat { margin: 2px 0 32px; }
         .kwt-signature .kwt-sign-name { font-weight: 700; text-decoration: underline; margin-top: 2px; }
     </style>
 </head>
