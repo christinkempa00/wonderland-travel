@@ -575,36 +575,17 @@ $mainColor3 = '#7f1d1d';
             color: var(--wt-ink);
         }
 
-        /* Bottom band: black bar with a large gold diagonal wedge from the
-           bottom-left corner. */
-        .wt-band { position: relative; height: 46px; background: var(--wt-ink); overflow: hidden; flex-shrink: 0; margin-top: auto; }
-        .wt-band::before {
-            content: ""; position: absolute; left: -8%; bottom: -70%; height: 240%; width: 50%;
-            background: var(--wt-gold); transform: skewX(-28deg);
+        /* Header & bottom band — cropped directly from the official invoice
+           template render (assets/images/doc-templates/invoice-page.png) via
+           background-position, same technique as kwitansi's bands, so the
+           brand artwork is pixel-identical instead of hand-drawn CSS shapes. */
+        .wt-invband {
+            width: 100%; flex-shrink: 0;
+            background-image: url('/assets/images/doc-templates/invoice-page.png');
+            background-size: 100% auto; background-repeat: no-repeat;
         }
-
-        /* Top brand block: partial-width black bar with a fanned diagonal-gold
-           accent (echoes the logo mark), plus floating square/bar accents to
-           the right in the white space — matches the official letterhead art. */
-        .wt-topband { position: relative; height: 112px; flex-shrink: 0; }
-        .wt-topband-bar {
-            position: absolute; left: 0; top: 0; height: 100%; width: 60%;
-            background: var(--wt-ink); overflow: hidden;
-            display: flex; align-items: center; gap: 14px; padding-left: 32px;
-        }
-        .wt-topband-bar::before {
-            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 150px;
-            background: repeating-linear-gradient(115deg, var(--wt-gold) 0px, var(--wt-gold) 1.5px, transparent 1.5px, transparent 6px);
-            -webkit-mask-image: linear-gradient(to right, #000 35%, transparent 92%);
-            mask-image: linear-gradient(to right, #000 35%, transparent 92%);
-        }
-        .wt-topband-mark { position: relative; z-index: 1; font-size: 44px; font-weight: 900; font-style: italic; color: var(--wt-gold); line-height: 1; }
-        .wt-topband-brand { position: relative; z-index: 1; color: #fff; }
-        .wt-topband-brand .wt-tb-name { font-size: 19px; font-weight: 800; letter-spacing: 1px; }
-        .wt-topband-brand .wt-tb-sub { font-size: 10px; letter-spacing: 4px; color: #d8d8d8; margin-top: 3px; }
-        .wt-topband-underline { position: absolute; left: 0; top: 108px; width: 60%; height: 4px; background: var(--wt-gold); }
-        .wt-topband-square { position: absolute; left: 63%; top: 14px; width: 56px; height: 56px; background: #4a4a4a; }
-        .wt-topband-goldbar { position: absolute; left: 71%; top: 48px; width: 200px; height: 34px; background: var(--wt-gold); }
+        .wt-topband { height: 128px; background-position: top center; }
+        .wt-band { height: 34px; margin-top: auto; background-position: bottom center; }
 
         .wt-meta-rule { border: none; border-top: 3px double var(--wt-ink); margin: 0 34px; }
 
@@ -815,18 +796,7 @@ $mainColor3 = '#7f1d1d';
         }
     ?>
     <div class="wt-container">
-        <div class="wt-topband">
-            <div class="wt-topband-bar">
-                <div class="wt-topband-mark">W</div>
-                <div class="wt-topband-brand">
-                    <div class="wt-tb-name">WONDERLAND</div>
-                    <div class="wt-tb-sub">TRAVEL</div>
-                </div>
-            </div>
-            <div class="wt-topband-underline"></div>
-            <div class="wt-topband-square"></div>
-            <div class="wt-topband-goldbar"></div>
-        </div>
+        <div class="wt-invband wt-topband"></div>
 
         <div class="wt-meta">
             <div class="wt-meta-row"><div class="wt-label">Invoice No</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($docNum); ?></div></div>
@@ -907,7 +877,7 @@ $mainColor3 = '#7f1d1d';
             <span><?php echo e($cp ?: '0878-0486-1367'); ?></span>
         </div>
 
-        <div class="wt-band"></div>
+        <div class="wt-invband wt-band"></div>
     </div>
     <?php else: ?>
     <div class="invoice-container">
