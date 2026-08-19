@@ -114,23 +114,31 @@ class Order extends Model {
     }
 
     /**
-     * Generate PELNI's persisted per-divisi invoice number.
-     * Format: INV-PLNI{INFIX}{TAHUN ROMAWI}-{00001}, mis. INV-PLNIXXVI-00001 (JM),
-     * INV-PLNIOFXXVI-00001 (Office), INV-PLNITIXXVI-00001 (Tikom) — infix divisi
-     * di depan angka romawi tahun (sesuai contoh template resmi). Counter dimulai
-     * ulang tiap tahun & terpisah per divisi.
+     * Generate a persisted invoice number for any order. PELNI clients (with a
+     * divisi) get INV-PLNI{TAHUN ROMAWI}{INFIX}-00001, e.g. INV-PLNIXXVI-00001
+     * (JM), INV-PLNIXXVIOF-00001 (Office), INV-PLNIXXVITI-00001 (Tikom).
+     * Every other client gets INV-{TAHUN ROMAWI}-00001. Counter dimulai ulang
+     * tiap tahun; PELNI-divisi dan non-PELNI masing-masing punya urutan sendiri.
      */
-    public static function generatePelniInvoiceNumber(int $companyId, string $divisi): string {
+    public static function generateInvoiceNumber(int $companyId, ?string $divisi = null): string {
         // 2 digit terakhir tahun (mis. 2026 -> 26 -> "XXVI"), bukan tahun penuh.
-        $yy = (int) date('y');
-        $infix = DIVISI_INVOICE_INFIX[$divisi] ?? '';
-        $prefix = 'INV-PLNI' . $infix . intToRoman($yy) . '-';
+        $roman = intToRoman((int) date('y'));
+
+        if ($divisi) {
+            $infix = DIVISI_INVOICE_INFIX[$divisi] ?? '';
+            $prefix = 'INV-PLNI' . $roman . $infix . '-';
+            $where = "company_id = ? AND divisi = ? AND pelni_invoice_number LIKE ?";
+            $params = [$companyId, $divisi, $prefix . '%'];
+        } else {
+            $prefix = 'INV-' . $roman . '-';
+            $where = "company_id = ? AND divisi IS NULL AND pelni_invoice_number LIKE ?";
+            $params = [$companyId, $prefix . '%'];
+        }
 
         $lastNumber = self::db()->fetchColumn(
             "SELECT MAX(CAST(SUBSTRING_INDEX(pelni_invoice_number, '-', -1) AS UNSIGNED))
-             FROM orders
-             WHERE company_id = ? AND divisi = ? AND pelni_invoice_number LIKE ?",
-            [$companyId, $divisi, $prefix . '%']
+             FROM orders WHERE {$where}",
+            $params
         );
 
         $nextNumber = ($lastNumber ?? 0) + 1;
@@ -433,10 +441,7 @@ class Order extends Model {
             $orderData['company_id'] = $companyId;
             $orderData['order_number'] = self::generateOrderNumber($companyId);
             $orderData['created_by'] = Session::userId();
-
-            if (!empty($orderData['divisi'])) {
-                $orderData['pelni_invoice_number'] = self::generatePelniInvoiceNumber($companyId, $orderData['divisi']);
-            }
+            $orderData['pelni_invoice_number'] = self::generateInvoiceNumber($companyId, $orderData['divisi'] ?? null);
 
             $order = self::create($orderData);
             
@@ -487,10 +492,10 @@ class Order extends Model {
         $db->beginTransaction();
 
         try {
-            // Assign the persisted PELNI number once, the first time a divisi is
-            // set — never regenerated afterwards so re-saving doesn't renumber it.
-            if (!empty($orderData['divisi']) && empty($this->pelni_invoice_number)) {
-                $orderData['pelni_invoice_number'] = self::generatePelniInvoiceNumber((int) $this->company_id, $orderData['divisi']);
+            // Assign the persisted invoice number once — never regenerated
+            // afterwards so re-saving doesn't renumber an already-issued invoice.
+            if (empty($this->pelni_invoice_number)) {
+                $orderData['pelni_invoice_number'] = self::generateInvoiceNumber((int) $this->company_id, $orderData['divisi'] ?? null);
             }
 
             // Update order data

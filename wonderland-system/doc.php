@@ -291,11 +291,12 @@ $orderPicPhone = isset($order['pic_phone']) ? $order['pic_phone'] : '';
 // ("Team {label}") dan baris "Untuk Pembayaran" di kwitansi ("{label} PELNI").
 $divisiLabels = ['JM' => 'JM', 'OFFICE' => 'Office', 'TIKOM' => 'Tikom'];
 $orderDivisiLabel = !empty($order['divisi']) ? ($divisiLabels[$order['divisi']] ?? $order['divisi']) : '';
-// Klien PELNI (uses_divisi) punya penomoran invoice persisten sendiri,
-// dibuat sekali saat order dibuat/diedit — lihat Order::generatePelniInvoiceNumber().
-// Dipakai juga di kwitansi (sesuai contoh template, No kwitansi = No invoice).
-// Klien lain tetap pakai skema lama (dibuat ulang tiap render, tidak persisten).
-if (($docType === 'invoice' || $docType === 'kwitansi') && !empty($order['divisi']) && !empty($order['pelni_invoice_number'])) {
+// Setiap order sekarang punya nomor invoice persisten (dibuat sekali saat
+// order dibuat/diedit — lihat Order::generateInvoiceNumber()): PELNI-divisi
+// dapat INV-PLNI{romawi}{infix}-00001, klien lain INV-{romawi}-00001. Dipakai
+// juga di kwitansi (No kwitansi = No invoice). Order lama sebelum fitur ini
+// tetap fallback ke skema lama (tidak di-generate ulang secara retroaktif).
+if (($docType === 'invoice' || $docType === 'kwitansi') && !empty($order['pelni_invoice_number'])) {
     $docNum = $order['pelni_invoice_number'];
 } else {
     $docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
