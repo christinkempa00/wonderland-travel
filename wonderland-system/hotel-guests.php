@@ -10,6 +10,15 @@ require_once __DIR__ . '/config/constants.php';
 require_once __DIR__ . '/helpers/functions.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/session.php';
+Session::start();
+
+// Halaman ini menulis/membaca data tamu hotel (nama, no. kamar) per order —
+// jangan biarkan diakses tanpa login, dan jangan biarkan satu company
+// mengintip/mengubah data order company lain.
+if (!Session::isLoggedIn()) {
+    http_response_code(403);
+    die('Akses ditolak. Silakan login terlebih dahulu.');
+}
 
 $pageTitle = 'Data Tamu Hotel';
 
@@ -20,7 +29,8 @@ if (!$orderId) {
 
 // Get order data
 $order = db()->fetchOne("SELECT o.*, c.name as client_name FROM orders o LEFT JOIN clients c ON o.client_id = c.id WHERE o.id = ?", [$orderId]);
-if (!$order) {
+if (!$order || (int) $order['company_id'] !== (int) Session::companyId()) {
+    http_response_code(404);
     die('Order not found');
 }
 

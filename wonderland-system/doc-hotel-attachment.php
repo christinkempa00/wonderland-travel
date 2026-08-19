@@ -9,13 +9,27 @@ ini_set('display_errors', 0);
 date_default_timezone_set('Asia/Jakarta');
 
 define('BASE_PATH', __DIR__);
+require_once BASE_PATH . '/config/constants.php';
 require_once BASE_PATH . '/config/database.php';
+require_once BASE_PATH . '/config/session.php';
+Session::start();
+
+// Lampiran ini berisi data tamu (nama, no. kamar) per order — jangan biarkan
+// siapa pun yang tahu/menebak URL-nya mengaksesnya tanpa login, dan jangan
+// biarkan satu company mengintip order company lain.
+if (!Session::isLoggedIn()) {
+    http_response_code(403);
+    die('Akses ditolak. Silakan login terlebih dahulu.');
+}
 
 $orderId = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 if (!$orderId) die('Order ID required');
 
 $order = db()->fetchOne("SELECT o.*, c.name as client_name FROM orders o LEFT JOIN clients c ON o.client_id = c.id WHERE o.id = ?", [$orderId]);
-if (!$order) die('Order not found');
+if (!$order || (int) $order['company_id'] !== (int) Session::companyId()) {
+    http_response_code(404);
+    die('Order not found');
+}
 
 $company = db()->fetchOne("SELECT * FROM companies WHERE id = ?", [$order['company_id']]);
 if (!$company) $company = [];

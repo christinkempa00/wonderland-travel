@@ -4,8 +4,17 @@
  * Manage "Harga Sudah Termasuk" per jenis layanan
  */
 
+define('BASE_PATH', __DIR__);
+require_once __DIR__ . '/config/constants.php';
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/helpers/functions.php';
+Session::start();
+
+if (!Session::isLoggedIn()) {
+    http_response_code(403);
+    die('Akses ditolak. Silakan login terlebih dahulu.');
+}
 
 $pageTitle = 'Settings - Harga Termasuk';
 

@@ -29,6 +29,16 @@ define('BASE_PATH', __DIR__);
 try {
     require_once BASE_PATH . '/config/constants.php';
     require_once BASE_PATH . '/config/database.php';
+    require_once BASE_PATH . '/config/session.php';
+    Session::start();
+
+    // Tool ini menjalankan ALTER TABLE langsung ke database — jangan biarkan
+    // siapa pun tanpa login (apalagi tanpa akses settings) memicunya.
+    if (!Session::isLoggedIn() || !Session::can('settings.manage')) {
+        http_response_code(403);
+        die('Akses ditolak. Silakan login sebagai admin terlebih dahulu.');
+    }
+
     $db = Database::getInstance();
     echo "<div class='ok'>✅ Database connected</div>";
 } catch (Throwable $e) {

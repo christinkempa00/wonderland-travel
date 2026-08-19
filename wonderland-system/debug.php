@@ -65,7 +65,15 @@ try {
         echo "<meta http-equiv='refresh' content='3;url=" . BASE_URL . "/login'>";
         exit;
     }
-    
+
+    // Script ini menulis jurnal HPP dan mengubah saldo akun — sama seperti
+    // migrate-accounting.php, batasi ke user dengan akses settings, bukan
+    // sekadar "sudah login".
+    if (!Session::can('settings.manage')) {
+        echo "    ✗ ANDA TIDAK MEMILIKI AKSES KE HALAMAN INI!\n";
+        die("</pre>");
+    }
+
     $companyId = Session::companyId();
     $userId = Session::userId();
     echo "    ✓ Logged in as User ID: {$userId}, Company ID: {$companyId}\n";

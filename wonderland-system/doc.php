@@ -18,7 +18,19 @@ ini_set('date.timezone', 'Asia/Jakarta');
 date_default_timezone_set('Asia/Jakarta');
 
 define('BASE_PATH', __DIR__);
+require_once BASE_PATH . '/config/constants.php';
+require_once BASE_PATH . '/helpers/functions.php';
 require_once BASE_PATH . '/config/database.php';
+require_once BASE_PATH . '/config/session.php';
+Session::start();
+
+// Dokumen ini berisi data klien (kontak, harga, rekening) — jangan biarkan
+// siapa pun yang tahu/menebak URL-nya mengaksesnya tanpa login, dan jangan
+// biarkan satu company mengintip order company lain.
+if (!Session::isLoggedIn()) {
+    http_response_code(403);
+    die('Akses ditolak. Silakan login terlebih dahulu.');
+}
 
 $orderId = isset($_GET['order']) ? (int)$_GET['order'] : 0;
 $docType = isset($_GET['type']) ? $_GET['type'] : 'invoice';
@@ -26,7 +38,10 @@ $docType = isset($_GET['type']) ? $_GET['type'] : 'invoice';
 if (!$orderId) die('Usage: doc.php?order=ID&type=invoice|kwitansi|penawaran|kesepakatan');
 
 $order = db()->fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
-if (!$order) die('Order not found');
+if (!$order || (int) $order['company_id'] !== (int) Session::companyId()) {
+    http_response_code(404);
+    die('Order not found');
+}
 
 $items = db()->fetchAll("SELECT * FROM order_items WHERE order_id = ?", [$orderId]);
 $client = !empty($order['client_id']) ? db()->fetchOne("SELECT * FROM clients WHERE id = ?", [$order['client_id']]) : [];
@@ -186,7 +201,11 @@ function bilang($n) {
     return bilang($n / 1000000000) . " Miliar " . bilang($n % 1000000000);
 }
 
-function e($s) { return htmlspecialchars($s ? $s : ''); }
+// e() sudah didefinisikan oleh helpers/functions.php (di-require di atas untuk
+// Session/auth) — jangan didefinisikan ulang, PHP tidak izinkan redeclare.
+if (!function_exists('e')) {
+    function e($s) { return htmlspecialchars($s ? $s : ''); }
+}
 
 function getRandomMarkup() {
     $options = [50000, 75000, 100000, 125000, 150000, 175000, 200000];
