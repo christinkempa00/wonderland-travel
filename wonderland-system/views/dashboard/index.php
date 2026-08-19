@@ -62,63 +62,6 @@
     </div>
 </div>
 
-<!-- Financial Summary Row -->
-<?php if (!empty($financial)): ?>
-<div class="row mb-4">
-    <div class="col-12 stagger-item">
-        <div class="glass-card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-wallet text-success me-2"></i>Ringkasan Keuangan
-                </h3>
-                <a href="<?= url('/accounting/dashboard') ?>" class="btn btn-sm btn-outline-primary">
-                    Detail <i class="fas fa-arrow-right ms-1"></i>
-                </a>
-            </div>
-            
-            <div class="row g-3">
-                <div class="col-6 col-md-3">
-                    <div class="finance-box finance-cash">
-                        <div class="finance-icon"><i class="fas fa-piggy-bank"></i></div>
-                        <div class="finance-info">
-                            <div class="finance-label">Saldo Kas/Bank</div>
-                            <div class="finance-value"><?= formatRupiah($financial['cash_balance'] ?? 0) ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="finance-box finance-receivable">
-                        <div class="finance-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-                        <div class="finance-info">
-                            <div class="finance-label">Piutang Usaha</div>
-                            <div class="finance-value"><?= formatRupiah($financial['receivables'] ?? 0) ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="finance-box finance-loan">
-                        <div class="finance-icon"><i class="fas fa-hand-holding-usd"></i></div>
-                        <div class="finance-info">
-                            <div class="finance-label">Hutang Pinjaman</div>
-                            <div class="finance-value"><?= formatRupiah($financial['payables_loan'] ?? 0) ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="finance-box finance-pending">
-                        <div class="finance-icon"><i class="fas fa-hourglass-half"></i></div>
-                        <div class="finance-info">
-                            <div class="finance-label">Belum Bayar Vendor</div>
-                            <div class="finance-value"><?= formatRupiah($financial['pending_expenses'] ?? 0) ?></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
-
 <!-- Charts Row -->
 <div class="row mb-4">
     <div class="col-lg-6 stagger-item">
@@ -135,7 +78,7 @@
     <div class="col-lg-6 stagger-item">
         <div class="glass-card">
             <div class="card-header">
-                <h3 class="card-title">Status Pesanan</h3>
+                <h3 class="card-title">Status Pembayaran</h3>
             </div>
             <div class="chart-container">
                 <canvas id="statusChart"></canvas>
@@ -319,90 +262,6 @@
     color: var(--gray-800);
 }
 
-/* Financial Summary Box */
-.finance-box {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-    background: var(--gray-50);
-}
-
-.finance-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-}
-
-.finance-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.finance-label {
-    font-size: 0.75rem;
-    color: var(--gray-500);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.finance-value {
-    font-size: 1rem;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.finance-cash {
-    background: rgba(34, 197, 94, 0.1);
-}
-.finance-cash .finance-icon {
-    background: rgba(34, 197, 94, 0.2);
-    color: #16a34a;
-}
-.finance-cash .finance-value {
-    color: #16a34a;
-}
-
-.finance-receivable {
-    background: rgba(200, 155, 44, 0.1);
-}
-.finance-receivable .finance-icon {
-    background: rgba(200, 155, 44, 0.2);
-    color: #a67f20;
-}
-.finance-receivable .finance-value {
-    color: #a67f20;
-}
-
-.finance-loan {
-    background: rgba(239, 68, 68, 0.1);
-}
-.finance-loan .finance-icon {
-    background: rgba(239, 68, 68, 0.2);
-    color: #dc2626;
-}
-.finance-loan .finance-value {
-    color: #dc2626;
-}
-
-.finance-pending {
-    background: rgba(245, 158, 11, 0.1);
-}
-.finance-pending .finance-icon {
-    background: rgba(245, 158, 11, 0.2);
-    color: #d97706;
-}
-.finance-pending .finance-value {
-    color: #d97706;
-}
 </style>
 
 <script>
@@ -495,28 +354,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Status Chart
+    // Status Chart (status pembayaran)
     const statusCtx = document.getElementById('statusChart').getContext('2d');
-    const statusData = <?= json_encode($stats['by_status']) ?>;
-    
+    const statusData = <?= json_encode($stats['by_payment_status']) ?>;
+
     const statusLabels = {
-        draft: 'Draft',
-        quotation: 'Penawaran',
-        agreed: 'Disepakati',
-        invoiced: 'Invoice',
-        paid: 'Lunas',
-        completed: 'Selesai',
-        cancelled: 'Dibatalkan'
+        unpaid: 'Belum Dibayar',
+        partial: 'Sebagian',
+        paid: 'Lunas'
     };
-    
+
     const statusColors = {
-        draft: '#94a3b8',
-        quotation: '#06b6d4',
-        agreed: '#c89b2c',
-        invoiced: '#f59e0b',
-        paid: '#10b981',
-        completed: '#059669',
-        cancelled: '#ef4444'
+        unpaid: '#ef4444',
+        partial: '#f59e0b',
+        paid: '#10b981'
     };
     
     const labels = Object.keys(statusData).map(k => statusLabels[k] || k);

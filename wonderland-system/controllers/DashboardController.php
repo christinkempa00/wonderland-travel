@@ -42,9 +42,6 @@ class DashboardController {
             }
         }
         
-        // Get financial summary
-        $financial = $this->getFinancialSummary($companyId);
-        
         $data = [
             'pageTitle' => 'Dashboard',
             'pageHeader' => true,
@@ -52,92 +49,12 @@ class DashboardController {
             'stats' => $this->getStats($companyId),
             'recentOrders' => $this->getRecentOrders($companyId),
             'monthlyRevenue' => $this->getMonthlyRevenue($companyId),
-            'reservationTrend' => $this->getReservationTrend($companyId),
-            'financial' => $financial
+            'reservationTrend' => $this->getReservationTrend($companyId)
         ];
-        
+
         render('dashboard/index', $data);
     }
-    
-    /**
-     * Get financial summary for dashboard
-     */
-    private function getFinancialSummary(int $companyId): array {
-        $financial = [
-            'cash_balance' => 0,
-            'receivables' => 0,
-            'payables_loan' => 0,
-            'pending_expenses' => 0
-        ];
-        
-        try {
-            // Load AccountingHelper jika ada
-            $helperPath = HELPERS_PATH . '/AccountingHelper.php';
-            if (file_exists($helperPath)) {
-                require_once $helperPath;
-            }
-            
-            if (function_exists('getFinancialDashboard')) {
-                $financial = getFinancialDashboard($companyId);
-            } else {
-                // Fallback - ambil data basic
-                
-                // 1. Cash Balance
-                $cashResult = db()->fetchOne(
-                    "SELECT COALESCE(SUM(balance), 0) as total FROM bank_cash WHERE company_id = ? AND is_active = 1",
-                    [$companyId]
-                );
-                $financial['cash_balance'] = (float)($cashResult['total'] ?? 0);
-                
-                // 2. Receivables (Piutang)
-                $recResult = db()->fetchOne(
-                    "SELECT COALESCE(SUM(total_final_price - paid_amount), 0) as total
-                     FROM orders 
-                     WHERE company_id = ? 
-                     AND payment_status IN ('unpaid', 'partial')
-                     AND status NOT IN ('cancelled', 'draft')",
-                    [$companyId]
-                );
-                $financial['receivables'] = (float)($recResult['total'] ?? 0);
-                
-                // 3. Hutang pinjaman
-                try {
-                    $loanResult = db()->fetchOne(
-                        "SELECT COALESCE(SUM(amount - paid_amount), 0) as total
-                         FROM loans 
-                         WHERE company_id = ? 
-                         AND loan_type = 'received'
-                         AND status = 'active'",
-                        [$companyId]
-                    );
-                    $financial['payables_loan'] = (float)($loanResult['total'] ?? 0);
-                } catch (Exception $e) {
-                    $financial['payables_loan'] = 0;
-                }
-                
-                // 4. Pending expenses (belum bayar vendor)
-                try {
-                    $pendingResult = db()->fetchOne(
-                        "SELECT COALESCE(SUM(oi.base_price * oi.quantity * COALESCE(oi.num_days, 1)), 0) as total
-                         FROM order_items oi
-                         JOIN orders o ON oi.order_id = o.id
-                         WHERE o.company_id = ?
-                         AND o.status NOT IN ('cancelled', 'draft')
-                         AND (oi.expense_status IS NULL OR oi.expense_status = 'pending')",
-                        [$companyId]
-                    );
-                    $financial['pending_expenses'] = (float)($pendingResult['total'] ?? 0);
-                } catch (Exception $e) {
-                    $financial['pending_expenses'] = 0;
-                }
-            }
-        } catch (Exception $e) {
-            // Jika error total, return default
-        }
-        
-        return $financial;
-    }
-    
+
     /**
      * Switch company
      */
@@ -219,7 +136,19 @@ class DashboardController {
         foreach ($statusCounts as $row) {
             $byStatus[$row['status']] = (int) $row['count'];
         }
-        
+
+        // Count by payment status
+        $paymentStatusCounts = db()->fetchAll(
+            "SELECT payment_status, COUNT(*) as count FROM orders
+             WHERE company_id = ? GROUP BY payment_status",
+            [$companyId]
+        );
+
+        $byPaymentStatus = [];
+        foreach ($paymentStatusCounts as $row) {
+            $byPaymentStatus[$row['payment_status']] = (int) $row['count'];
+        }
+
         // Total clients
         $totalClients = (int) db()->fetchColumn(
             "SELECT COUNT(*) FROM clients WHERE company_id = ?",
@@ -248,6 +177,7 @@ class DashboardController {
             'pending_payments' => $pendingPayments,
             'total_clients' => $totalClients,
             'by_status' => $byStatus,
+            'by_payment_status' => $byPaymentStatus,
             'revenue_growth' => round($revenueGrowth, 1)
         ];
     }

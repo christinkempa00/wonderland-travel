@@ -319,7 +319,7 @@ $orderDivisiLabel = !empty($order['divisi']) ? ($divisiLabels[$order['divisi']] 
 if (($docType === 'invoice' || $docType === 'kwitansi') && !empty($order['pelni_invoice_number'])) {
     $docNum = $order['pelni_invoice_number'];
 } else {
-    $docNum = '#' . (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
+    $docNum = (isset($prefixes[$docType]) ? $prefixes[$docType] : 'DOC') . '-' . date('Y') . '-' . str_pad($order['id'], 5, '0', STR_PAD_LEFT);
 }
 $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 
@@ -608,7 +608,7 @@ $mainColor3 = '#7f1d1d';
 
         .wt-meta {
             padding: 14px 34px 4px;
-            font-size: 11px;
+            font-size: 14px;
             line-height: 1.9;
         }
         .wt-meta-row { display: flex; gap: 10px; }
@@ -618,10 +618,10 @@ $mainColor3 = '#7f1d1d';
 
         .wt-body { padding: 16px 34px; flex: 1; }
 
-        .wt-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+        .wt-table { width: 100%; border-collapse: collapse; font-size: 14px; }
         .wt-table th {
             background: var(--wt-ink); color: #fff; text-align: left;
-            padding: 9px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 9px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
             border: 1px solid var(--wt-ink);
         }
         .wt-table th.wt-num, .wt-table td.wt-num { text-align: center; width: 60px; }
