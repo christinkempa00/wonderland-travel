@@ -664,36 +664,145 @@ $mainColor3 = '#7f1d1d';
         }
         .wt-bottom-contacts span { display: inline-flex; align-items: center; gap: 6px; }
 
-        /* Kwitansi-specific — flex:1 sama seperti .wt-body di invoice, supaya
-           amount box + tanda tangan ikut terdorong ke bawah halaman (bukan
-           menumpuk di atas dengan sisa halaman kosong total di bawahnya). */
-        .wt-kwitansi-fields { padding: 20px 34px 10px; font-size: 12px; flex: 1; }
-        .wt-kwitansi-row { display: flex; gap: 14px; padding: 7px 0; border-bottom: 1px solid #e5e5e5; }
-        .wt-kwitansi-row .wt-label { width: 150px; color: #444; }
-        .wt-kwitansi-row .wt-colon { width: 10px; }
-        .wt-kwitansi-row .wt-value { font-weight: 700; flex: 1; }
-        .wt-kwitansi-row.wt-highlight .wt-value { color: var(--wt-gold-dark); font-style: italic; }
-
-        .wt-amount-row { display: flex; align-items: center; gap: 14px; padding: 30px 34px 10px; }
-        .wt-amount-box {
-            background: #4a4a4a; color: #fff; font-weight: 800; font-size: 20px;
-            padding: 14px 30px 14px 22px; border-radius: 0 6px 6px 0;
-            clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+        /* ================================================================
+           KWITANSI — struktur & rasio halaman berbeda dari invoice, dibangun
+           dari file template resmi (strip dekoratif emas atas/bawah dipotong
+           langsung dari gambar itu via background-position, biar identik).
+           ================================================================ */
+        .kwt-page {
+            width: 210mm;
+            aspect-ratio: 1280 / 589;
+            margin: 20px auto;
+            background: #fff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--wt-ink);
+            overflow: hidden;
         }
-        .wt-amount-value { font-size: 22px; font-weight: 800; color: var(--wt-ink); }
-
-        .wt-kwitansi-signoff {
-            display: flex; justify-content: flex-end; padding: 20px 34px 30px;
+        .kwt-strip {
+            width: 100%; flex-shrink: 0;
+            background-image: url('/assets/images/doc-templates/kwitansi-band.jpg');
+            background-size: 100% auto; background-repeat: no-repeat;
         }
+        .kwt-strip-top { height: 15px; background-position: top center; }
+        .kwt-strip-bottom { height: 12px; margin-top: auto; background-position: bottom center; }
+
+        .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 30px 6px; }
+        .kwt-company { display: flex; align-items: flex-start; gap: 10px; }
+        .kwt-company img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+        .kwt-company-text { font-size: 9px; line-height: 1.5; font-weight: 700; }
+        .kwt-company-text .kwt-co-name { font-size: 10.5px; margin-bottom: 2px; }
+        .kwt-title { text-align: right; }
+        .kwt-title h1 { font-size: 21px; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
+        .kwt-title .kwt-no { font-size: 9px; margin-top: 3px; }
+
+        .kwt-rule { border: none; border-top: 2px solid var(--wt-ink); border-bottom: 1px solid var(--wt-ink); height: 3px; margin: 0 30px; }
+
+        .kwt-fields { padding: 7px 30px; font-size: 10.5px; }
+        .kwt-row { display: flex; gap: 10px; padding: 3px 0; }
+        .kwt-row .kwt-label { width: 140px; }
+        .kwt-row .kwt-colon { width: 8px; }
+        .kwt-row .kwt-value { font-weight: 700; flex: 1; }
+        .kwt-row .kwt-value.kwt-upper { text-transform: uppercase; }
+
+        .kwt-spacer { flex: 1; }
+
+        .kwt-bottom-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 4px 30px 10px; }
+        .kwt-amount { display: flex; align-items: center; gap: 10px; }
+        .kwt-amount-box {
+            background: #4a4a4a; color: #fff; font-weight: 800; font-size: 13px;
+            padding: 8px 20px 8px 14px; border-radius: 5px 0 0 5px;
+            clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%);
+        }
+        .kwt-amount-value { font-size: 15px; font-weight: 800; }
+        .kwt-signature { text-align: right; font-size: 9.5px; }
+        .kwt-signature .kwt-hormat { margin: 2px 0 26px; }
+        .kwt-signature .kwt-sign-name { font-weight: 700; text-decoration: underline; margin-top: 2px; }
     </style>
 </head>
 <body class="<?php echo $sizeClass; ?>">
     <a href="javascript:history.back()" class="back-btn">← Kembali</a>
     <button onclick="window.print()" class="print-btn">🖨️ Cetak</button>
 
-    <?php if ($docType === 'invoice' || $docType === 'kwitansi'): ?>
+    <?php
+        // Nama yang tercetak di kolom tanda tangan invoice adalah nama dagang
+        // "Wonderland Traveling", terpisah dari nama badan hukum ($cn) yang
+        // dipakai di kop surat/rekening bank & kop kwitansi.
+        $signatoryCompanyName = 'Wonderland Traveling';
+        $signatoryName = 'Dian Novianti';
+        $signatoryTitle = 'Direktur';
+    ?>
+    <?php if ($docType === 'kwitansi'): ?>
     <!-- ================================================================
-         WONDERLAND TRAVEL TEMPLATE (Invoice & Kwitansi)
+         KWITANSI — struktur & rasio halaman sendiri, dibangun dari file
+         template resmi (lihat .kwt-strip di CSS).
+         ================================================================ -->
+    <div class="kwt-page">
+        <div class="kwt-strip kwt-strip-top"></div>
+
+        <div class="kwt-header">
+            <div class="kwt-company">
+                <?php if ($logoUrl): ?>
+                <img src="<?php echo e($logoUrl); ?>" alt="Logo">
+                <?php endif; ?>
+                <div class="kwt-company-text">
+                    <div class="kwt-co-name"><?php echo e($cn); ?></div>
+                    <?php echo nl2br(e($ca)); ?>
+                </div>
+            </div>
+            <div class="kwt-title">
+                <h1>KWITANSI</h1>
+                <div class="kwt-no">NO : <?php echo e($docNum); ?></div>
+            </div>
+        </div>
+
+        <div class="kwt-rule"></div>
+        <div class="kwt-fields">
+            <div class="kwt-row">
+                <div class="kwt-label">Sudah diterima dari</div><div class="kwt-colon">:</div>
+                <div class="kwt-value kwt-upper"><?php echo e($cl); ?><?php if ($orderPicName): ?> (U.p. <?php echo e($orderPicName); ?>)<?php endif; ?></div>
+            </div>
+            <div class="kwt-row">
+                <div class="kwt-label">Banyaknya Uang</div><div class="kwt-colon">:</div>
+                <div class="kwt-value"><?php echo trim(bilang($total)); ?> Rupiah</div>
+            </div>
+        </div>
+
+        <div class="kwt-rule"></div>
+        <div class="kwt-fields">
+            <div class="kwt-row">
+                <div class="kwt-label">Untuk Pembayaran</div><div class="kwt-colon">:</div>
+                <div class="kwt-value">
+                    <?php echo e(isset($order['description']) && $order['description'] ? $order['description'] : 'Pembayaran layanan'); ?><?php if ($totalParticipantQty > 0): ?> ( <?php echo $totalParticipantQty; ?> Orang )<?php endif; ?>
+                    <?php if ($orderDivisiLabel): ?><br><?php echo e($orderDivisiLabel); ?> PELNI<?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <div class="kwt-rule"></div>
+
+        <div class="kwt-spacer"></div>
+
+        <div class="kwt-bottom-row">
+            <div class="kwt-amount">
+                <div class="kwt-amount-box">Rp.</div>
+                <div class="kwt-amount-value"><?php echo number_format($total, 0, ',', '.'); ?></div>
+            </div>
+            <div class="kwt-signature">
+                <p>Jakarta, <?php echo $docDate; ?></p>
+                <p class="kwt-hormat">Yang menerima</p>
+                <div class="kwt-sign-name"><?php echo e($signatoryName); ?></div>
+                <div><?php echo e($signatoryTitle); ?></div>
+            </div>
+        </div>
+
+        <div class="kwt-strip kwt-strip-bottom"></div>
+    </div>
+    <?php elseif ($docType === 'invoice'): ?>
+    <!-- ================================================================
+         WONDERLAND TRAVEL TEMPLATE (Invoice)
          ================================================================ -->
     <?php
         $bankAccounts = [];
@@ -704,12 +813,6 @@ $mainColor3 = '#7f1d1d';
         if (empty($bankAccounts)) {
             $bankAccounts = [['bank_name' => 'BNI', 'account_no' => '2019709091', 'account_name' => 'PT. NUSA ERA ARTHA']];
         }
-        // Nama yang tercetak di kolom tanda tangan invoice adalah nama dagang
-        // "Wonderland Traveling", terpisah dari nama badan hukum ($cn) yang
-        // dipakai di kop surat/rekening bank.
-        $signatoryCompanyName = 'Wonderland Traveling';
-        $signatoryName = 'Dian Novianti';
-        $signatoryTitle = 'Direktur';
     ?>
     <div class="wt-container">
         <div class="wt-topband">
@@ -725,7 +828,6 @@ $mainColor3 = '#7f1d1d';
             <div class="wt-topband-goldbar"></div>
         </div>
 
-        <?php if ($docType === 'invoice'): ?>
         <div class="wt-meta">
             <div class="wt-meta-row"><div class="wt-label">Invoice No</div><div class="wt-colon">:</div><div class="wt-value"><?php echo e($docNum); ?></div></div>
             <div class="wt-meta-row"><div class="wt-label">Date</div><div class="wt-colon">:</div><div class="wt-value"><?php echo $docDate; ?></div></div>
@@ -794,39 +896,6 @@ $mainColor3 = '#7f1d1d';
                 <div><?php echo e($signatoryName); ?></div>
             </div>
         </div>
-        <?php else: /* kwitansi */ ?>
-        <div class="wt-kwitansi-fields">
-            <div class="wt-kwitansi-row">
-                <div class="wt-label">Sudah diterima dari</div><div class="wt-colon">:</div>
-                <div class="wt-value"><?php echo e($cl); ?><?php if ($orderPicName): ?> (U.p. <?php echo e($orderPicName); ?>)<?php endif; ?></div>
-            </div>
-            <div class="wt-kwitansi-row wt-highlight">
-                <div class="wt-label">Banyaknya Uang</div><div class="wt-colon">:</div>
-                <div class="wt-value"><?php echo trim(bilang($total)); ?> Rupiah</div>
-            </div>
-            <div class="wt-kwitansi-row">
-                <div class="wt-label">Untuk Pembayaran</div><div class="wt-colon">:</div>
-                <div class="wt-value">
-                    <?php echo e(isset($order['description']) && $order['description'] ? $order['description'] : 'Pembayaran layanan'); ?><?php if ($totalParticipantQty > 0): ?> ( <?php echo $totalParticipantQty; ?> Orang )<?php endif; ?>
-                    <?php if ($orderDivisiLabel): ?><br><?php echo e($orderDivisiLabel); ?> PELNI<?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <div class="wt-amount-row">
-            <div class="wt-amount-box">Rp.</div>
-            <div class="wt-amount-value"><?php echo number_format($total, 0, ',', '.'); ?></div>
-        </div>
-
-        <div class="wt-kwitansi-signoff">
-            <div class="wt-signature">
-                <p>Jakarta, <?php echo $docDate; ?></p>
-                <p class="wt-hormat">Yang menerima</p>
-                <div class="wt-sign-name"><?php echo e($signatoryName); ?></div>
-                <div><?php echo e($signatoryTitle); ?></div>
-            </div>
-        </div>
-        <?php endif; ?>
 
         <div class="wt-bottom-contacts">
             <span>@wonderland__traveling</span>
