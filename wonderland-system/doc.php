@@ -871,6 +871,9 @@ $mainColor3 = '#7f1d1d';
                         <td class="wt-num"><?php if ((int)($item['participant_qty'] ?? 0) > 0): ?><?php echo (int)$item['participant_qty']; ?><?php else: ?><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?><?php endif; ?></td>
                         <td>
                             <?php echo nl2br(e($item['description'])); ?>
+                            <?php if (!empty($item['room_type'])): ?>
+                            <span class="wt-item-sub">Add-ons: <?php echo e($item['room_type']); ?></span>
+                            <?php endif; ?>
                             <?php if (!empty($item['participant_names'])): ?>
                             <ul class="wt-participant-list">
                                 <?php foreach (preg_split('/\r\n|\r|\n/', trim($item['participant_names'])) as $pName): ?>

@@ -222,6 +222,12 @@ $orderData = $order ? $order->toArray() : [
                                                class="form-control form-control-sm" min="0" placeholder="0"
                                                value="<?= e($item['participant_qty'] ?? '') ?>">
                                     </div>
+                                    <div class="col-6 col-md-6 item-addon-row" style="display:none;">
+                                        <label class="form-label-sm">Add-ons Kamar</label>
+                                        <input type="text" name="items[<?= $index ?>][room_type]"
+                                               class="form-control form-control-sm" placeholder="Mis. Kamar VIP, Kamar Ekonomi"
+                                               value="<?= e($item['room_type'] ?? '') ?>">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -365,6 +371,11 @@ $orderData = $order ? $order->toArray() : [
                     <label class="form-label-sm">Qty Peserta</label>
                     <input type="number" name="items[__INDEX__][participant_qty]"
                            class="form-control form-control-sm" min="0" placeholder="0">
+                </div>
+                <div class="col-6 col-md-6 item-addon-row" style="display:none;">
+                    <label class="form-label-sm">Add-ons Kamar</label>
+                    <input type="text" name="items[__INDEX__][room_type]"
+                           class="form-control form-control-sm" placeholder="Mis. Kamar VIP, Kamar Ekonomi">
                 </div>
             </div>
         </div>
@@ -627,6 +638,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Add-ons Kamar — cuma relevan untuk Jenis Layanan "Kapal Laut" (ship).
+    function toggleAddonRow(item) {
+        var typeSelect = item.querySelector('.item-type-select');
+        var addonRow = item.querySelector('.item-addon-row');
+        if (!typeSelect || !addonRow) return;
+        addonRow.style.display = typeSelect.value === 'ship' ? '' : 'none';
+    }
+
     // Attach listeners to item
     function attachItemListeners(item) {
         var inputs = item.querySelectorAll('.item-qty, .item-days, .item-base-price, .item-cashback, .item-markup-type, .item-markup-value');
@@ -642,8 +661,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.value = new Intl.NumberFormat('id-ID').format(value);
             });
         });
+
+        var typeSelect = item.querySelector('.item-type-select');
+        if (typeSelect) {
+            typeSelect.addEventListener('change', function() { toggleAddonRow(item); });
+        }
+        toggleAddonRow(item);
     }
-    
+
     // Initial listeners
     document.querySelectorAll('.item-card').forEach(attachItemListeners);
     

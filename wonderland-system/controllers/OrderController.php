@@ -2254,7 +2254,8 @@ class OrderController {
                 'vehicle_plate' => trim($item['vehicle_plate'] ?? ''),
                 'participant_qty' => (isset($item['participant_qty']) && $item['participant_qty'] !== '')
                     ? max(0, (int) $item['participant_qty']) : null,
-                'participant_names' => trim($item['participant_names'] ?? '') ?: null
+                'participant_names' => trim($item['participant_names'] ?? '') ?: null,
+                'room_type' => trim($item['room_type'] ?? '') ?: null
             ];
         }
 
