@@ -719,7 +719,7 @@ $mainColor3 = '#7f1d1d';
         .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 30px 4px; }
         .kwt-company { display: flex; align-items: flex-start; gap: 10px; }
         .kwt-company img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
-        .kwt-company-text { font-size: 9px; line-height: 1.5; font-weight: 700; }
+        .kwt-company-text { font-size: 9px; line-height: 1.5; font-weight: 700; max-width: 340px; }
         .kwt-company-text .kwt-co-name { font-size: 10.5px; margin-bottom: 2px; }
         .kwt-title { text-align: right; }
         .kwt-title h1 { font-size: 21px; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
