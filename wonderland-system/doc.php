@@ -575,40 +575,36 @@ $mainColor3 = '#7f1d1d';
             color: var(--wt-ink);
         }
 
-        /* Diagonal gold/black brand band, used top and bottom */
-        .wt-band { position: relative; height: 26px; background: var(--wt-gold); overflow: hidden; flex-shrink: 0; }
-        .wt-band::before, .wt-band::after {
-            content: ""; position: absolute; top: -40%; height: 180%; width: 26%; background: var(--wt-ink);
-            transform: skewX(-28deg);
-        }
-        .wt-band::before { right: 22%; }
-        .wt-band::after { right: 4%; width: 10%; }
-        .wt-band.wt-band-bottom { margin-top: auto; }
-
-        .wt-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            padding: 22px 34px 14px;
+        /* Bottom band: black bar with a large gold diagonal wedge from the
+           bottom-left corner. */
+        .wt-band { position: relative; height: 46px; background: var(--wt-ink); overflow: hidden; flex-shrink: 0; margin-top: auto; }
+        .wt-band::before {
+            content: ""; position: absolute; left: -8%; bottom: -70%; height: 240%; width: 50%;
+            background: var(--wt-gold); transform: skewX(-28deg);
         }
 
-        .wt-logo { display: flex; align-items: center; gap: 12px; }
-        .wt-logo-mark {
-            width: 46px; height: 46px; border-radius: 6px;
-            background: linear-gradient(135deg, var(--wt-gold) 0%, var(--wt-gold-dark) 100%);
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: 800; font-size: 22px; font-style: italic; flex-shrink: 0;
+        /* Top brand block: partial-width black bar with a fanned diagonal-gold
+           accent (echoes the logo mark), plus floating square/bar accents to
+           the right in the white space — matches the official letterhead art. */
+        .wt-topband { position: relative; height: 112px; flex-shrink: 0; }
+        .wt-topband-bar {
+            position: absolute; left: 0; top: 0; height: 100%; width: 60%;
+            background: var(--wt-ink); overflow: hidden;
+            display: flex; align-items: center; gap: 14px; padding-left: 32px;
         }
-        .wt-logo img.wt-logo-img { width: 46px; height: 46px; object-fit: contain; border-radius: 6px; flex-shrink: 0; }
-        .wt-logo-text { line-height: 1.35; }
-        .wt-logo-text .wt-brand { font-size: 15px; font-weight: 800; letter-spacing: 0.5px; }
-        .wt-logo-text .wt-brand-sub { font-size: 8px; letter-spacing: 3px; color: #6b6b6b; text-transform: uppercase; }
-        .wt-company-block { font-size: 10px; line-height: 1.5; color: #333; }
-        .wt-company-block strong { display: block; font-size: 11px; color: var(--wt-ink); margin-bottom: 2px; }
-
-        .wt-doc-title { text-align: right; }
-        .wt-doc-title h1 { font-size: 26px; font-weight: 800; letter-spacing: 1px; margin: 0; color: var(--wt-ink); }
-        .wt-doc-title .wt-doc-no { font-size: 10px; color: #666; margin-top: 4px; }
+        .wt-topband-bar::before {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 150px;
+            background: repeating-linear-gradient(115deg, var(--wt-gold) 0px, var(--wt-gold) 1.5px, transparent 1.5px, transparent 6px);
+            -webkit-mask-image: linear-gradient(to right, #000 35%, transparent 92%);
+            mask-image: linear-gradient(to right, #000 35%, transparent 92%);
+        }
+        .wt-topband-mark { position: relative; z-index: 1; font-size: 44px; font-weight: 900; font-style: italic; color: var(--wt-gold); line-height: 1; }
+        .wt-topband-brand { position: relative; z-index: 1; color: #fff; }
+        .wt-topband-brand .wt-tb-name { font-size: 19px; font-weight: 800; letter-spacing: 1px; }
+        .wt-topband-brand .wt-tb-sub { font-size: 10px; letter-spacing: 4px; color: #d8d8d8; margin-top: 3px; }
+        .wt-topband-underline { position: absolute; left: 0; top: 108px; width: 60%; height: 4px; background: var(--wt-gold); }
+        .wt-topband-square { position: absolute; left: 63%; top: 14px; width: 56px; height: 56px; background: #4a4a4a; }
+        .wt-topband-goldbar { position: absolute; left: 71%; top: 48px; width: 200px; height: 34px; background: var(--wt-gold); }
 
         .wt-meta-rule { border: none; border-top: 3px double var(--wt-ink); margin: 0 34px; }
 
@@ -716,23 +712,17 @@ $mainColor3 = '#7f1d1d';
         $signatoryTitle = 'Direktur';
     ?>
     <div class="wt-container">
-        <div class="wt-band"></div>
-
-        <div class="wt-header">
-            <div class="wt-logo">
-                <?php if ($logoUrl): ?>
-                <img src="<?php echo e($logoUrl); ?>" alt="Logo" class="wt-logo-img">
-                <?php else: ?>
-                <div class="wt-logo-mark">W</div>
-                <?php endif; ?>
-                <div class="wt-logo-text">
-                    <div class="wt-brand">WONDERLAND<br>TRAVEL</div>
+        <div class="wt-topband">
+            <div class="wt-topband-bar">
+                <div class="wt-topband-mark">W</div>
+                <div class="wt-topband-brand">
+                    <div class="wt-tb-name">WONDERLAND</div>
+                    <div class="wt-tb-sub">TRAVEL</div>
                 </div>
             </div>
-            <div class="wt-doc-title">
-                <h1><?php echo $docType === 'invoice' ? 'INVOICE' : 'KWITANSI'; ?></h1>
-                <div class="wt-doc-no">No: <?php echo e($docNum); ?></div>
-            </div>
+            <div class="wt-topband-underline"></div>
+            <div class="wt-topband-square"></div>
+            <div class="wt-topband-goldbar"></div>
         </div>
 
         <?php if ($docType === 'invoice'): ?>
@@ -848,7 +838,7 @@ $mainColor3 = '#7f1d1d';
             <span><?php echo e($cp ?: '0878-0486-1367'); ?></span>
         </div>
 
-        <div class="wt-band wt-band-bottom"></div>
+        <div class="wt-band"></div>
     </div>
     <?php else: ?>
     <div class="invoice-container">
