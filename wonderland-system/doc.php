@@ -864,6 +864,7 @@ $mainColor3 = '#7f1d1d';
                 ○ Cash&nbsp;&nbsp;&nbsp;○ Transfer
                 <div class="wt-bank-list">
                     <?php foreach ($bankAccounts as $bank): ?>
+                    <?php if (empty($bank['account_number']) && empty($bank['account_holder'])) continue; ?>
                     <div class="wt-bank-row">
                         <span class="wt-bank-name"><?php echo e($bank['bank_name'] ?? 'BNI'); ?></span>
                         <span class="wt-bank-no"><?php echo e($bank['account_number'] ?? ''); ?></span>
