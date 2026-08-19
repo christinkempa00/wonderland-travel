@@ -2320,7 +2320,7 @@ class OrderController {
 
         // Bagian Informasi Pesanan wajib diisi semua, kecuali Tgl Selesai Event.
         if (empty($data['event_date'])) {
-            $errors[] = 'Tgl Mulai Event wajib diisi.';
+            $errors[] = 'Tgl Mulai Kegiatan wajib diisi.';
         }
         if (empty($data['client_id'])) {
             $errors[] = 'Klien wajib dipilih.';

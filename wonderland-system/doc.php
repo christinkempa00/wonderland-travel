@@ -799,7 +799,7 @@ $mainColor3 = '#7f1d1d';
             if (is_array($decoded)) $bankAccounts = $decoded;
         }
         if (empty($bankAccounts)) {
-            $bankAccounts = [['bank_name' => 'BNI', 'account_no' => '2019709091', 'account_name' => 'PT. NUSA ERA ARTHA']];
+            $bankAccounts = [['bank_name' => 'BNI', 'account_number' => '2019709091', 'account_holder' => 'PT. NUSA ERA ARTHA']];
         }
     ?>
     <div class="wt-container">
@@ -866,8 +866,8 @@ $mainColor3 = '#7f1d1d';
                     <?php foreach ($bankAccounts as $bank): ?>
                     <div class="wt-bank-row">
                         <span class="wt-bank-name"><?php echo e($bank['bank_name'] ?? 'BNI'); ?></span>
-                        <span class="wt-bank-no"><?php echo e($bank['account_no'] ?? ''); ?></span>
-                        <span class="wt-bank-holder"><?php echo e($bank['account_name'] ?? ''); ?></span>
+                        <span class="wt-bank-no"><?php echo e($bank['account_number'] ?? ''); ?></span>
+                        <span class="wt-bank-holder"><?php echo e($bank['account_holder'] ?? ''); ?></span>
                     </div>
                     <?php endforeach; ?>
                 </div>

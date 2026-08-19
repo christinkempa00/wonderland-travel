@@ -121,7 +121,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                     </span>
                 </div>
                 <div class="info-item">
-                    <label>Tanggal Event</label>
+                    <label>Tanggal Kegiatan</label>
                     <span>
                         <?php if ($order->event_date): ?>
                             <?= formatDate($order->event_date) ?>

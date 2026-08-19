@@ -244,7 +244,7 @@
                 </div>
                 <?php if ($order->event_name): ?>
                 <div class="info-row">
-                    <span class="info-label">Event</span>
+                    <span class="info-label">Kegiatan</span>
                     <span class="info-value"><?= e($order->event_name) ?></span>
                 </div>
                 <?php endif; ?>

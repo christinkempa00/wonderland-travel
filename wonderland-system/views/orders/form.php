@@ -38,21 +38,21 @@ $orderData = $order ? $order->toArray() : [
                 <div class="row g-3">
                     <div class="col-6 col-md-4">
                         <div class="form-group">
-                            <label class="form-label required">Tgl Mulai Event</label>
+                            <label class="form-label required">Tgl Mulai Kegiatan</label>
                             <input type="date" name="event_date" class="form-control" id="eventStartDate"
                                    value="<?= e(old('event_date', $orderData['event_date'])) ?>" required>
                         </div>
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Tgl Selesai Event</label>
+                            <label class="form-label">Tgl Selesai Kegiatan</label>
                             <input type="date" name="event_end_date" class="form-control" id="eventEndDate"
                                    value="<?= e(old('event_end_date', $orderData['event_end_date'] ?? '')) ?>">
                         </div>
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Durasi Event</label>
+                            <label class="form-label">Durasi Kegiatan</label>
                             <div class="input-group">
                                 <input type="number" id="numDaysDisplay" class="form-control" value="1" readonly
                                        style="background: var(--gray-100);">
@@ -62,67 +62,53 @@ $orderData = $order ? $order->toArray() : [
                     </div>
                 </div>
 
-                <div class="row g-3 mt-2">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label required">Klien</label>
-                            <select name="client_id" class="form-control" id="clientSelect" required>
-                                <option value="">-- Pilih Klien --</option>
-                                <?php foreach ($clients as $id => $name): ?>
-                                <option value="<?= $id ?>" <?= old('client_id', $orderData['client_id']) == $id ? 'selected' : '' ?>>
-                                    <?= e($name) ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <small class="text-muted">
-                                <a href="<?= url('/clients/create') ?>" target="_blank">+ Tambah klien baru</a>
-                            </small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label required">Nama Kegiatan</label>
-                            <input type="text" name="event_name" class="form-control"
-                                   value="<?= e(old('event_name', $orderData['event_name'])) ?>"
-                                   placeholder="Contoh: Open Trip ke Bogor" required>
-                        </div>
-                    </div>
+                <div class="form-group mt-3">
+                    <label class="form-label required">Klien</label>
+                    <select name="client_id" class="form-control" id="clientSelect" required>
+                        <option value="">-- Pilih Klien --</option>
+                        <?php foreach ($clients as $id => $name): ?>
+                        <option value="<?= $id ?>" <?= old('client_id', $orderData['client_id']) == $id ? 'selected' : '' ?>>
+                            <?= e($name) ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <small class="text-muted">
+                        <a href="<?= url('/clients/create') ?>" target="_blank">+ Tambah klien baru</a>
+                    </small>
                 </div>
 
-                <div class="row g-3 mt-2" id="divisiRow" style="display: none;">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label required">Divisi</label>
-                            <select name="divisi" class="form-control" id="divisiSelect">
-                                <option value="">-- Pilih Divisi --</option>
-                                <?php foreach (DIVISI_OPTIONS as $key => $label): ?>
-                                <option value="<?= $key ?>" <?= old('divisi', $orderData['divisi'] ?? '') === $key ? 'selected' : '' ?>>
-                                    <?= e($label) ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <small class="text-muted">Menentukan format penomoran invoice khusus untuk klien ini.</small>
-                        </div>
-                    </div>
+                <div class="form-group mt-3">
+                    <label class="form-label required">Nama Kegiatan</label>
+                    <input type="text" name="event_name" class="form-control"
+                           value="<?= e(old('event_name', $orderData['event_name'])) ?>"
+                           placeholder="Contoh: Open Trip ke Bogor" required>
                 </div>
 
-                <div class="row g-3 mt-2">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label required">PIC Name</label>
-                            <input type="text" name="pic_name" class="form-control"
-                                   value="<?= e(old('pic_name', $orderData['pic_name'] ?? '')) ?>"
-                                   placeholder="Nama PIC pesanan ini" required>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label required">Phone Number</label>
-                            <input type="text" name="pic_phone" class="form-control"
-                                   value="<?= e(old('pic_phone', $orderData['pic_phone'] ?? '')) ?>"
-                                   placeholder="08xx xxxx xxxx" required>
-                        </div>
-                    </div>
+                <div class="form-group mt-3" id="divisiRow" style="display: none;">
+                    <label class="form-label required">Divisi</label>
+                    <select name="divisi" class="form-control" id="divisiSelect">
+                        <option value="">-- Pilih Divisi --</option>
+                        <?php foreach (DIVISI_OPTIONS as $key => $label): ?>
+                        <option value="<?= $key ?>" <?= old('divisi', $orderData['divisi'] ?? '') === $key ? 'selected' : '' ?>>
+                            <?= e($label) ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <small class="text-muted">Menentukan format penomoran invoice khusus untuk klien ini.</small>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label class="form-label required">PIC Name</label>
+                    <input type="text" name="pic_name" class="form-control"
+                           value="<?= e(old('pic_name', $orderData['pic_name'] ?? '')) ?>"
+                           placeholder="Nama PIC pesanan ini" required>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label class="form-label required">Phone Number</label>
+                    <input type="text" name="pic_phone" class="form-control"
+                           value="<?= e(old('pic_phone', $orderData['pic_phone'] ?? '')) ?>"
+                           placeholder="08xx xxxx xxxx" required>
                 </div>
 
                 <div class="form-group mt-3">
@@ -179,48 +165,50 @@ $orderData = $order ? $order->toArray() : [
                                                value="<?= $item['quantity'] ?>" min="1">
                                     </div>
                                     <div class="col-6 col-md-3">
-                                        <label class="form-label-sm">Jumlah Hari <i class="fas fa-info-circle text-muted" title="Bisa berbeda per item"></i></label>
-                                        <input type="number" name="items[<?= $index ?>][num_days]" 
-                                               class="form-control form-control-sm item-days" 
+                                        <label class="form-label-sm">Jumlah Hari</label>
+                                        <input type="number" name="items[<?= $index ?>][num_days]"
+                                               class="form-control form-control-sm item-days"
                                                value="<?= $item['num_days'] ?? 1 ?>" min="1">
                                     </div>
                                     <div class="col-6 col-md-3">
                                         <label class="form-label-sm">Harga/Unit/Hari</label>
-                                        <input type="text" name="items[<?= $index ?>][base_price]" 
-                                               class="form-control form-control-sm item-base-price rupiah-input" 
+                                        <input type="text" name="items[<?= $index ?>][base_price]"
+                                               class="form-control form-control-sm item-base-price rupiah-input"
                                                value="<?= number_format($item['base_price'], 0, ',', '.') ?>"
                                                placeholder="0">
                                     </div>
                                 </div>
                                 <div class="row g-2 mt-2">
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12">
                                         <label class="form-label-sm">Deskripsi</label>
                                         <input type="text" name="items[<?= $index ?>][description]"
                                                class="form-control form-control-sm"
                                                value="<?= e($item['description']) ?>"
                                                placeholder="Nama hotel/maskapai/kendaraan" required>
                                     </div>
-                                    <div class="col-3 col-md-2">
-                                        <label class="form-label-sm">Cashback/Unit <i class="fas fa-info-circle text-muted" title="Ditambahkan ke Harga/Unit sebelum markup dihitung"></i></label>
+                                </div>
+                                <div class="row g-2 mt-2">
+                                    <div class="col-6 col-md-3">
+                                        <label class="form-label-sm">Cashback/Unit</label>
                                         <input type="text" name="items[<?= $index ?>][cashback]"
                                                class="form-control form-control-sm item-cashback rupiah-input"
                                                value="<?= number_format($item['cashback'] ?? 0, 0, ',', '.') ?>"
                                                placeholder="0">
                                     </div>
-                                    <div class="col-3 col-md-2">
+                                    <div class="col-6 col-md-3">
                                         <label class="form-label-sm">Markup</label>
                                         <select name="items[<?= $index ?>][markup_type]" class="form-control form-control-sm item-markup-type">
                                             <option value="percentage" <?= $item['markup_type'] === 'percentage' ? 'selected' : '' ?>>%</option>
                                             <option value="fixed" <?= $item['markup_type'] === 'fixed' ? 'selected' : '' ?>>Rp</option>
                                         </select>
                                     </div>
-                                    <div class="col-3 col-md-2">
+                                    <div class="col-6 col-md-3">
                                         <label class="form-label-sm">Nilai</label>
                                         <input type="number" name="items[<?= $index ?>][markup_value]"
                                                class="form-control form-control-sm item-markup-value"
                                                value="<?= $item['markup_value'] ?>" min="0">
                                     </div>
-                                    <div class="col-3 col-md-2">
+                                    <div class="col-6 col-md-3">
                                         <label class="form-label-sm">Final</label>
                                         <input type="text" class="form-control form-control-sm item-final-price"
                                                value="<?= number_format($item['final_price'] ?? 0, 0, ',', '.') ?>" readonly
@@ -228,14 +216,14 @@ $orderData = $order ? $order->toArray() : [
                                     </div>
                                 </div>
                                 <div class="row g-2 mt-2">
-                                    <div class="col-4 col-md-2">
+                                    <div class="col-4 col-md-3">
                                         <label class="form-label-sm">Qty Peserta</label>
                                         <input type="number" name="items[<?= $index ?>][participant_qty]"
                                                class="form-control form-control-sm" min="0" placeholder="0"
                                                value="<?= e($item['participant_qty'] ?? '') ?>">
                                     </div>
-                                    <div class="col-8 col-md-10">
-                                        <label class="form-label-sm">Nama Peserta <i class="fas fa-info-circle text-muted" title="Satu nama per baris"></i></label>
+                                    <div class="col-8 col-md-9">
+                                        <label class="form-label-sm">Nama Peserta</label>
                                         <textarea name="items[<?= $index ?>][participant_names]"
                                                   class="form-control form-control-sm" rows="1"
                                                   placeholder="Opsional, satu nama per baris"><?= e($item['participant_names'] ?? '') ?></textarea>
@@ -330,53 +318,55 @@ $orderData = $order ? $order->toArray() : [
                            class="form-control form-control-sm item-qty" value="1" min="1">
                 </div>
                 <div class="col-6 col-md-3">
-                    <label class="form-label-sm">Jumlah Hari <i class="fas fa-info-circle text-muted" title="Bisa berbeda per item"></i></label>
-                    <input type="number" name="items[__INDEX__][num_days]" 
+                    <label class="form-label-sm">Jumlah Hari</label>
+                    <input type="number" name="items[__INDEX__][num_days]"
                            class="form-control form-control-sm item-days" value="1" min="1">
                 </div>
                 <div class="col-6 col-md-3">
                     <label class="form-label-sm">Harga/Unit/Hari</label>
-                    <input type="text" name="items[__INDEX__][base_price]" 
+                    <input type="text" name="items[__INDEX__][base_price]"
                            class="form-control form-control-sm item-base-price rupiah-input" placeholder="0">
                 </div>
             </div>
             <div class="row g-2 mt-2">
-                <div class="col-12 col-md-4">
+                <div class="col-12">
                     <label class="form-label-sm">Deskripsi</label>
                     <input type="text" name="items[__INDEX__][description]"
                            class="form-control form-control-sm" placeholder="Nama hotel/maskapai/kendaraan" required>
                 </div>
-                <div class="col-3 col-md-2">
-                    <label class="form-label-sm">Cashback/Unit <i class="fas fa-info-circle text-muted" title="Ditambahkan ke Harga/Unit sebelum markup dihitung"></i></label>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-6 col-md-3">
+                    <label class="form-label-sm">Cashback/Unit</label>
                     <input type="text" name="items[__INDEX__][cashback]"
                            class="form-control form-control-sm item-cashback rupiah-input" placeholder="0">
                 </div>
-                <div class="col-3 col-md-2">
+                <div class="col-6 col-md-3">
                     <label class="form-label-sm">Markup</label>
                     <select name="items[__INDEX__][markup_type]" class="form-control form-control-sm item-markup-type">
                         <option value="percentage">%</option>
                         <option value="fixed">Rp</option>
                     </select>
                 </div>
-                <div class="col-3 col-md-2">
+                <div class="col-6 col-md-3">
                     <label class="form-label-sm">Nilai</label>
                     <input type="number" name="items[__INDEX__][markup_value]"
                            class="form-control form-control-sm item-markup-value" value="0" min="0">
                 </div>
-                <div class="col-3 col-md-2">
+                <div class="col-6 col-md-3">
                     <label class="form-label-sm">Final</label>
                     <input type="text" class="form-control form-control-sm item-final-price"
                            value="0" readonly style="background: var(--gray-100); font-weight: 600;">
                 </div>
             </div>
             <div class="row g-2 mt-2">
-                <div class="col-4 col-md-2">
+                <div class="col-4 col-md-3">
                     <label class="form-label-sm">Qty Peserta</label>
                     <input type="number" name="items[__INDEX__][participant_qty]"
                            class="form-control form-control-sm" min="0" placeholder="0">
                 </div>
-                <div class="col-8 col-md-10">
-                    <label class="form-label-sm">Nama Peserta <i class="fas fa-info-circle text-muted" title="Satu nama per baris"></i></label>
+                <div class="col-8 col-md-9">
+                    <label class="form-label-sm">Nama Peserta</label>
                     <textarea name="items[__INDEX__][participant_names]"
                               class="form-control form-control-sm" rows="1"
                               placeholder="Opsional, satu nama per baris"></textarea>

@@ -61,7 +61,7 @@
             <tbody>
                 <?php foreach ($clients as $client): ?>
                 <?php $c = is_array($client) ? $client : (array)$client; ?>
-                <tr>
+                <tr class="clickable-row" onclick="window.location.href='<?= url('/clients/' . $c['id']) ?>'">
                     <td><span class="text-muted"><?= e($c['client_code'] ?? '-') ?></span></td>
                     <td>
                         <a href="<?= url('/clients/' . $c['id']) ?>" class="font-medium">
@@ -69,17 +69,17 @@
                         </a>
                     </td>
                     <td><?= e($c['contact_person'] ?? '-') ?></td>
-                    <td>
+                    <td onclick="event.stopPropagation()">
                         <?php if (!empty($c['email'])): ?>
                         <a href="mailto:<?= e($c['email']) ?>"><?= e($c['email']) ?></a>
                         <?php else: ?>
                         -
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td onclick="event.stopPropagation()">
                         <?php if (!empty($c['phone'])): ?>
                         <?php $waPhone = preg_replace('/[^0-9]/', '', $c['phone']); if (strpos($waPhone, '0') === 0) $waPhone = '62' . substr($waPhone, 1); ?>
-                        <a href="https://wa.me/<?= e($waPhone) ?>" target="_blank" 
+                        <a href="https://wa.me/<?= e($waPhone) ?>" target="_blank"
                            class="text-success" title="Chat WhatsApp">
                             <i class="fab fa-whatsapp"></i> <?= e($c['phone']) ?>
                         </a>
@@ -87,9 +87,9 @@
                         -
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td onclick="event.stopPropagation()">
                         <div class="btn-group">
-                            <a href="<?= url('/clients/' . $c['id']) ?>" 
+                            <a href="<?= url('/clients/' . $c['id']) ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Lihat">
                                 <i class="fas fa-eye"></i>
                             </a>

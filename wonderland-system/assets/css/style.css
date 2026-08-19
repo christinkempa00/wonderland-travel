@@ -2034,3 +2034,12 @@ select.form-control {
         background: white !important;
     }
 }
+
+/* Rows that navigate to a detail page on click (list pages) */
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row:hover {
+    background: var(--gray-50);
+}

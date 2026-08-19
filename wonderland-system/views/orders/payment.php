@@ -284,7 +284,7 @@ $bankCashOptions = $bankCashOptions ?? [];
                     <td><?= e($client->name ?? '-') ?></td>
                 </tr>
                 <tr>
-                    <td class="text-muted">Event</td>
+                    <td class="text-muted">Kegiatan</td>
                     <td><?= e($order->event_name ?: '-') ?></td>
                 </tr>
                 <tr>

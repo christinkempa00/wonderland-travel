@@ -129,8 +129,8 @@ foreach ($orders as $order) {
             <thead>
                 <tr>
                     <th>Klien</th>
-                    <th>Tanggal Event</th>
-                    <th>Event</th>
+                    <th>Tanggal Kegiatan</th>
+                    <th>Kegiatan</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th>Pembayaran</th>
@@ -152,7 +152,7 @@ foreach ($orders as $order) {
                         $eventDays = $start->diff($end)->days + 1;
                     }
                 ?>
-                <tr>
+                <tr class="clickable-row" onclick="window.location.href='<?= url('/orders/' . $order['id']) ?>'">
                     <td>
                         <a href="<?= url('/orders/' . $order['id']) ?>" class="font-medium">
                             <?= e($order['client_name'] ?? 'Walk-in') ?>
@@ -203,7 +203,7 @@ foreach ($orders as $order) {
                                   data-order-id="<?= $order['id'] ?>"
                                   data-current-status="<?= $order['payment_status'] ?>"
                                   style="cursor: pointer;"
-                                  onclick="openPaymentModal(<?= $order['id'] ?>, '<?= $order['payment_status'] ?>', '<?= e($order['paid_at'] ?? '') ?>', <?= (float) $orderRemaining ?>)">
+                                  onclick="event.stopPropagation(); openPaymentModal(<?= $order['id'] ?>, '<?= $order['payment_status'] ?>', '<?= e($order['paid_at'] ?? '') ?>', <?= (float) $orderRemaining ?>)">
                                 <?= $paymentStatus['label'] ?>
                                 <i class="fas fa-edit ms-1" style="font-size: 0.65rem;"></i>
                             </span>
@@ -215,17 +215,25 @@ foreach ($orders as $order) {
                             <?php endif; ?>
                         </div>
                     </td>
-                    <td>
+                    <td onclick="event.stopPropagation()">
                         <div class="btn-group">
-                            <a href="<?= url('/orders/' . $order['id']) ?>" 
+                            <a href="<?= url('/orders/' . $order['id']) ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Lihat">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <?php if (Session::can('orders.update') && in_array($order['status'], ['draft', 'quotation'])): ?>
-                            <a href="<?= url('/orders/' . $order['id'] . '/edit') ?>" 
+                            <?php if (Session::can('orders.update')): ?>
+                            <a href="<?= url('/orders/' . $order['id'] . '/edit') ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            <?php endif; ?>
+                            <?php if (Session::can('orders.delete')): ?>
+                            <button type="button" class="btn btn-sm btn-icon btn-secondary text-danger"
+                                    title="Hapus"
+                                    data-delete="<?= url('/orders/' . $order['id']) ?>"
+                                    data-message="Yakin ingin menghapus pesanan <?= e($order['order_number']) ?>?">
+                                <i class="fas fa-trash"></i>
+                            </button>
                             <?php endif; ?>
                         </div>
                     </td>

@@ -21,10 +21,19 @@
     <div class="col-6 col-md-3">
         <div class="glass-card summary-card">
             <div class="summary-card-label">Status Pesanan</div>
-            <div class="summary-card-value" style="font-size: 0.85rem;">
-                <span class="badge badge-danger"><?= (int) ($summary['count_unpaid'] ?? 0) ?> Belum</span>
-                <span class="badge badge-warning"><?= (int) ($summary['count_partial'] ?? 0) ?> Sebagian</span>
-                <span class="badge badge-success"><?= (int) ($summary['count_paid'] ?? 0) ?> Lunas</span>
+            <div class="status-rows">
+                <div class="status-row">
+                    <span class="badge badge-danger">Belum</span>
+                    <span class="status-count"><?= (int) ($summary['count_unpaid'] ?? 0) ?></span>
+                </div>
+                <div class="status-row">
+                    <span class="badge badge-warning">Sebagian</span>
+                    <span class="status-count"><?= (int) ($summary['count_partial'] ?? 0) ?></span>
+                </div>
+                <div class="status-row">
+                    <span class="badge badge-success">Lunas</span>
+                    <span class="status-count"><?= (int) ($summary['count_paid'] ?? 0) ?></span>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +88,7 @@
                             <th>Sisa</th>
                             <th>Status</th>
                             <th>Pembayaran Terakhir</th>
-                            <th width="60">Aksi</th>
+                            <th width="90">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,7 +98,7 @@
                             $remaining = max(0, $totalFinal - $paid);
                             $status = PAYMENT_STATUSES[$order['payment_status']] ?? null;
                         ?>
-                        <tr>
+                        <tr class="clickable-row" onclick="window.location.href='<?= url('/orders/' . $order['id']) ?>'">
                             <td>
                                 <a href="<?= url('/orders/' . $order['id']) ?>" class="font-medium">
                                     <?= e($order['client_name'] ?? 'Walk-in') ?>
@@ -107,10 +116,17 @@
                             <td>
                                 <?= !empty($order['last_payment_date']) ? formatDate($order['last_payment_date']) : '-' ?>
                             </td>
-                            <td>
-                                <a href="<?= url('/orders/' . $order['id'] . '/payment') ?>" class="btn btn-sm btn-icon btn-secondary" title="Kelola Pembayaran">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+                            <td onclick="event.stopPropagation()">
+                                <div class="btn-group">
+                                    <a href="<?= url('/orders/' . $order['id'] . '/payment') ?>" class="btn btn-sm btn-icon btn-secondary" title="Kelola Pembayaran">
+                                        <i class="fas fa-money-check-alt"></i>
+                                    </a>
+                                    <?php if (Session::can('orders.update')): ?>
+                                    <a href="<?= url('/orders/' . $order['id'] . '/edit') ?>" class="btn btn-sm btn-icon btn-secondary" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -202,6 +218,20 @@
 }
 .summary-card-value .badge {
     margin-right: 0.25rem;
+}
+.status-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+.status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.status-row .status-count {
+    font-weight: 700;
+    color: var(--gray-800);
 }
 .recent-payments-list {
     display: flex;
