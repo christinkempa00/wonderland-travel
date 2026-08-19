@@ -698,8 +698,8 @@ $mainColor3 = '#7f1d1d';
             background-image: url('/assets/images/doc-templates/kwitansi-band.jpg');
             background-size: 100% auto; background-repeat: no-repeat;
         }
-        .kwt-strip-top { height: 15px; background-position: top center; }
-        .kwt-strip-bottom { height: 12px; margin-top: auto; background-position: bottom center; }
+        .kwt-strip-top { height: 22px; background-position: top center; }
+        .kwt-strip-bottom { height: 20px; margin-top: auto; background-position: bottom center; }
 
         .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 30px 6px; }
         .kwt-company { display: flex; align-items: flex-start; gap: 10px; }
