@@ -103,10 +103,18 @@
                                 <i class="fas fa-eye"></i>
                             </a>
                             <?php if (Session::can('profit.update')): ?>
-                            <a href="<?= url('/profit/' . $recipient['id'] . '/edit') ?>" 
+                            <a href="<?= url('/profit/' . $recipient['id'] . '/edit') ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            <?php endif; ?>
+                            <?php if (Session::can('profit.delete')): ?>
+                            <button type="button" class="btn btn-sm btn-icon btn-secondary text-danger"
+                                    title="Hapus"
+                                    data-delete="<?= url('/profit/' . $recipient['id']) ?>"
+                                    data-message="Yakin ingin menghapus penerima <?= e($recipient['name']) ?>?">
+                                <i class="fas fa-trash"></i>
+                            </button>
                             <?php endif; ?>
                         </div>
                     </td>

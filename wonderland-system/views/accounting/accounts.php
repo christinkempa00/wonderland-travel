@@ -86,10 +86,18 @@ if (!function_exists('getAccountTypeColor')) {
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <?php endif; ?>
-                                <a href="<?= url('/accounting/ledger?account_id=' . $account['id']) ?>" 
+                                <a href="<?= url('/accounting/ledger?account_id=' . $account['id']) ?>"
                                    class="btn btn-sm btn-icon btn-secondary" title="Buku Besar">
                                     <i class="fas fa-book"></i>
                                 </a>
+                                <?php if (Session::can('accounting.delete')): ?>
+                                <button type="button" class="btn btn-sm btn-icon btn-secondary text-danger"
+                                        title="Hapus"
+                                        data-delete="<?= url('/accounting/accounts/' . $account['id']) ?>"
+                                        data-message="Yakin ingin menghapus akun <?= e($account['name']) ?>?">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

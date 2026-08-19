@@ -91,10 +91,18 @@
                                 <i class="fas fa-eye"></i>
                             </a>
                             <?php if (Session::can('accounting.update')): ?>
-                            <a href="<?= url('/accounting/bank-cash/' . $bc['id'] . '/edit') ?>" 
+                            <a href="<?= url('/accounting/bank-cash/' . $bc['id'] . '/edit') ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            <?php endif; ?>
+                            <?php if (Session::can('accounting.delete')): ?>
+                            <button type="button" class="btn btn-sm btn-icon btn-secondary text-danger"
+                                    title="Hapus"
+                                    data-delete="<?= url('/accounting/bank-cash/' . $bc['id']) ?>"
+                                    data-message="Yakin ingin menghapus <?= e($bc['name']) ?>?">
+                                <i class="fas fa-trash"></i>
+                            </button>
                             <?php endif; ?>
                         </div>
                     </td>
