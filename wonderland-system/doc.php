@@ -328,7 +328,8 @@ $mainColor3 = '#7f1d1d';
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Sora', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        .print-btn { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; border: none; padding: 14px 28px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4); z-index: 1000; text-decoration: none; }
+        .print-btn { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #ffffff 0%, #f5efd9 100%); color: #a8841c; border: 2px solid #c9a227; padding: 14px 28px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(201, 162, 39, 0.35); z-index: 1000; text-decoration: none; }
+        .print-btn:hover { background: linear-gradient(135deg, #c9a227 0%, #a8841c 100%); color: #fff; }
         .print-btn:hover { transform: translateY(-2px); }
         .back-btn { position: fixed; top: 20px; left: 20px; background: #6b7280; color: white; border: none; padding: 14px 28px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; border-radius: 12px; cursor: pointer; text-decoration: none; z-index: 1000; }
 
@@ -635,8 +636,8 @@ $mainColor3 = '#7f1d1d';
         .wt-signature .wt-sign-name { font-weight: 700; text-decoration: underline; }
 
         .wt-bottom-contacts {
-            display: flex; justify-content: center; gap: 26px;
-            padding: 10px 20px; font-size: 9.5px; color: #333;
+            display: flex; justify-content: center; gap: 28px;
+            padding: 14px 20px; font-size: 12px; color: #333;
         }
         .wt-bottom-contacts span { display: inline-flex; align-items: center; gap: 6px; }
 
