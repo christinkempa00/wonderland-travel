@@ -608,25 +608,33 @@ $mainColor3 = '#7f1d1d';
 
         .wt-meta {
             padding: 14px 34px 4px;
-            font-size: 16px;
+            font-size: 18px;
             line-height: 1.9;
         }
         .wt-meta-row { display: flex; gap: 10px; }
-        .wt-meta-row .wt-label { width: 110px; color: #444; flex-shrink: 0; }
+        .wt-meta-row .wt-label { width: 150px; color: #444; flex-shrink: 0; white-space: nowrap; }
         .wt-meta-row .wt-colon { width: 10px; flex-shrink: 0; }
         .wt-meta-row .wt-value { font-weight: 600; }
 
         .wt-body { padding: 16px 34px; flex: 1; }
 
-        .wt-table { width: 100%; border-collapse: collapse; font-size: 16px; }
+        .wt-table { width: 100%; border-collapse: collapse; font-size: 18px; }
         .wt-table th {
             background: var(--wt-ink); color: #fff; text-align: left;
             padding: 9px 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
             border: 1px solid var(--wt-ink);
         }
         .wt-table th.wt-num, .wt-table td.wt-num { text-align: center; width: 60px; }
-        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 110px; }
+        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 145px; }
         .wt-table td { padding: 9px 10px; border: 1px solid #ddd; vertical-align: top; }
+        /* Rp dipatenkan di kiri, nominal di kanan — tetap 1 baris walau font
+           besar (rpTable() render <span class="price-rp">/<span class="price-nominal">). */
+        .wt-table td.wt-price {
+            display: flex; justify-content: space-between; align-items: baseline;
+            white-space: nowrap;
+        }
+        .wt-table td.wt-price .price-rp { color: #6b7280; font-weight: 500; font-size: 0.7em; }
+        .wt-table td.wt-price .price-nominal { font-weight: 700; }
         .wt-table .wt-item-sub { display: block; font-size: 9px; color: #777; margin-top: 2px; }
         .wt-table tbody tr:nth-child(even) { background: #fafafa; }
         .wt-participant-list { list-style: disc; margin: 4px 0 0 16px; padding: 0; font-size: 9.5px; color: #333; }
@@ -863,8 +871,8 @@ $mainColor3 = '#7f1d1d';
                             </ul>
                             <?php endif; ?>
                         </td>
-                        <td class="wt-price"><?php echo rp($item['calc_unit_price_with_markup']); ?></td>
-                        <td class="wt-price"><?php echo rp($item['calc_final_price']); ?></td>
+                        <td class="wt-price"><?php echo rpTable($item['calc_unit_price_with_markup']); ?></td>
+                        <td class="wt-price"><?php echo rpTable($item['calc_final_price']); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
