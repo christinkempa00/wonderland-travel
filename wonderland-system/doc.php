@@ -631,9 +631,9 @@ $mainColor3 = '#7f1d1d';
            beberapa render (server production), lihat riwayat commit. */
         .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 118px; white-space: nowrap; }
         .wt-table td { padding: 9px 10px; border: 1px solid #ddd; vertical-align: top; }
-        .wt-table .wt-item-sub { display: block; font-size: 9px; color: #777; margin-top: 2px; }
+        .wt-table .wt-item-sub { display: block; font-size: 20px; color: #777; margin-top: 2px; }
         .wt-table tbody tr:nth-child(even) { background: #fafafa; }
-        .wt-participant-list { list-style: disc; margin: 4px 0 0 16px; padding: 0; font-size: 9.5px; color: #333; }
+        .wt-participant-list { list-style: disc; margin: 4px 0 0 16px; padding: 0; font-size: 20px; color: #333; }
         .wt-participant-list li { margin-bottom: 1px; }
 
         .wt-subtotal-row {
@@ -642,7 +642,7 @@ $mainColor3 = '#7f1d1d';
         }
         .wt-subtotal-row .wt-subtotal-value { min-width: 130px; text-align: right; color: var(--wt-gold-dark); }
 
-        .wt-terbilang { font-size: 10px; font-style: italic; color: #555; margin-top: 4px; text-align: right; }
+        .wt-terbilang { font-size: 20px; font-style: italic; color: #555; margin-top: 4px; text-align: right; }
 
         .wt-footer-block {
             display: flex; justify-content: space-between; align-items: flex-end;
