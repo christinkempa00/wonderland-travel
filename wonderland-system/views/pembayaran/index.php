@@ -98,7 +98,7 @@
                             $remaining = max(0, $totalFinal - $paid);
                             $status = PAYMENT_STATUSES[$order['payment_status']] ?? null;
                         ?>
-                        <tr class="clickable-row" onclick="window.location.href='<?= url('/orders/' . $order['id']) ?>'">
+                        <tr class="clickable-row" onclick="if (!event.target.closest('.aksi-cell')) window.location.href='<?= url('/orders/' . $order['id']) ?>'">
                             <td>
                                 <a href="<?= url('/orders/' . $order['id']) ?>" class="font-medium">
                                     <?= e($order['client_name'] ?? 'Walk-in') ?>
@@ -116,7 +116,7 @@
                             <td>
                                 <?= !empty($order['last_payment_date']) ? formatDate($order['last_payment_date']) : '-' ?>
                             </td>
-                            <td onclick="event.stopPropagation()">
+                            <td class="aksi-cell">
                                 <div class="btn-group">
                                     <a href="<?= url('/orders/' . $order['id'] . '/payment') ?>" class="btn btn-sm btn-icon btn-secondary" title="Kelola Pembayaran">
                                         <i class="fas fa-money-check-alt"></i>

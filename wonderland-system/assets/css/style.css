@@ -2043,3 +2043,7 @@ select.form-control {
 .clickable-row:hover {
     background: var(--gray-50);
 }
+
+.text-nowrap {
+    white-space: nowrap;
+}

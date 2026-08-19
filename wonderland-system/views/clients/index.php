@@ -61,7 +61,7 @@
             <tbody>
                 <?php foreach ($clients as $client): ?>
                 <?php $c = is_array($client) ? $client : (array)$client; ?>
-                <tr class="clickable-row" onclick="window.location.href='<?= url('/clients/' . $c['id']) ?>'">
+                <tr class="clickable-row" onclick="if (!event.target.closest('.aksi-cell')) window.location.href='<?= url('/clients/' . $c['id']) ?>'">
                     <td><span class="text-muted"><?= e($c['client_code'] ?? '-') ?></span></td>
                     <td>
                         <a href="<?= url('/clients/' . $c['id']) ?>" class="font-medium">
@@ -87,7 +87,7 @@
                         -
                         <?php endif; ?>
                     </td>
-                    <td onclick="event.stopPropagation()">
+                    <td class="aksi-cell">
                         <div class="btn-group">
                             <a href="<?= url('/clients/' . $c['id']) ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Lihat">

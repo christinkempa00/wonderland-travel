@@ -129,7 +129,8 @@ foreach ($orders as $order) {
             <thead>
                 <tr>
                     <th>Klien</th>
-                    <th>Tanggal Kegiatan</th>
+                    <th>Tgl Mulai</th>
+                    <th>Tgl Selesai</th>
                     <th>Kegiatan</th>
                     <th>Total</th>
                     <th>Status</th>
@@ -138,21 +139,13 @@ foreach ($orders as $order) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($orders as $order): 
+                <?php foreach ($orders as $order):
                     // Use calculated total if stored value is 0
-                    $displayTotal = ($order['total_final_price'] > 0) 
-                        ? $order['total_final_price'] 
+                    $displayTotal = ($order['total_final_price'] > 0)
+                        ? $order['total_final_price']
                         : ($orderTotals[$order['id']] ?? 0);
-                    
-                    // Calculate duration days for display
-                    $eventDays = 1;
-                    if (!empty($order['event_date']) && !empty($order['event_end_date']) && $order['event_end_date'] != $order['event_date']) {
-                        $start = new DateTime($order['event_date']);
-                        $end = new DateTime($order['event_end_date']);
-                        $eventDays = $start->diff($end)->days + 1;
-                    }
                 ?>
-                <tr class="clickable-row" onclick="window.location.href='<?= url('/orders/' . $order['id']) ?>'">
+                <tr class="clickable-row" onclick="if (!event.target.closest('.aksi-cell')) window.location.href='<?= url('/orders/' . $order['id']) ?>'">
                     <td>
                         <a href="<?= url('/orders/' . $order['id']) ?>" class="font-medium">
                             <?= e($order['client_name'] ?? 'Walk-in') ?>
@@ -161,18 +154,18 @@ foreach ($orders as $order) {
                             <?= e($order['order_number']) ?>
                         </div>
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                         <?php if (!empty($order['event_date'])): ?>
-                            <div class="event-date-display">
-                                <span class="date-main"><?= formatDate($order['event_date']) ?></span>
-                                <?php if (!empty($order['event_end_date']) && $order['event_end_date'] != $order['event_date']): ?>
-                                    <span class="date-separator">s/d</span>
-                                    <span class="date-end"><?= formatDate($order['event_end_date']) ?></span>
-                                    <span class="date-duration badge badge-info"><?= $eventDays ?> hari</span>
-                                <?php endif; ?>
-                            </div>
+                            <?= formatDate($order['event_date']) ?>
                         <?php else: ?>
                             <span class="text-muted"><?= formatDate($order['order_date']) ?></span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-nowrap">
+                        <?php if (!empty($order['event_end_date'])): ?>
+                            <?= formatDate($order['event_end_date']) ?>
+                        <?php else: ?>
+                            <span class="text-muted">-</span>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -215,7 +208,7 @@ foreach ($orders as $order) {
                             <?php endif; ?>
                         </div>
                     </td>
-                    <td onclick="event.stopPropagation()">
+                    <td class="aksi-cell">
                         <div class="btn-group">
                             <a href="<?= url('/orders/' . $order['id']) ?>"
                                class="btn btn-sm btn-icon btn-secondary" title="Lihat">
