@@ -705,18 +705,18 @@ $mainColor3 = '#7f1d1d';
            cuma bagian kiri gambar (pola gelombang, tanpa teks di kanan) — dengan
            begitu strip bisa dibuat jauh lebih tinggi/tebal tanpa teks ikut kebawa. */
         .kwt-strip-top {
-            height: 46px;
+            height: 38px;
             background-size: 150.6% auto;
             background-position: left top;
         }
         .kwt-strip-bottom {
-            height: 46px;
+            height: 38px;
             margin-top: auto;
             background-size: 128% auto;
             background-position: left bottom;
         }
 
-        .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 30px 4px; }
+        .kwt-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 5px 30px 2px; }
         .kwt-company { display: flex; align-items: flex-start; gap: 10px; }
         .kwt-company img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
         .kwt-company-text { font-size: 9px; line-height: 1.5; font-weight: 700; max-width: 340px; }
@@ -727,7 +727,7 @@ $mainColor3 = '#7f1d1d';
 
         .kwt-rule { border: none; border-top: 2px solid var(--wt-ink); border-bottom: 1px solid var(--wt-ink); height: 3px; margin: 0 30px; }
 
-        .kwt-fields { padding: 5px 30px; font-size: 10.5px; }
+        .kwt-fields { padding: 3px 30px; font-size: 10.5px; }
         .kwt-row { display: flex; gap: 10px; padding: 3px 0; }
         .kwt-row .kwt-label { width: 140px; }
         .kwt-row .kwt-colon { width: 8px; }
@@ -746,8 +746,8 @@ $mainColor3 = '#7f1d1d';
         .kwt-amount-box .kwt-rp { font-size: 15px; }
         .kwt-amount-value { font-size: 21px; font-weight: 800; }
         .kwt-signature { text-align: right; font-size: 9.5px; }
-        .kwt-signature .kwt-date { margin-bottom: 8px; }
-        .kwt-signature .kwt-hormat { margin: 2px 0 32px; }
+        .kwt-signature .kwt-date { margin-bottom: 4px; }
+        .kwt-signature .kwt-hormat { margin: 2px 0 65px; }
         .kwt-signature .kwt-sign-name { font-weight: 700; text-decoration: underline; margin-top: 2px; }
     </style>
 </head>
