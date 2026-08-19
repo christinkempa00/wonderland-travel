@@ -325,6 +325,7 @@ $mainColor3 = '#7f1d1d';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $docTitle . ' ' . e($docNum); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Sora', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
@@ -628,19 +629,28 @@ $mainColor3 = '#7f1d1d';
 
         .wt-payment-box {
             border: 2px solid var(--wt-gold); border-radius: 12px;
-            padding: 16px 24px; font-size: 12px; line-height: 2; max-width: 340px; min-width: 300px;
+            padding: 16px 22px; font-size: 12px; line-height: 1.8; max-width: 420px; min-width: 360px;
         }
         .wt-payment-box strong { display: block; font-size: 13px; margin-bottom: 6px; }
+        .wt-bank-list { margin-top: 10px; }
+        .wt-bank-row { display: flex; gap: 14px; padding: 3px 0; white-space: nowrap; }
+        .wt-bank-row .wt-bank-name { font-weight: 700; width: 68px; flex-shrink: 0; }
+        .wt-bank-row .wt-bank-no { width: 140px; flex-shrink: 0; }
 
         .wt-signature { text-align: center; font-size: 12px; min-width: 220px; }
         .wt-signature .wt-hormat { margin-bottom: 85px; }
         .wt-signature .wt-sign-name { font-weight: 700; text-decoration: underline; }
 
         .wt-bottom-contacts {
-            display: flex; justify-content: center; gap: 28px;
-            padding: 14px 20px; font-size: 12px; color: #333;
+            display: grid; grid-template-columns: 1fr 1fr; row-gap: 10px; column-gap: 40px;
+            justify-content: center; padding: 16px 60px; font-size: 12.5px; color: #1a1a1a;
         }
-        .wt-bottom-contacts span { display: inline-flex; align-items: center; gap: 6px; }
+        .wt-bottom-contacts .wt-contact-item { display: flex; align-items: center; gap: 12px; }
+        .wt-bottom-contacts .wt-contact-icon {
+            width: 26px; height: 26px; border-radius: 50%; background: var(--wt-ink);
+            color: #fff; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 12px; flex-shrink: 0;
+        }
 
         /* ================================================================
            KWITANSI — struktur & rasio halaman berbeda dari invoice, dibangun
@@ -851,11 +861,16 @@ $mainColor3 = '#7f1d1d';
         <div class="wt-footer-block">
             <div class="wt-payment-box">
                 <strong>Payment Detail</strong>
-                ○ Cash&nbsp;&nbsp;&nbsp;○ Transfer<br><br>
-                <?php foreach ($bankAccounts as $bankIdx => $bank): ?>
-                <?php echo e($bank['bank_name'] ?? 'BNI'); ?> <?php echo e($bank['account_no'] ?? ''); ?><br>
-                AN : <?php echo e($bank['account_name'] ?? ''); ?><?php if ($bankIdx < count($bankAccounts) - 1): ?><br><br><?php endif; ?>
-                <?php endforeach; ?>
+                ○ Cash&nbsp;&nbsp;&nbsp;○ Transfer
+                <div class="wt-bank-list">
+                    <?php foreach ($bankAccounts as $bank): ?>
+                    <div class="wt-bank-row">
+                        <span class="wt-bank-name"><?php echo e($bank['bank_name'] ?? 'BNI'); ?></span>
+                        <span class="wt-bank-no"><?php echo e($bank['account_no'] ?? ''); ?></span>
+                        <span class="wt-bank-holder"><?php echo e($bank['account_name'] ?? ''); ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <div class="wt-signature">
                 <p class="wt-hormat">Hormat Kami</p>
@@ -865,13 +880,10 @@ $mainColor3 = '#7f1d1d';
         </div>
 
         <div class="wt-bottom-contacts">
-            <span>@wonderland__traveling</span>
-            <span>&bull;</span>
-            <span><?php echo e($ce ?: 'travelingwithwonderland@gmail.com'); ?></span>
-            <span>&bull;</span>
-            <span>www.wonderlandtrips.com</span>
-            <span>&bull;</span>
-            <span><?php echo e($cp ?: '0878-0486-1367'); ?></span>
+            <div class="wt-contact-item"><span class="wt-contact-icon"><i class="fab fa-instagram"></i></span> @wonderland__traveling</div>
+            <div class="wt-contact-item"><span class="wt-contact-icon"><i class="fas fa-envelope"></i></span> <?php echo e($ce ?: 'travelingwithwonderland@gmail.com'); ?></div>
+            <div class="wt-contact-item"><span class="wt-contact-icon"><i class="fas fa-globe"></i></span> www.wonderlandtrips.com</div>
+            <div class="wt-contact-item"><span class="wt-contact-icon"><i class="fas fa-phone"></i></span> <?php echo e($cp ?: '0878-0486-1367'); ?></div>
         </div>
 
         <div class="wt-invband wt-band"></div>
