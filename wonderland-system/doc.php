@@ -222,7 +222,7 @@ function getLogoUrl($company) {
     return null;
 }
 
-$types = ['bus'=>'Big Bus','medium_bus'=>'Medium Bus','mini_bus'=>'Mini Bus','hiace'=>'Hiace','elf'=>'Elf','towing'=>'Towing','hotel'=>'Hotel','flight'=>'Tiket Pesawat','rental'=>'Rental Mobil','restaurant'=>'Restoran','travel'=>'Travel','other'=>'Lainnya'];
+$types = ['bus'=>'Big Bus','medium_bus'=>'Medium Bus','mini_bus'=>'Mini Bus','hiace'=>'Hiace','elf'=>'Elf','towing'=>'Towing','hotel'=>'Hotel','flight'=>'Tiket Pesawat','rental'=>'Rental Mobil','restaurant'=>'Restoran','travel'=>'Travel','train'=>'Kereta Api','kontrakan'=>'Kontrakan','ship'=>'Kapal Laut','ship_room'=>'Kapal (Kamar di Kapal)','other'=>'Lainnya'];
 $prefixes = ['invoice'=>'INV','kwitansi'=>'KWT','penawaran'=>'PNW','kesepakatan'=>'KSP'];
 $titles = ['invoice'=>'INVOICE','kwitansi'=>'KWITANSI','penawaran'=>'SURAT PENAWARAN','kesepakatan'=>'SURAT KESEPAKATAN'];
 
@@ -730,7 +730,8 @@ $mainColor3 = '#7f1d1d';
         }
         .kwt-amount-value { font-size: 15px; font-weight: 800; }
         .kwt-signature { text-align: right; font-size: 9.5px; }
-        .kwt-signature .kwt-hormat { margin: 2px 0 26px; }
+        .kwt-signature .kwt-date { margin-bottom: 10px; }
+        .kwt-signature .kwt-hormat { margin: 2px 0 48px; }
         .kwt-signature .kwt-sign-name { font-weight: 700; text-decoration: underline; margin-top: 2px; }
     </style>
 </head>
@@ -802,7 +803,7 @@ $mainColor3 = '#7f1d1d';
                 <div class="kwt-amount-value"><?php echo number_format($total, 0, ',', '.'); ?></div>
             </div>
             <div class="kwt-signature">
-                <p>Jakarta, <?php echo $docDate; ?></p>
+                <p class="kwt-date">Jakarta, <?php echo $docDate; ?></p>
                 <p class="kwt-hormat">Yang menerima</p>
                 <div class="kwt-sign-name"><?php echo e($signatoryName); ?></div>
                 <div><?php echo e($signatoryTitle); ?></div>
