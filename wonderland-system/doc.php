@@ -625,19 +625,12 @@ $mainColor3 = '#7f1d1d';
             border: 1px solid var(--wt-ink);
         }
         .wt-table th.wt-num, .wt-table td.wt-num { text-align: center; width: 60px; }
-        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 118px; }
+        /* white-space:nowrap + table-layout auto = kolom melebar sendiri kalau
+           perlu, tapi "Rp X" tidak pernah pecah ke baris baru. Sengaja TIDAK
+           pakai display:flex di sini — itu bikin kolom TOTAL kolaps di
+           beberapa render (server production), lihat riwayat commit. */
+        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 118px; white-space: nowrap; }
         .wt-table td { padding: 9px 10px; border: 1px solid #ddd; vertical-align: top; }
-        /* Deskripsi item digedein sendiri, kolom lain (QTY/harga) tetap 14px —
-           lihat markup <span class="wt-item-desc"> di baris item. */
-        .wt-table .wt-item-desc { display: block; font-size: 18px; }
-        /* Rp dipatenkan di kiri, nominal di kanan — tetap 1 baris walau font
-           besar (rpTable() render <span class="price-rp">/<span class="price-nominal">). */
-        .wt-table td.wt-price {
-            display: flex; justify-content: space-between; align-items: baseline;
-            white-space: nowrap;
-        }
-        .wt-table td.wt-price .price-rp { color: #6b7280; font-weight: 500; font-size: 0.7em; }
-        .wt-table td.wt-price .price-nominal { font-weight: 700; }
         .wt-table .wt-item-sub { display: block; font-size: 9px; color: #777; margin-top: 2px; }
         .wt-table tbody tr:nth-child(even) { background: #fafafa; }
         .wt-participant-list { list-style: disc; margin: 4px 0 0 16px; padding: 0; font-size: 9.5px; color: #333; }
@@ -859,7 +852,7 @@ $mainColor3 = '#7f1d1d';
                     <tr>
                         <td class="wt-num"><?php if ((int)($item['participant_qty'] ?? 0) > 0): ?><?php echo (int)$item['participant_qty']; ?><?php else: ?><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?><?php endif; ?></td>
                         <td>
-                            <span class="wt-item-desc"><?php echo nl2br(e($item['description'])); ?></span>
+                            <?php echo nl2br(e($item['description'])); ?>
                             <span class="wt-item-sub"><?php echo isset($types[$item['item_type']]) ? $types[$item['item_type']] : $item['item_type']; ?></span>
                             <?php if ($orderDivisiLabel): ?>
                             <span class="wt-item-sub">Team <?php echo e($orderDivisiLabel); ?></span>
@@ -874,8 +867,8 @@ $mainColor3 = '#7f1d1d';
                             </ul>
                             <?php endif; ?>
                         </td>
-                        <td class="wt-price"><?php echo rpTable($item['calc_unit_price_with_markup']); ?></td>
-                        <td class="wt-price"><?php echo rpTable($item['calc_final_price']); ?></td>
+                        <td class="wt-price"><?php echo rp($item['calc_unit_price_with_markup']); ?></td>
+                        <td class="wt-price"><?php echo rp($item['calc_final_price']); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
