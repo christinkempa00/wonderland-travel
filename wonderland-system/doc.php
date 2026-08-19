@@ -618,7 +618,7 @@ $mainColor3 = '#7f1d1d';
 
         .wt-body { padding: 16px 34px; flex: 1; }
 
-        .wt-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .wt-table { width: 100%; border-collapse: collapse; font-size: 12px; }
         .wt-table th {
             background: var(--wt-ink); color: #fff; text-align: left;
             padding: 9px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
