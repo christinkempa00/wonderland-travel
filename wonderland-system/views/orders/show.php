@@ -135,8 +135,16 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                     </span>
                 </div>
                 <div class="info-item">
-                    <label>Nama Event</label>
+                    <label>Nama Kegiatan</label>
                     <span><?= e($order->event_name) ?: '-' ?></span>
+                </div>
+                <div class="info-item">
+                    <label>PIC Name</label>
+                    <span><?= e($order->pic_name) ?: '-' ?></span>
+                </div>
+                <div class="info-item">
+                    <label>Phone Number</label>
+                    <span><?= e($order->pic_phone) ?: '-' ?></span>
                 </div>
                 <?php if (!empty($order->divisi)): ?>
                 <div class="info-item">

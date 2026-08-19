@@ -481,12 +481,6 @@ class OrderController {
             return;
         }
         
-        if ($order->status !== 'draft') {
-            Session::flash('error', 'Hanya pesanan dengan status Draft yang dapat dihapus.');
-            redirect('/orders/' . $id);
-            return;
-        }
-        
         $orderNumber = $order->order_number;
         
         // Delete related data
@@ -2268,9 +2262,19 @@ class OrderController {
     }
 
     /**
+     * A client needs the Divisi field when explicitly flagged (uses_divisi=1)
+     * OR when its name contains "PELNI" — a safety net so the known PELNI
+     * client always gets the field even if someone forgets to tick the
+     * checkbox on the client record.
+     */
+    private function clientNeedsDivisi(array $client): bool {
+        return !empty($client['uses_divisi']) || stripos($client['name'] ?? '', 'PELNI') !== false;
+    }
+
+    /**
      * Resolve the PELNI "Divisi" from POST data — only returns a value when
-     * the selected client has uses_divisi = 1 and the submitted value is one
-     * of the known options; otherwise null (non-PELNI clients are unaffected).
+     * the selected client needs it and the submitted value is one of the
+     * known options; otherwise null (non-PELNI clients are unaffected).
      */
     private function resolveDivisi(array $post): ?string {
         $divisi = $post['divisi'] ?? '';
@@ -2284,7 +2288,7 @@ class OrderController {
         }
 
         $client = Client::find($clientId);
-        if (!$client || empty($client->uses_divisi)) {
+        if (!$client || !$this->clientNeedsDivisi($client->toArray())) {
             return null;
         }
 
@@ -2292,14 +2296,14 @@ class OrderController {
     }
 
     /**
-     * Map of client_id => uses_divisi (bool), for the order form's JS to
+     * Map of client_id => needs-divisi (bool), for the order form's JS to
      * decide when to reveal the Divisi dropdown.
      */
     private function getClientsUsesDivisi(int $companyId): array {
-        $rows = db()->fetchAll("SELECT id, uses_divisi FROM clients WHERE company_id = ?", [$companyId]);
+        $rows = db()->fetchAll("SELECT id, name, uses_divisi FROM clients WHERE company_id = ?", [$companyId]);
         $map = [];
         foreach ($rows as $row) {
-            $map[(int) $row['id']] = (bool) $row['uses_divisi'];
+            $map[(int) $row['id']] = $this->clientNeedsDivisi($row);
         }
         return $map;
     }
@@ -2334,10 +2338,10 @@ class OrderController {
             $errors[] = 'Deskripsi wajib diisi.';
         }
 
-        // Divisi hanya wajib untuk klien PELNI-style (uses_divisi = 1).
+        // Divisi hanya wajib untuk klien PELNI-style.
         if (!empty($data['client_id'])) {
             $client = Client::find((int) $data['client_id']);
-            if ($client && !empty($client->uses_divisi) && empty($data['divisi'])) {
+            if ($client && $this->clientNeedsDivisi($client->toArray()) && empty($data['divisi'])) {
                 $errors[] = 'Divisi wajib dipilih untuk klien ini.';
             }
         }

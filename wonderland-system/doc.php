@@ -303,18 +303,12 @@ if (($docType === 'invoice' || $docType === 'kwitansi') && !empty($order['pelni_
 }
 $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 
-// event_date sering NULL (pesanan tanpa tanggal event) — jangan biarkan jatuh
-// ke epoch (1 Jan 1970), pakai order_date sebagai dasar kalau kosong.
-$eventDateBase = !empty($order['event_date']) ? strtotime($order['event_date']) : strtotime($order['order_date']);
-
 if ($docType == 'penawaran' || $docType == 'kesepakatan') {
     $docDate = tgl($order['order_date']);
-} elseif ($docType == 'invoice') {
-    $invoiceDate = date('Y-m-d', strtotime('+1 day', $eventDateBase));
-    $docDate = tgl($invoiceDate);
 } else {
-    $kwitansiDate = date('Y-m-d', strtotime('+2 days', $eventDateBase));
-    $docDate = tgl($kwitansiDate);
+    // Invoice & kwitansi: tanggal dokumen = tanggal dokumen ini dibuat/dicetak
+    // (bukan lagi dihitung dari tanggal event + 1/2 hari).
+    $docDate = tgl(date('Y-m-d'));
 }
 
 $logoUrl = getLogoUrl($company);
@@ -586,7 +580,7 @@ $mainColor3 = '#7f1d1d';
             background-size: 100% auto; background-repeat: no-repeat;
         }
         .wt-topband { height: 128px; background-position: top center; }
-        .wt-band { height: 34px; margin-top: auto; background-position: bottom center; }
+        .wt-band { height: 52px; margin-top: auto; background-position: bottom center; }
 
         .wt-meta-rule { border: none; border-top: 3px double var(--wt-ink); margin: 0 34px; }
 
@@ -626,18 +620,18 @@ $mainColor3 = '#7f1d1d';
 
         .wt-footer-block {
             display: flex; justify-content: space-between; align-items: flex-end;
-            padding: 10px 34px 20px;
-            gap: 20px;
+            padding: 14px 34px 26px;
+            gap: 24px;
         }
 
         .wt-payment-box {
-            border: 2px solid var(--wt-gold); border-radius: 10px;
-            padding: 10px 16px; font-size: 10px; line-height: 1.7; max-width: 260px;
+            border: 2px solid var(--wt-gold); border-radius: 12px;
+            padding: 16px 24px; font-size: 12px; line-height: 2; max-width: 340px; min-width: 300px;
         }
-        .wt-payment-box strong { display: block; font-size: 10.5px; margin-bottom: 3px; }
+        .wt-payment-box strong { display: block; font-size: 13px; margin-bottom: 6px; }
 
-        .wt-signature { text-align: center; font-size: 11px; min-width: 200px; }
-        .wt-signature .wt-hormat { margin-bottom: 45px; }
+        .wt-signature { text-align: center; font-size: 12px; min-width: 220px; }
+        .wt-signature .wt-hormat { margin-bottom: 85px; }
         .wt-signature .wt-sign-name { font-weight: 700; text-decoration: underline; }
 
         .wt-bottom-contacts {
