@@ -180,11 +180,16 @@ $orderData = $order ? $order->toArray() : [
                                 </div>
                                 <div class="row g-2 mt-2">
                                     <div class="col-12">
-                                        <label class="form-label-sm">Deskripsi</label>
-                                        <input type="text" name="items[<?= $index ?>][description]"
-                                               class="form-control form-control-sm"
-                                               value="<?= e($item['description']) ?>"
-                                               placeholder="Nama hotel/maskapai/kendaraan" required>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <label class="form-label-sm mb-0">Deskripsi</label>
+                                            <button type="button" class="btn btn-xs btn-outline-secondary insert-bullet-btn">
+                                                <i class="fas fa-list-ul"></i> Sisipkan Poin
+                                            </button>
+                                        </div>
+                                        <textarea name="items[<?= $index ?>][description]"
+                                                  class="form-control form-control-sm item-description" rows="2"
+                                                  placeholder="Nama hotel/maskapai/kendaraan. Bisa juga isi keterangan &amp; daftar nama peserta (pakai tombol Sisipkan Poin)"
+                                                  required><?= e($item['description']) ?></textarea>
                                     </div>
                                 </div>
                                 <div class="row g-2 mt-2">
@@ -216,17 +221,11 @@ $orderData = $order ? $order->toArray() : [
                                     </div>
                                 </div>
                                 <div class="row g-2 mt-2">
-                                    <div class="col-4 col-md-3">
+                                    <div class="col-6 col-md-3">
                                         <label class="form-label-sm">Qty Peserta</label>
                                         <input type="number" name="items[<?= $index ?>][participant_qty]"
                                                class="form-control form-control-sm" min="0" placeholder="0"
                                                value="<?= e($item['participant_qty'] ?? '') ?>">
-                                    </div>
-                                    <div class="col-8 col-md-9">
-                                        <label class="form-label-sm">Nama Peserta</label>
-                                        <textarea name="items[<?= $index ?>][participant_names]"
-                                                  class="form-control form-control-sm" rows="1"
-                                                  placeholder="Opsional, satu nama per baris"><?= e($item['participant_names'] ?? '') ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -330,9 +329,16 @@ $orderData = $order ? $order->toArray() : [
             </div>
             <div class="row g-2 mt-2">
                 <div class="col-12">
-                    <label class="form-label-sm">Deskripsi</label>
-                    <input type="text" name="items[__INDEX__][description]"
-                           class="form-control form-control-sm" placeholder="Nama hotel/maskapai/kendaraan" required>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label-sm mb-0">Deskripsi</label>
+                        <button type="button" class="btn btn-xs btn-outline-secondary insert-bullet-btn">
+                            <i class="fas fa-list-ul"></i> Sisipkan Poin
+                        </button>
+                    </div>
+                    <textarea name="items[__INDEX__][description]"
+                              class="form-control form-control-sm item-description" rows="2"
+                              placeholder="Nama hotel/maskapai/kendaraan. Bisa juga isi keterangan &amp; daftar nama peserta (pakai tombol Sisipkan Poin)"
+                              required></textarea>
                 </div>
             </div>
             <div class="row g-2 mt-2">
@@ -360,16 +366,10 @@ $orderData = $order ? $order->toArray() : [
                 </div>
             </div>
             <div class="row g-2 mt-2">
-                <div class="col-4 col-md-3">
+                <div class="col-6 col-md-3">
                     <label class="form-label-sm">Qty Peserta</label>
                     <input type="number" name="items[__INDEX__][participant_qty]"
                            class="form-control form-control-sm" min="0" placeholder="0">
-                </div>
-                <div class="col-8 col-md-9">
-                    <label class="form-label-sm">Nama Peserta</label>
-                    <textarea name="items[__INDEX__][participant_names]"
-                              class="form-control form-control-sm" rows="1"
-                              placeholder="Opsional, satu nama per baris"></textarea>
                 </div>
             </div>
         </div>
@@ -447,6 +447,17 @@ $orderData = $order ? $order->toArray() : [
 .form-label-sm i {
     font-size: 0.65rem;
     cursor: help;
+}
+
+.btn-xs {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    border-radius: 6px;
+}
+
+.item-description {
+    resize: vertical;
 }
 
 /* Alert info styling */
@@ -588,11 +599,30 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.closest('.item-card').remove();
             updateItemNumbers();
             calculateTotals();
-            
+
             if (container.children.length === 0) {
                 emptyMessage.classList.remove('d-none');
             }
         }
+    });
+
+    // Sisipkan poin (bullet) ke Deskripsi — untuk isi keterangan/daftar
+    // peserta manual, ganti fitur Nama Peserta terpisah yang lama.
+    container.addEventListener('click', function(e) {
+        var bulletBtn = e.target.closest('.insert-bullet-btn');
+        if (!bulletBtn) return;
+
+        var textarea = bulletBtn.closest('.item-card-body').querySelector('.item-description');
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var value = textarea.value;
+        var needsNewline = start > 0 && value.charAt(start - 1) !== '\n';
+        var insertion = (needsNewline ? '\n' : '') + '• ';
+
+        textarea.value = value.slice(0, start) + insertion + value.slice(end);
+        var cursorPos = start + insertion.length;
+        textarea.focus();
+        textarea.setSelectionRange(cursorPos, cursorPos);
     });
     
     // Update item numbers

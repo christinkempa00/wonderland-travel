@@ -210,7 +210,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                 <div class="item-row">
                     <div class="item-num"><?= $idx + 1 ?></div>
                     <div class="item-info">
-                        <div class="item-title">
+                        <div class="item-title" style="white-space: pre-line;">
                             <?= e($item['description']) ?>
                             <?php if (!empty($item['vehicle_plate'])): ?>
                             <span class="plate-badge"><?= e($item['vehicle_plate']) ?></span>

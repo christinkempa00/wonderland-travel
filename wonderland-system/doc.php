@@ -846,9 +846,9 @@ $mainColor3 = '#7f1d1d';
                 <tbody>
                     <?php foreach ($items as $item): ?>
                     <tr>
-                        <td class="wt-num"><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?></td>
+                        <td class="wt-num"><?php if ((int)($item['participant_qty'] ?? 0) > 0): ?><?php echo (int)$item['participant_qty']; ?><?php else: ?><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?><?php endif; ?></td>
                         <td>
-                            <?php echo e($item['description']); ?>
+                            <?php echo nl2br(e($item['description'])); ?>
                             <span class="wt-item-sub"><?php echo isset($types[$item['item_type']]) ? $types[$item['item_type']] : $item['item_type']; ?></span>
                             <?php if ($orderDivisiLabel): ?>
                             <span class="wt-item-sub">Team <?php echo e($orderDivisiLabel); ?></span>
