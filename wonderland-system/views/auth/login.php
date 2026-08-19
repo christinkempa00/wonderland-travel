@@ -2,6 +2,19 @@
 /**
  * Login Page
  */
+
+// Halaman login diakses sebelum login, jadi belum ada company_id sesi —
+// pakai logo company pertama yang sudah upload logo (deployment ini
+// dedicated untuk satu klien, jadi ini aman).
+$loginLogoUrl = null;
+try {
+    $loginCompany = db()->fetchOne("SELECT logo FROM companies WHERE logo IS NOT NULL AND logo != '' LIMIT 1");
+    if (!empty($loginCompany['logo'])) {
+        $loginLogoUrl = uploadUrl($loginCompany['logo']);
+    }
+} catch (Exception $e) {
+    $loginLogoUrl = null;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -84,6 +97,20 @@
         .login-logo i {
             font-size: 2.5rem;
             color: white;
+        }
+
+        .login-logo-img {
+            width: auto;
+            height: 90px;
+            background: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .login-logo-img img {
+            max-width: 220px;
+            max-height: 90px;
+            object-fit: contain;
         }
         
         .login-title {
@@ -322,9 +349,15 @@
     <div class="login-wrapper">
         <div class="login-container">
             <div class="login-card">
+                <?php if ($loginLogoUrl): ?>
+                <div class="login-logo login-logo-img">
+                    <img src="<?= e($loginLogoUrl) ?>" alt="<?= e(APP_NAME) ?>">
+                </div>
+                <?php else: ?>
                 <div class="login-logo">
                     <i class="fas fa-paper-plane"></i>
                 </div>
+                <?php endif; ?>
                 
                 <h1 class="login-title"><?= e(APP_NAME) ?></h1>
                 <p class="login-subtitle">Silakan masuk ke akun Anda</p>
