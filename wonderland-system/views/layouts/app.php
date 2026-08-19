@@ -35,7 +35,7 @@ $userRole = $_SESSION['user']['role'] ?? null;
     
     <!-- Favicon -->
     <?php if ($favicon): ?>
-    <link rel="icon" type="image/png" href="<?= uploadUrl('logos/' . $favicon) ?>">
+    <link rel="icon" type="image/png" href="<?= uploadUrl($favicon) ?>">
     <?php else: ?>
     <link rel="icon" type="image/png" href="<?= url('/icon.php?size=32') ?>">
     <?php endif; ?>

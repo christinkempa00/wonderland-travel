@@ -79,7 +79,10 @@ class Company extends Model {
      */
     public function getLogoUrl(): ?string {
         if ($this->logo) {
-            return uploadUrl('logos/' . $this->logo);
+            // $this->logo sudah berisi path relatif lengkap dari upload
+            // ('logos/xxx.png' — lihat SettingsController::uploadFile()),
+            // jangan tambahkan 'logos/' lagi di sini.
+            return uploadUrl($this->logo);
         }
         return null;
     }
