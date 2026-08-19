@@ -608,25 +608,28 @@ $mainColor3 = '#7f1d1d';
 
         .wt-meta {
             padding: 14px 34px 4px;
-            font-size: 18px;
+            font-size: 14px;
             line-height: 1.9;
         }
         .wt-meta-row { display: flex; gap: 10px; }
-        .wt-meta-row .wt-label { width: 150px; color: #444; flex-shrink: 0; white-space: nowrap; }
+        .wt-meta-row .wt-label { width: 115px; color: #444; flex-shrink: 0; white-space: nowrap; }
         .wt-meta-row .wt-colon { width: 10px; flex-shrink: 0; }
         .wt-meta-row .wt-value { font-weight: 600; }
 
         .wt-body { padding: 16px 34px; flex: 1; }
 
-        .wt-table { width: 100%; border-collapse: collapse; font-size: 18px; }
+        .wt-table { width: 100%; border-collapse: collapse; font-size: 14px; }
         .wt-table th {
             background: var(--wt-ink); color: #fff; text-align: left;
-            padding: 9px 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 9px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
             border: 1px solid var(--wt-ink);
         }
         .wt-table th.wt-num, .wt-table td.wt-num { text-align: center; width: 60px; }
-        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 145px; }
+        .wt-table th.wt-price, .wt-table td.wt-price { text-align: right; width: 118px; }
         .wt-table td { padding: 9px 10px; border: 1px solid #ddd; vertical-align: top; }
+        /* Deskripsi item digedein sendiri, kolom lain (QTY/harga) tetap 14px —
+           lihat markup <span class="wt-item-desc"> di baris item. */
+        .wt-table .wt-item-desc { display: block; font-size: 18px; }
         /* Rp dipatenkan di kiri, nominal di kanan — tetap 1 baris walau font
            besar (rpTable() render <span class="price-rp">/<span class="price-nominal">). */
         .wt-table td.wt-price {
@@ -856,7 +859,7 @@ $mainColor3 = '#7f1d1d';
                     <tr>
                         <td class="wt-num"><?php if ((int)($item['participant_qty'] ?? 0) > 0): ?><?php echo (int)$item['participant_qty']; ?><?php else: ?><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?><?php endif; ?></td>
                         <td>
-                            <?php echo nl2br(e($item['description'])); ?>
+                            <span class="wt-item-desc"><?php echo nl2br(e($item['description'])); ?></span>
                             <span class="wt-item-sub"><?php echo isset($types[$item['item_type']]) ? $types[$item['item_type']] : $item['item_type']; ?></span>
                             <?php if ($orderDivisiLabel): ?>
                             <span class="wt-item-sub">Team <?php echo e($orderDivisiLabel); ?></span>
