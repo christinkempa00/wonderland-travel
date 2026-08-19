@@ -638,7 +638,7 @@ $mainColor3 = '#7f1d1d';
 
         .wt-subtotal-row {
             display: flex; justify-content: flex-end; gap: 20px;
-            padding: 12px 4px 0; font-size: 20px; font-weight: 700;
+            padding: 12px 4px 0; font-size: 16px; font-weight: 700;
         }
         .wt-subtotal-row .wt-subtotal-value { min-width: 130px; text-align: right; color: var(--wt-gold-dark); }
 
