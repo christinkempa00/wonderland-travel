@@ -111,11 +111,6 @@ $orderData = $order ? $order->toArray() : [
                            placeholder="08xx xxxx xxxx" required>
                 </div>
 
-                <div class="form-group mt-3">
-                    <label class="form-label required">Deskripsi</label>
-                    <textarea name="description" class="form-control" rows="2"
-                              placeholder="Deskripsi singkat pesanan" required><?= e(old('description', $orderData['description'])) ?></textarea>
-                </div>
             </div>
             
             <!-- Items Section -->

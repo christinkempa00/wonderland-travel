@@ -2334,9 +2334,6 @@ class OrderController {
         if (trim($data['pic_phone'] ?? '') === '') {
             $errors[] = 'Phone Number wajib diisi.';
         }
-        if (trim($data['description'] ?? '') === '') {
-            $errors[] = 'Deskripsi wajib diisi.';
-        }
 
         // Divisi hanya wajib untuk klien PELNI-style.
         if (!empty($data['client_id'])) {

@@ -101,17 +101,18 @@
     </div>
 </div>
 
-<!-- Recent Orders & Quick Stats -->
+<!-- Riwayat Pesanan (preview list, sama kolomnya dengan halaman Pesanan —
+     tapi murni tampilan, tidak bisa diklik) -->
 <div class="row">
-    <div class="col-lg-6 stagger-item">
+    <div class="col-12 stagger-item">
         <div class="glass-card">
             <div class="card-header">
-                <h3 class="card-title">Pesanan Terbaru</h3>
+                <h3 class="card-title">Riwayat Pesanan</h3>
                 <a href="<?= url('/orders') ?>" class="btn btn-sm btn-outline-primary">
                     Lihat Semua
                 </a>
             </div>
-            
+
             <?php if (empty($recentOrders)): ?>
             <div class="empty-state">
                 <div class="empty-state-icon">
@@ -128,29 +129,67 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>No. Order</th>
                             <th>Klien</th>
+                            <th>Tanggal Kegiatan</th>
+                            <th>Kegiatan</th>
                             <th>Total</th>
                             <th>Status</th>
+                            <th>Pembayaran</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($recentOrders as $order): ?>
+                        <?php foreach ($recentOrders as $order):
+                            $eventDays = 1;
+                            if (!empty($order['event_date']) && !empty($order['event_end_date']) && $order['event_end_date'] != $order['event_date']) {
+                                $start = new DateTime($order['event_date']);
+                                $end = new DateTime($order['event_end_date']);
+                                $eventDays = $start->diff($end)->days + 1;
+                            }
+                        ?>
                         <tr>
                             <td>
-                                <a href="<?= url('/orders/' . $order['id']) ?>">
+                                <div class="font-medium"><?= e($order['client_name'] ?? 'Walk-in') ?></div>
+                                <div class="text-muted" style="font-size: 0.75rem;">
                                     <?= e($order['order_number']) ?>
-                                </a>
+                                </div>
                             </td>
-                            <td><?= e($order['client_name'] ?? '-') ?></td>
-                            <td><?= formatRupiah($order['total_final_price']) ?></td>
                             <td>
-                                <?php 
-                                $status = ORDER_STATUSES[$order['status']] ?? null;
-                                if ($status):
-                                ?>
+                                <?php if (!empty($order['event_date'])): ?>
+                                    <div class="event-date-display">
+                                        <span class="date-main"><?= formatDate($order['event_date']) ?></span>
+                                        <?php if (!empty($order['event_end_date']) && $order['event_end_date'] != $order['event_date']): ?>
+                                            <span class="date-separator">s/d</span>
+                                            <span class="date-end"><?= formatDate($order['event_end_date']) ?></span>
+                                            <span class="date-duration badge badge-info"><?= $eventDays ?> hari</span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <span class="text-muted"><?= formatDate($order['order_date']) ?></span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if ($order['event_name']): ?>
+                                <span title="<?= e($order['event_name']) ?>">
+                                    <?= e(truncate($order['event_name'], 25)) ?>
+                                </span>
+                                <?php else: ?>
+                                -
+                                <?php endif; ?>
+                            </td>
+                            <td class="font-medium"><?= formatRupiah($order['total_final_price']) ?></td>
+                            <td>
+                                <?php $status = ORDER_STATUSES[$order['status']] ?? null; ?>
+                                <?php if ($status): ?>
                                 <span class="badge badge-<?= $status['color'] ?>">
                                     <?= $status['label'] ?>
+                                </span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php $paymentStatus = PAYMENT_STATUSES[$order['payment_status']] ?? null; ?>
+                                <?php if ($paymentStatus): ?>
+                                <span class="badge badge-<?= $paymentStatus['color'] ?>">
+                                    <?= $paymentStatus['label'] ?>
                                 </span>
                                 <?php endif; ?>
                             </td>
@@ -162,107 +201,7 @@
             <?php endif; ?>
         </div>
     </div>
-    
-    <div class="col-lg-6 stagger-item">
-        <div class="glass-card">
-            <div class="card-header">
-                <h3 class="card-title">Ringkasan</h3>
-            </div>
-            
-            <div class="summary-list">
-                <div class="summary-item">
-                    <div class="summary-icon" style="background: var(--primary-100); color: var(--primary-600);">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="summary-info">
-                        <div class="summary-label">Total Klien</div>
-                        <div class="summary-value"><?= number_format($stats['total_clients']) ?></div>
-                    </div>
-                </div>
-                
-                <div class="summary-item">
-                    <div class="summary-icon" style="background: #faefd0; color: #a67f20;">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div class="summary-info">
-                        <div class="summary-label">Draft</div>
-                        <div class="summary-value"><?= number_format($stats['by_status']['draft'] ?? 0) ?></div>
-                    </div>
-                </div>
-                
-                <div class="summary-item">
-                    <div class="summary-icon" style="background: #fef3c7; color: #d97706;">
-                        <i class="fas fa-file-invoice"></i>
-                    </div>
-                    <div class="summary-info">
-                        <div class="summary-label">Menunggu Pembayaran</div>
-                        <div class="summary-value"><?= number_format($stats['by_status']['invoiced'] ?? 0) ?></div>
-                    </div>
-                </div>
-                
-                <div class="summary-item">
-                    <div class="summary-icon" style="background: #d1fae5; color: #059669;">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="summary-info">
-                        <div class="summary-label">Selesai</div>
-                        <div class="summary-value"><?= number_format($stats['by_status']['completed'] ?? 0) ?></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <a href="<?= url('/orders/create') ?>" class="btn btn-primary w-100">
-                    <i class="fas fa-plus"></i>
-                    Buat Pesanan Baru
-                </a>
-            </div>
-        </div>
-    </div>
 </div>
-
-<style>
-.summary-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.summary-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--gray-50);
-    border-radius: var(--border-radius-sm);
-}
-
-.summary-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--border-radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-}
-
-.summary-info {
-    flex: 1;
-}
-
-.summary-label {
-    font-size: var(--font-size-sm);
-    color: var(--gray-500);
-}
-
-.summary-value {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    color: var(--gray-800);
-}
-
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
