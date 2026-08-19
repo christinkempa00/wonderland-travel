@@ -730,8 +730,8 @@ $mainColor3 = '#7f1d1d';
         }
         .kwt-amount-value { font-size: 15px; font-weight: 800; }
         .kwt-signature { text-align: right; font-size: 9.5px; }
-        .kwt-signature .kwt-date { margin-bottom: 10px; }
-        .kwt-signature .kwt-hormat { margin: 2px 0 48px; }
+        .kwt-signature .kwt-date { margin-bottom: 14px; }
+        .kwt-signature .kwt-hormat { margin: 2px 0 90px; }
         .kwt-signature .kwt-sign-name { font-weight: 700; text-decoration: underline; margin-top: 2px; }
     </style>
 </head>
@@ -785,10 +785,11 @@ $mainColor3 = '#7f1d1d';
 
         <div class="kwt-rule"></div>
         <div class="kwt-fields">
+            <?php $kwitansiDesc = !empty($items[0]['description']) ? $items[0]['description'] : 'Pembayaran layanan'; ?>
             <div class="kwt-row">
                 <div class="kwt-label">Untuk Pembayaran</div><div class="kwt-colon">:</div>
                 <div class="kwt-value">
-                    <?php echo e(isset($order['description']) && $order['description'] ? $order['description'] : 'Pembayaran layanan'); ?><?php if ($totalParticipantQty > 0): ?> ( <?php echo $totalParticipantQty; ?> Orang )<?php endif; ?>
+                    <?php echo nl2br(e($kwitansiDesc)); ?><?php if ($totalParticipantQty > 0): ?> ( <?php echo $totalParticipantQty; ?> Orang )<?php endif; ?>
                     <?php if ($orderDivisiLabel): ?><br><?php echo e($orderDivisiLabel); ?> PELNI<?php endif; ?>
                 </div>
             </div>
@@ -854,10 +855,6 @@ $mainColor3 = '#7f1d1d';
                         <td class="wt-num"><?php if ((int)($item['participant_qty'] ?? 0) > 0): ?><?php echo (int)$item['participant_qty']; ?><?php else: ?><?php echo (int)$item['quantity']; ?><?php if ((int)$item['num_days'] > 1): ?> × <?php echo (int)$item['num_days']; ?>h<?php endif; ?><?php endif; ?></td>
                         <td>
                             <?php echo nl2br(e($item['description'])); ?>
-                            <span class="wt-item-sub"><?php echo isset($types[$item['item_type']]) ? $types[$item['item_type']] : $item['item_type']; ?></span>
-                            <?php if ($orderDivisiLabel): ?>
-                            <span class="wt-item-sub">Team <?php echo e($orderDivisiLabel); ?></span>
-                            <?php endif; ?>
                             <?php if (!empty($item['participant_names'])): ?>
                             <ul class="wt-participant-list">
                                 <?php foreach (preg_split('/\r\n|\r|\n/', trim($item['participant_names'])) as $pName): ?>
