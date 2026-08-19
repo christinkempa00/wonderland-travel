@@ -722,13 +722,14 @@ $mainColor3 = '#7f1d1d';
         .kwt-spacer { flex: 1; }
 
         .kwt-bottom-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 4px 30px 10px; }
-        .kwt-amount { display: flex; align-items: center; gap: 10px; }
         .kwt-amount-box {
-            background: #4a4a4a; color: #fff; font-weight: 800; font-size: 13px;
-            padding: 8px 20px 8px 14px; border-radius: 5px 0 0 5px;
-            clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%);
+            background: #4a4a4a; color: #fff; font-weight: 800;
+            display: flex; align-items: center; gap: 26px; min-width: 260px;
+            padding: 12px 44px 12px 18px; border-radius: 5px 0 0 5px;
+            clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%);
         }
-        .kwt-amount-value { font-size: 15px; font-weight: 800; }
+        .kwt-amount-box .kwt-rp { font-size: 15px; }
+        .kwt-amount-value { font-size: 21px; font-weight: 800; }
         .kwt-signature { text-align: right; font-size: 9.5px; }
         .kwt-signature .kwt-date { margin-bottom: 14px; }
         .kwt-signature .kwt-hormat { margin: 2px 0 90px; }
@@ -799,9 +800,9 @@ $mainColor3 = '#7f1d1d';
         <div class="kwt-spacer"></div>
 
         <div class="kwt-bottom-row">
-            <div class="kwt-amount">
-                <div class="kwt-amount-box">Rp.</div>
-                <div class="kwt-amount-value"><?php echo number_format($total, 0, ',', '.'); ?></div>
+            <div class="kwt-amount-box">
+                <span class="kwt-rp">Rp.</span>
+                <span class="kwt-amount-value"><?php echo number_format($total, 0, ',', '.'); ?></span>
             </div>
             <div class="kwt-signature">
                 <p class="kwt-date">Jakarta, <?php echo $docDate; ?></p>
