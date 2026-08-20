@@ -232,7 +232,6 @@ define('ITEM_TYPE_RESTAURANT', 'restaurant');
 define('ITEM_TYPE_TRAIN', 'train');
 define('ITEM_TYPE_KONTRAKAN', 'kontrakan');
 define('ITEM_TYPE_SHIP', 'ship');
-define('ITEM_TYPE_SHIP_ROOM', 'ship_room');
 define('ITEM_TYPE_OTHER', 'other');
 
 define('ITEM_TYPES', [
@@ -246,7 +245,6 @@ define('ITEM_TYPES', [
     ITEM_TYPE_TRAIN => ['label' => 'Kereta Api', 'icon' => 'train', 'color' => 'info'],
     ITEM_TYPE_KONTRAKAN => ['label' => 'Kontrakan', 'icon' => 'house', 'color' => 'secondary'],
     ITEM_TYPE_SHIP => ['label' => 'Kapal Laut', 'icon' => 'ship', 'color' => 'primary'],
-    ITEM_TYPE_SHIP_ROOM => ['label' => 'Kapal (Kamar di Kapal)', 'icon' => 'door-closed', 'color' => 'warning'],
     ITEM_TYPE_OTHER => ['label' => 'Lainnya', 'icon' => 'ellipsis-h', 'color' => 'dark']
 ]);
 
