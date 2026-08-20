@@ -241,6 +241,26 @@ function handleSingleMiddleware(string $middleware): bool {
             }
             break;
 
+        case 'client-auth':
+            // Portal klien — namespace sesi terpisah dari staff ('auth' di
+            // atas), lihat Session::isClientLoggedIn()/setClient().
+            if (!Session::isClientLoggedIn()) {
+                if (isAjax()) {
+                    jsonResponse(['error' => 'Unauthorized'], 401);
+                }
+                Session::set('client_redirect_after_login', $_SERVER['REQUEST_URI']);
+                redirect('/portal/login');
+                return false;
+            }
+            break;
+
+        case 'guest-client':
+            if (Session::isClientLoggedIn()) {
+                redirect('/portal');
+                return false;
+            }
+            break;
+
         case 'feature':
             // Route gated behind a feature flag constant, e.g. 'feature:passenger'
             // -> checks FEATURE_PASSENGER_MANAGEMENT. Kept separate from 'auth'
@@ -424,7 +444,7 @@ if ($method === 'POST') {
 }
 
 // Verify CSRF token for non-GET requests (if logged in)
-if ($method !== 'GET' && Session::isLoggedIn() && strpos($uri, 'api/') === false) {
+if ($method !== 'GET' && (Session::isLoggedIn() || Session::isClientLoggedIn()) && strpos($uri, 'api/') === false) {
     $token = $_POST['_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
     if (!Session::verifyCsrfToken($token)) {
         if (isAjax()) {

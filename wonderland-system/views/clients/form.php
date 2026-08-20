@@ -73,6 +73,25 @@ $data = $client ? $client->toArray() : [];
                     </div>
                 </div>
 
+                <?php if ($isEdit && $client): ?>
+                <div class="form-group" style="border-top: 1px solid var(--gray-200); padding-top: 1rem;">
+                    <label class="form-label">Portal Klien</label>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" id="portal_enabled" name="portal_enabled" class="form-check-input" value="1"
+                               <?= old('portal_enabled', $data['portal_enabled'] ?? 0) ? 'checked' : '' ?>>
+                        <label for="portal_enabled" class="form-check-label">
+                            Aktifkan akses Portal Klien (klien bisa lihat tagihan &amp; riwayat pesanan sendiri)
+                        </label>
+                    </div>
+                    <div class="text-sm text-muted mb-2">
+                        Kode Klien untuk login: <strong><?= e($data['client_code'] ?? '-') ?></strong>
+                    </div>
+                    <input type="password" id="portal_password" name="portal_password" class="form-control"
+                           placeholder="Isi untuk set/ubah password portal (kosongkan jika tidak diubah)"
+                           autocomplete="new-password">
+                </div>
+                <?php endif; ?>
+
                 <div class="form-group">
                     <label for="notes" class="form-label">Catatan</label>
                     <textarea id="notes" name="notes" class="form-control" rows="2" 

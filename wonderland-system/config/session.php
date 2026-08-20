@@ -340,6 +340,72 @@ class Session {
     }
     
     /**
+     * ============================================================
+     * Client Portal Session — completely separate namespace
+     * ($_SESSION['client']/'client_logged_in') from staff session
+     * above, so a staff login and a client login never collide.
+     * ============================================================
+     */
+
+    /**
+     * Set Logged-In Client
+     * @param array $client
+     */
+    public static function setClient(array $client): void {
+        $_SESSION['client'] = [
+            'id' => (int) $client['id'],
+            'company_id' => (int) $client['company_id'],
+            'name' => $client['name'],
+            'client_code' => $client['client_code']
+        ];
+        $_SESSION['client_logged_in'] = true;
+        $_SESSION['client_login_time'] = time();
+
+        session_regenerate_id(true);
+    }
+
+    /**
+     * Check if Client is Logged In
+     * @return bool
+     */
+    public static function isClientLoggedIn(): bool {
+        if (!isset($_SESSION['client_logged_in']) || $_SESSION['client_logged_in'] !== true) {
+            return false;
+        }
+
+        $loginTime = $_SESSION['client_login_time'] ?? 0;
+        if (time() - $loginTime > SESSION_LIFETIME) {
+            self::destroyClient();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get Current Client
+     * @return array|null
+     */
+    public static function client(): ?array {
+        return $_SESSION['client'] ?? null;
+    }
+
+    /**
+     * Get Current Client ID
+     * @return int|null
+     */
+    public static function clientId(): ?int {
+        return $_SESSION['client']['id'] ?? null;
+    }
+
+    /**
+     * Destroy Client Session
+     */
+    public static function destroyClient(): void {
+        unset($_SESSION['client'], $_SESSION['client_logged_in'], $_SESSION['client_login_time']);
+    }
+
+    /**
      * Check User Permission
      * @param string $permission
      * @return bool

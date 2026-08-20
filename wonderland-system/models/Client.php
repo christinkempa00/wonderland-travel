@@ -24,7 +24,9 @@ class Client extends Model {
         'address',
         'npwp',
         'uses_divisi',
-        'notes'
+        'notes',
+        'password',
+        'portal_enabled'
     ];
 
     /**

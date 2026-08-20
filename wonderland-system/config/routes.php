@@ -29,7 +29,17 @@ $routes = [
     'POST /forgot-password' => ['AuthController', 'forgotPassword'],
     'GET /reset-password/{token}' => ['AuthController', 'resetPasswordPage'],
     'POST /reset-password' => ['AuthController', 'resetPassword'],
-    
+
+    // ============================================
+    // CLIENT PORTAL (sesi terpisah dari staff — lihat 'client-auth'
+    // middleware & Session::isClientLoggedIn())
+    // ============================================
+
+    'GET /portal/login' => ['ClientPortalController', 'loginPage', 'guest-client'],
+    'POST /portal/login' => ['ClientPortalController', 'login'],
+    'GET /portal/logout' => ['ClientPortalController', 'logout'],
+    'GET /portal' => ['ClientPortalController', 'dashboard', 'client-auth'],
+
     // Installation
     'GET /install' => ['InstallController', 'index'],
     'GET /install/step/{step:\d+}' => ['InstallController', 'step'],
