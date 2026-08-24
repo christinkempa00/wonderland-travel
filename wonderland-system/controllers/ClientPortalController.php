@@ -73,7 +73,7 @@ class ClientPortalController {
         $client = db()->fetchOne("SELECT * FROM clients WHERE id = ?", [$clientId]);
 
         $orders = db()->fetchAll(
-            "SELECT id, order_number, event_name, event_date, event_end_date,
+            "SELECT id, order_number, pelni_invoice_number, event_name, event_date, event_end_date,
                     status, payment_status, total_final_price, paid_amount, paid_at, created_at
              FROM orders
              WHERE client_id = ?
@@ -83,6 +83,16 @@ class ClientPortalController {
 
         $outstanding = [];
         $totalOutstanding = 0.0;
+
+        foreach ($orders as &$order) {
+            // Nomor invoice yang tercetak di dokumen invoice/kwitansi — lihat
+            // doc.php. Order lama tanpa pelni_invoice_number fallback ke skema
+            // lama yang sama, bukan order_number (itu cuma no. tracking internal).
+            $order['invoice_display'] = !empty($order['pelni_invoice_number'])
+                ? $order['pelni_invoice_number']
+                : 'INV-' . date('Y') . '-' . str_pad((string) $order['id'], 5, '0', STR_PAD_LEFT);
+        }
+        unset($order);
 
         foreach ($orders as $order) {
             if (in_array($order['status'], ['draft', 'cancelled'])) {

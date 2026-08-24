@@ -73,7 +73,7 @@
             <tbody>
                 <?php foreach ($outstanding as $order): ?>
                 <tr>
-                    <td><?= e($order['order_number']) ?></td>
+                    <td><?= e($order['invoice_display']) ?></td>
                     <td><?= e($order['event_name'] ?: '-') ?></td>
                     <td><?= !empty($order['event_date']) ? formatDate($order['event_date']) : '-' ?></td>
                     <td class="text-right text-nowrap"><?= formatRupiah($order['total_final_price']) ?></td>
@@ -123,7 +123,7 @@
             <tbody>
                 <?php foreach ($orders as $order): ?>
                 <tr>
-                    <td><?= e($order['order_number']) ?></td>
+                    <td><?= e($order['invoice_display']) ?></td>
                     <td><?= e($order['event_name'] ?: '-') ?></td>
                     <td><?= !empty($order['event_date']) ? formatDate($order['event_date']) : '-' ?></td>
                     <td class="text-right text-nowrap"><?= formatRupiah($order['total_final_price']) ?></td>
