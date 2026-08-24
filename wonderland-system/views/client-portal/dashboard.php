@@ -76,9 +76,9 @@
                     <td><?= e($order['order_number']) ?></td>
                     <td><?= e($order['event_name'] ?: '-') ?></td>
                     <td><?= !empty($order['event_date']) ? formatDate($order['event_date']) : '-' ?></td>
-                    <td class="text-right"><?= formatRupiah($order['total_final_price']) ?></td>
-                    <td class="text-right text-success"><?= formatRupiah($order['paid_amount']) ?></td>
-                    <td class="text-right font-medium text-danger"><?= formatRupiah($order['remaining']) ?></td>
+                    <td class="text-right text-nowrap"><?= formatRupiah($order['total_final_price']) ?></td>
+                    <td class="text-right text-nowrap text-success"><?= formatRupiah($order['paid_amount']) ?></td>
+                    <td class="text-right text-nowrap font-medium text-danger"><?= formatRupiah($order['remaining']) ?></td>
                     <td>
                         <?php $ps = PAYMENT_STATUSES[$order['payment_status']] ?? null; ?>
                         <?php if ($ps): ?>
@@ -126,7 +126,7 @@
                     <td><?= e($order['order_number']) ?></td>
                     <td><?= e($order['event_name'] ?: '-') ?></td>
                     <td><?= !empty($order['event_date']) ? formatDate($order['event_date']) : '-' ?></td>
-                    <td class="text-right"><?= formatRupiah($order['total_final_price']) ?></td>
+                    <td class="text-right text-nowrap"><?= formatRupiah($order['total_final_price']) ?></td>
                     <td>
                         <?php $status = ORDER_STATUSES[$order['status']] ?? null; ?>
                         <?php if ($status): ?>
