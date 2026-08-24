@@ -14,12 +14,21 @@ class AuthController {
      * Show login page
      */
     public function loginPage(): void {
+        // Codebase yang sama di-deploy juga ke klien.wonderlandtrips.com
+        // (portal klien) — di domain itu "/" harus ke login klien, bukan
+        // login staff.
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        if (stripos($host, 'klien.') === 0) {
+            redirect('/portal/login');
+            return;
+        }
+
         // Redirect if already logged in
         if (Session::isLoggedIn()) {
             redirect('/dashboard');
             return;
         }
-        
+
         $pageTitle = 'Login';
         echo view('auth/login', compact('pageTitle'));
     }
