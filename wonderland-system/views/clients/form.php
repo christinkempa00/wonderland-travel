@@ -85,10 +85,8 @@ $data = $client ? $client->toArray() : [];
                     </div>
                     <div class="text-sm text-muted mb-2">
                         Kode Klien untuk login: <strong><?= e($data['client_code'] ?? '-') ?></strong>
+                        <br>Klien login cukup dengan kode ini, tanpa password.
                     </div>
-                    <input type="password" id="portal_password" name="portal_password" class="form-control"
-                           placeholder="Isi untuk set/ubah password portal (kosongkan jika tidak diubah)"
-                           autocomplete="new-password">
                 </div>
                 <?php endif; ?>
 

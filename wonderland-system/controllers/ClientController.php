@@ -200,12 +200,6 @@ class ClientController {
             'portal_enabled' => !empty($_POST['portal_enabled']) ? 1 : 0
         ];
 
-        // Password portal hanya diubah kalau field-nya diisi — kosongkan
-        // berarti "jangan ubah", bukan "hapus password".
-        if (!empty($_POST['portal_password'])) {
-            $data['password'] = password_hash($_POST['portal_password'], PASSWORD_DEFAULT, ['cost' => 12]);
-        }
-
         // Validate
         $errors = $this->validate($data, Session::companyId(), $id);
 

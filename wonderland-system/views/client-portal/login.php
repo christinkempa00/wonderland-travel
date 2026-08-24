@@ -147,18 +147,6 @@ try {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <div class="input-icon-wrapper">
-                            <input type="password" id="password" name="password" class="form-control"
-                                   placeholder="••••••••" required autocomplete="current-password">
-                            <i class="fas fa-lock input-icon"></i>
-                            <button type="button" class="password-toggle" id="togglePassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
                     <button type="submit" class="btn-login" id="btnLogin">
                         Masuk
                         <i class="fas fa-arrow-right"></i>
@@ -166,7 +154,7 @@ try {
                 </form>
 
                 <div class="login-footer">
-                    <p>Kode klien &amp; password Anda didapat dari <?= e(APP_NAME) ?>.</p>
+                    <p>Kode klien Anda didapat dari <?= e(APP_NAME) ?>.</p>
                     <p>&copy; <?= date('Y') ?> <?= e(APP_AUTHOR) ?>.</p>
                 </div>
             </div>
@@ -191,20 +179,6 @@ try {
     </div>
 
     <script>
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            var password = document.getElementById('password');
-            var icon = this.querySelector('i');
-            if (password.type === 'password') {
-                password.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                password.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
-
         document.getElementById('loginForm').addEventListener('submit', function() {
             var btn = document.getElementById('btnLogin');
             btn.disabled = true;

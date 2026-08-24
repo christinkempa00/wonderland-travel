@@ -3,7 +3,7 @@
  * ================================================================
  * TRAVEL MANAGEMENT SYSTEM - Client Portal Controller
  * ================================================================
- * Klien login pakai client_code + password (Session::setClient(),
+ * Klien login cukup pakai client_code (Session::setClient(),
  * namespace terpisah dari staff — lihat config/session.php) untuk
  * lihat tagihan tersisa & riwayat pesanan mereka sendiri.
  * ================================================================
@@ -23,10 +23,9 @@ class ClientPortalController {
      */
     public function login(): void {
         $code = trim($_POST['client_code'] ?? '');
-        $password = $_POST['password'] ?? '';
 
-        if ($code === '' || $password === '') {
-            Session::flash('error', 'Kode klien dan password wajib diisi.');
+        if ($code === '') {
+            Session::flash('error', 'Kode klien wajib diisi.');
             redirect('/portal/login');
             return;
         }
@@ -43,9 +42,9 @@ class ClientPortalController {
             [$code]
         );
 
-        if (!$client || empty($client['password']) || !password_verify($password, $client['password'])) {
+        if (!$client) {
             $this->recordFailedAttempt($code);
-            Session::flash('error', 'Kode klien atau password salah.');
+            Session::flash('error', 'Kode klien tidak ditemukan atau belum diaktifkan.');
             redirect('/portal/login');
             return;
         }
