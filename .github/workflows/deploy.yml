@@ -1,0 +1,66 @@
+name: Deploy ke Hostinger (Admin + Portal Klien)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "wonderland-system/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy-admin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Deploy ke admin.wonderlandtrips.com via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./wonderland-system/
+          server-dir: admin/
+          # Sengaja "false", BUKAN clean-slate. Server produksi sudah punya
+          # config/database.env.php dan uploads/ (data pengguna, ~1.4GB) yang
+          # ditaruh manual, tidak ikut ter-commit di repo ini. Clean-slate akan
+          # menghapus keduanya di server tiap deploy — jangan pernah diaktifkan.
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.claude/**
+            **/uploads/**
+            **/cache/**
+            **/logs/**
+            **/config/database.env.php
+            **/config/installed.php
+
+  deploy-klien:
+    needs: deploy-admin
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Deploy ke klien.wonderlandtrips.com via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./wonderland-system/
+          server-dir: klien/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.claude/**
+            **/uploads/**
+            **/cache/**
+            **/logs/**
+            **/config/database.env.php
+            **/config/installed.php
