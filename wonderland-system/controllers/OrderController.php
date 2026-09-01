@@ -1078,34 +1078,40 @@ class OrderController {
         $uploadedCount = 0;
         $errors = [];
 
-        foreach ($files['name'] as $i => $name) {
-            if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) {
-                continue;
+        try {
+            foreach ($files['name'] as $i => $name) {
+                if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) {
+                    continue;
+                }
+
+                $file = [
+                    'name' => $files['name'][$i],
+                    'type' => $files['type'][$i],
+                    'tmp_name' => $files['tmp_name'][$i],
+                    'error' => $files['error'][$i],
+                    'size' => $files['size'][$i]
+                ];
+
+                [$ok, $result] = uploadFile($file, $uploadDir, ['application/pdf'], MAX_UPLOAD_SIZE);
+
+                if ($ok) {
+                    db()->insert('order_tickets', [
+                        'order_id' => $id,
+                        'file_name' => $name,
+                        'file_path' => 'tickets/' . $result,
+                        'file_size' => (int) $file['size'],
+                        'uploaded_by' => Session::userId(),
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+                    $uploadedCount++;
+                } else {
+                    $errors[] = $name . ': ' . $result;
+                }
             }
-
-            $file = [
-                'name' => $files['name'][$i],
-                'type' => $files['type'][$i],
-                'tmp_name' => $files['tmp_name'][$i],
-                'error' => $files['error'][$i],
-                'size' => $files['size'][$i]
-            ];
-
-            [$ok, $result] = uploadFile($file, $uploadDir, ['application/pdf'], MAX_UPLOAD_SIZE);
-
-            if ($ok) {
-                db()->insert('order_tickets', [
-                    'order_id' => $id,
-                    'file_name' => $name,
-                    'file_path' => 'tickets/' . $result,
-                    'file_size' => (int) $file['size'],
-                    'uploaded_by' => Session::userId(),
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                $uploadedCount++;
-            } else {
-                $errors[] = $name . ': ' . $result;
-            }
+        } catch (Exception $e) {
+            Session::flash('error', 'Fitur E-Tiket belum aktif — migrasi database (sql/2026_09_add_order_tickets.sql) belum dijalankan di server.');
+            redirect('/orders/' . $id);
+            return;
         }
 
         if ($uploadedCount > 0) {
@@ -1129,18 +1135,22 @@ class OrderController {
             return;
         }
 
-        $ticket = db()->fetchOne(
-            "SELECT * FROM order_tickets WHERE id = ? AND order_id = ?",
-            [$ticketId, $id]
-        );
+        try {
+            $ticket = db()->fetchOne(
+                "SELECT * FROM order_tickets WHERE id = ? AND order_id = ?",
+                [$ticketId, $id]
+            );
 
-        if ($ticket) {
-            $filepath = UPLOADS_PATH . '/' . $ticket['file_path'];
-            if (file_exists($filepath)) {
-                unlink($filepath);
+            if ($ticket) {
+                $filepath = UPLOADS_PATH . '/' . $ticket['file_path'];
+                if (file_exists($filepath)) {
+                    unlink($filepath);
+                }
+                db()->delete('order_tickets', 'id = ?', [$ticketId]);
+                Session::flash('success', 'E-tiket berhasil dihapus.');
             }
-            db()->delete('order_tickets', 'id = ?', [$ticketId]);
-            Session::flash('success', 'E-tiket berhasil dihapus.');
+        } catch (Exception $e) {
+            Session::flash('error', 'Fitur E-Tiket belum aktif — migrasi database (sql/2026_09_add_order_tickets.sql) belum dijalankan di server.');
         }
 
         redirect('/orders/' . $id);
