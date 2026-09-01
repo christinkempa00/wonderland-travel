@@ -67,6 +67,7 @@ $routes = [
     'GET /clients/{id:\d+}/edit' => ['ClientController', 'edit', 'auth'],
     'PUT /clients/{id:\d+}' => ['ClientController', 'update', 'auth'],
     'DELETE /clients/{id:\d+}' => ['ClientController', 'destroy', 'auth'],
+    'POST /clients/{id:\d+}/regenerate-code' => ['ClientController', 'regenerateCode', 'auth'],
     'POST /clients/{id:\d+}/communications' => ['ClientController', 'addCommunication', 'auth'],
     'GET /api/clients/search' => ['ClientController', 'search', 'auth'],
     

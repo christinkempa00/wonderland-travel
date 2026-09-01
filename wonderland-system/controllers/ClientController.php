@@ -222,6 +222,27 @@ class ClientController {
     }
     
     /**
+     * Regenerate client's login code (invalidates the old one immediately)
+     */
+    public function regenerateCode(int $id): void {
+        $client = $this->findClient($id);
+
+        if (!$client) {
+            Session::flash('error', 'Klien tidak ditemukan.');
+            redirect('/clients');
+            return;
+        }
+
+        $newCode = Client::generateClientCode((int) $client->company_id);
+        $client->update(['client_code' => $newCode]);
+
+        logActivity('update', 'client', $id, 'client', 'Regenerated login code for client: ' . $client->name);
+
+        Session::flash('success', 'Kode klien baru: ' . $newCode . '. Kode lama sudah tidak berlaku.');
+        redirect('/clients/' . $id . '/edit');
+    }
+
+    /**
      * Delete client
      */
     public function destroy(int $id): void {

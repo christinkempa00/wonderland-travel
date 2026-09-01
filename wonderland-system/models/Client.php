@@ -30,17 +30,22 @@ class Client extends Model {
     ];
 
     /**
-     * Generate next client code (CLI-0001, CLI-0002, ...) for a company
+     * Generate a random 8-digit client code, unique across all companies.
+     * Klien login ke Portal Klien pakai kode ini tanpa password, jadi
+     * sengaja dibuat acak (bukan CLI-0001, CLI-0002, ... yang berurutan
+     * dan gampang ditebak) supaya satu klien tidak bisa dengan mudah
+     * menebak kode klien lain untuk melihat tagihan mereka.
      */
     public static function generateClientCode(int $companyId): string {
-        $lastNumber = self::db()->fetchColumn(
-            "SELECT MAX(CAST(SUBSTRING_INDEX(client_code, '-', -1) AS UNSIGNED))
-             FROM clients WHERE company_id = ? AND client_code IS NOT NULL",
-            [$companyId]
-        );
+        do {
+            $code = (string) random_int(10000000, 99999999);
+            $exists = (int) self::db()->fetchColumn(
+                "SELECT COUNT(*) FROM clients WHERE client_code = ?",
+                [$code]
+            );
+        } while ($exists > 0);
 
-        $nextNumber = ($lastNumber ?? 0) + 1;
-        return 'CLI-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        return $code;
     }
     
     /**

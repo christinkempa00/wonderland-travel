@@ -145,7 +145,7 @@ try {
                         <label for="client_code" class="form-label">Kode Klien</label>
                         <div class="input-icon-wrapper">
                             <input type="text" id="client_code" name="client_code" class="form-control"
-                                   placeholder="Mis. CLI-0001" required autofocus autocomplete="username">
+                                   placeholder="Mis. 48213975" required autofocus autocomplete="username">
                             <i class="fas fa-id-badge input-icon"></i>
                         </div>
                     </div>

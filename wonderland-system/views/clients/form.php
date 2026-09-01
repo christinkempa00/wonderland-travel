@@ -87,6 +87,13 @@ $data = $client ? $client->toArray() : [];
                         Kode Klien untuk login: <strong><?= e($data['client_code'] ?? '-') ?></strong>
                         <br>Klien login cukup dengan kode ini, tanpa password.
                     </div>
+                    <button type="button" class="btn btn-sm btn-secondary"
+                            onclick="if (confirm('Ganti kode klien? Kode lama (' + <?= json_encode($data['client_code'] ?? '-') ?> + ') langsung tidak berlaku dan klien perlu diberi tahu kode barunya.')) { document.getElementById('regenerateCodeForm').submit(); }">
+                        <i class="fas fa-sync-alt"></i> Ganti Kode
+                    </button>
+                    <form id="regenerateCodeForm" method="POST" action="<?= url('/clients/' . $client->id . '/regenerate-code') ?>" style="display:none;">
+                        <?= csrfField() ?>
+                    </form>
                 </div>
                 <?php endif; ?>
 
