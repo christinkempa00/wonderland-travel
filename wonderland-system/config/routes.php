@@ -113,6 +113,9 @@ $routes = [
     // HOTEL GUESTS MANAGEMENT
     // ============================================
     
+    'POST /orders/{id:\d+}/tickets' => ['OrderController', 'uploadTickets', 'auth'],
+    'DELETE /orders/{id:\d+}/tickets/{ticketId:\d+}' => ['OrderController', 'deleteTicket', 'auth'],
+
     'GET /orders/{id:\d+}/hotel-guests' => ['OrderController', 'hotelGuests', 'auth,feature:passenger'],
     'POST /orders/{id:\d+}/hotel-guests' => ['OrderController', 'saveHotelGuests', 'auth,feature:passenger'],
     'GET /orders/{id:\d+}/hotel-attachment' => ['OrderController', 'hotelAttachment', 'auth,feature:passenger'],

@@ -303,7 +303,18 @@ class OrderController {
         if (function_exists('getOrderPayments')) {
             $orderPayments = getOrderPayments($id);
         }
-        
+
+        // E-Tiket (PDF) yang sudah diupload untuk pesanan ini
+        $tickets = [];
+        try {
+            $tickets = db()->fetchAll(
+                "SELECT * FROM order_tickets WHERE order_id = ? ORDER BY created_at DESC",
+                [$id]
+            );
+        } catch (Exception $e) {
+            $tickets = [];
+        }
+
         $data = [
             'pageTitle' => 'Pesanan ' . $order->order_number,
             'pageHeader' => true,
@@ -328,9 +339,10 @@ class OrderController {
             'hasRentalItems' => $hasRentalItems,
             'rentalDetailCount' => $rentalDetailCount,
             'hasVehicleItems' => $hasVehicleItems,
-            'vehicleDocCount' => $vehicleDocCount
+            'vehicleDocCount' => $vehicleDocCount,
+            'tickets' => $tickets
         ];
-        
+
         render('orders/show', $data);
     }
     
@@ -1043,6 +1055,97 @@ class OrderController {
         exit;
     }
     
+    /**
+     * Upload e-tiket (PDF) untuk pesanan — bisa lebih dari satu file
+     * sekaligus. Khusus admin, tidak tampil di Portal Klien.
+     */
+    public function uploadTickets(int $id): void {
+        $order = $this->findOrder($id);
+        if (!$order) {
+            Session::flash('error', 'Pesanan tidak ditemukan.');
+            redirect('/orders');
+            return;
+        }
+
+        $files = $_FILES['tickets'] ?? null;
+        if (!$files || empty(array_filter($files['name']))) {
+            Session::flash('error', 'Pilih minimal satu file PDF untuk diupload.');
+            redirect('/orders/' . $id);
+            return;
+        }
+
+        $uploadDir = UPLOADS_PATH . '/tickets';
+        $uploadedCount = 0;
+        $errors = [];
+
+        foreach ($files['name'] as $i => $name) {
+            if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+
+            $file = [
+                'name' => $files['name'][$i],
+                'type' => $files['type'][$i],
+                'tmp_name' => $files['tmp_name'][$i],
+                'error' => $files['error'][$i],
+                'size' => $files['size'][$i]
+            ];
+
+            [$ok, $result] = uploadFile($file, $uploadDir, ['application/pdf'], MAX_UPLOAD_SIZE);
+
+            if ($ok) {
+                db()->insert('order_tickets', [
+                    'order_id' => $id,
+                    'file_name' => $name,
+                    'file_path' => 'tickets/' . $result,
+                    'file_size' => (int) $file['size'],
+                    'uploaded_by' => Session::userId(),
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+                $uploadedCount++;
+            } else {
+                $errors[] = $name . ': ' . $result;
+            }
+        }
+
+        if ($uploadedCount > 0) {
+            Session::flash('success', $uploadedCount . ' e-tiket berhasil diupload.');
+        }
+        if (!empty($errors)) {
+            Session::flash('error', implode(' | ', $errors));
+        }
+
+        redirect('/orders/' . $id);
+    }
+
+    /**
+     * Hapus satu file e-tiket
+     */
+    public function deleteTicket(int $id, int $ticketId): void {
+        $order = $this->findOrder($id);
+        if (!$order) {
+            Session::flash('error', 'Pesanan tidak ditemukan.');
+            redirect('/orders');
+            return;
+        }
+
+        $ticket = db()->fetchOne(
+            "SELECT * FROM order_tickets WHERE id = ? AND order_id = ?",
+            [$ticketId, $id]
+        );
+
+        if ($ticket) {
+            $filepath = UPLOADS_PATH . '/' . $ticket['file_path'];
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
+            db()->delete('order_tickets', 'id = ?', [$ticketId]);
+            Session::flash('success', 'E-tiket berhasil dihapus.');
+        }
+
+        redirect('/orders/' . $id);
+    }
+
     /**
      * Upload hotel logo (per hotel item)
      */

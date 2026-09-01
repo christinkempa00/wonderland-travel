@@ -316,6 +316,21 @@ function formatDateTime($datetime, string $format = null): string {
 }
 
 /**
+ * Format File Size (bytes to KB/MB)
+ * @param int $bytes
+ * @return string
+ */
+function formatFileSize(int $bytes): string {
+    if ($bytes >= 1024 * 1024) {
+        return round($bytes / (1024 * 1024), 1) . ' MB';
+    }
+    if ($bytes >= 1024) {
+        return round($bytes / 1024, 1) . ' KB';
+    }
+    return $bytes . ' B';
+}
+
+/**
  * Convert Number to Indonesian Words (Terbilang)
  * @param float|int $number
  * @return string

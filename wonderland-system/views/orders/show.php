@@ -483,6 +483,43 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             </div>
         </div>
 
+        <!-- E-Tiket -->
+        <div class="glass-card mb-4">
+            <h3 class="mb-3"><i class="fas fa-ticket-alt text-primary"></i> E-Tiket</h3>
+
+            <?php if (empty($tickets)): ?>
+            <p class="text-muted mb-3">Belum ada e-tiket yang diupload.</p>
+            <?php else: ?>
+            <div class="ticket-list mb-3">
+                <?php foreach ($tickets as $ticket): ?>
+                <div class="ticket-item">
+                    <i class="fas fa-file-pdf text-danger"></i>
+                    <a href="<?= e(uploadUrl($ticket['file_path'])) ?>" target="_blank" class="ticket-name">
+                        <?= e($ticket['file_name']) ?>
+                    </a>
+                    <span class="ticket-size"><?= formatFileSize((int) $ticket['file_size']) ?></span>
+                    <button type="button" class="btn btn-sm btn-icon btn-secondary text-danger" title="Hapus"
+                            data-delete="<?= url('/orders/' . $order->id . '/tickets/' . $ticket['id']) ?>"
+                            data-message="Hapus e-tiket &quot;<?= e($ticket['file_name']) ?>&quot;?">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <form method="POST" action="<?= url('/orders/' . $order->id . '/tickets') ?>" enctype="multipart/form-data">
+                <?= csrfField() ?>
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="file" name="tickets[]" accept="application/pdf" multiple required class="form-control">
+                    <button type="submit" class="btn btn-primary" style="white-space: nowrap;">
+                        <i class="fas fa-upload"></i> Upload
+                    </button>
+                </div>
+                <small class="text-muted d-block mt-1">Bisa pilih lebih dari satu file. Hanya format PDF.</small>
+            </form>
+        </div>
+
         <!-- Notes -->
         <?php if ($order->notes): ?>
         <div class="glass-card mb-4">
@@ -939,6 +976,35 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
 
 .doc-invoice { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 .doc-kwitansi { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+
+/* E-Tiket List */
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ticket-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+}
+
+.ticket-item .ticket-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ticket-item .ticket-size {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    white-space: nowrap;
+}
 
 /* Notes & Client */
 .notes-box {
