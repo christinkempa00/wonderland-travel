@@ -182,8 +182,8 @@ $routes = [
     // DOCUMENTS
     // ============================================
     
-    'GET /documents' => ['DocumentController', 'index', 'auth,page:documents'],
-    'GET /documents/search' => ['DocumentController', 'search', 'auth'],
+    'GET /documents' => ['DocumentController', 'index', 'auth,page:documents,feature:documents'],
+    'GET /documents/search' => ['DocumentController', 'search', 'auth,feature:documents'],
     
     // ============================================
     // EXPENSE TRACKING & ANALYSIS

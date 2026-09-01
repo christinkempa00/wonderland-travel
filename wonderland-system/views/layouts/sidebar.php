@@ -122,7 +122,7 @@ if (!function_exists('isSubmenuActive')) {
             <?php endif; ?>
 
             <!-- Documents -->
-            <?php if (pageVisible('documents')): ?>
+            <?php if (FEATURE_DOCUMENTS && pageVisible('documents')): ?>
             <div class="nav-item">
                 <a href="<?= url('/documents') ?>" class="nav-link <?= isMenuActive('/documents', $currentPath) ? 'active' : '' ?>">
                     <i class="fas fa-file-invoice"></i>

@@ -21,6 +21,11 @@ if (!defined('BASE_PATH')) {
 // seluruh fiturnya berbasis ini).
 define('FEATURE_PASSENGER_MANAGEMENT', false);
 
+// Halaman Dokumen (daftar penawaran/invoice/kwitansi tersimpan) —
+// dinonaktifkan sesuai permintaan, TIDAK dihapus. Set ke true untuk
+// mengaktifkan lagi.
+define('FEATURE_DOCUMENTS', false);
+
 /**
  * Application Info
  */
