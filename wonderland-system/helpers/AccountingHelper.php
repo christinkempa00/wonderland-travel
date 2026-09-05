@@ -559,15 +559,17 @@ function voidOrderInvoiceJournal(int $orderId): array {
  * @return array
  */
 function createOrderPaymentJournal(
-    array $order, 
+    array $order,
     float $paymentAmount,
     string $paymentMethod = 'transfer',
     ?int $bankCashId = null,
     ?string $reference = null,
-    ?string $notes = null
+    ?string $notes = null,
+    ?string $paymentDate = null
 ): array {
     $companyId = (int)$order['company_id'];
     $orderId = (int)$order['id'];
+    $paymentDate = $paymentDate ?: date('Y-m-d');
     
     if ($paymentAmount <= 0) {
         return ['success' => false, 'message' => 'Jumlah pembayaran harus lebih dari 0'];
@@ -612,7 +614,7 @@ function createOrderPaymentJournal(
             'order_id' => $orderId,
             'journal_number' => $journalNumber,
             'journal_type' => 'order_payment',
-            'journal_date' => date('Y-m-d'),
+            'journal_date' => $paymentDate,
             'description' => 'Pembayaran Order: ' . ($order['order_number'] ?? '') . ($notes ? ' - ' . $notes : ''),
             'reference' => $reference ?: ($order['order_number'] ?? ''),
             'status' => 'posted',
@@ -655,7 +657,7 @@ function createOrderPaymentJournal(
                 'order_id' => $orderId,
                 'journal_id' => $journalId,
                 'amount' => $paymentAmount,
-                'payment_date' => date('Y-m-d'),
+                'payment_date' => $paymentDate,
                 'payment_method' => $paymentMethod,
                 'bank_cash_id' => $bankCashId,
                 'reference' => $reference,
@@ -671,14 +673,16 @@ function createOrderPaymentJournal(
         // Update order paid_amount and status
         $currentPaid = (float)($order['paid_amount'] ?? 0);
         $newPaidAmount = $currentPaid + $paymentAmount;
-        $totalPrice = (float)($order['total_final_price'] ?? 0);
-        
+        $totalPrice = function_exists('getOrderCalculatedTotal')
+            ? getOrderCalculatedTotal($order)
+            : (float)($order['total_final_price'] ?? 0);
+
         if ($newPaidAmount >= $totalPrice) {
             $paymentStatus = 'paid';
-            $paidAt = date('Y-m-d');
+            $paidAt = $paymentDate;
         } elseif ($newPaidAmount > 0) {
             $paymentStatus = 'partial';
-            $paidAt = date('Y-m-d');
+            $paidAt = $paymentDate;
         } else {
             $paymentStatus = 'unpaid';
             $paidAt = null;
@@ -1256,13 +1260,45 @@ function getOrderPayments(int $orderId): array {
 }
 
 /**
+ * Total tagihan order. Beberapa order lama punya orders.total_final_price
+ * tersimpan sebagai 0 walau item-nya sudah diisi (total belum sempat
+ * di-recalculate) — kalau ketemu itu, hitung ulang langsung dari
+ * order_items, sama seperti formula di Order::recalculateTotals()/doc.php,
+ * supaya "Sisa Tagihan" di halaman pembayaran tidak salah 0 dan memblokir
+ * pembayaran yang sah.
+ *
+ * @param array $order Harus punya 'id' dan 'total_final_price'
+ * @return float
+ */
+function getOrderCalculatedTotal(array $order): float {
+    $total = (float) ($order['total_final_price'] ?? 0);
+    if ($total > 0 || empty($order['id'])) {
+        return $total;
+    }
+
+    return (float) db()->fetchColumn(
+        "SELECT COALESCE(SUM(
+            (quantity * num_days * (base_price + cashback)) +
+            CASE
+                WHEN markup_type = 'percentage' THEN
+                    (quantity * num_days * (base_price + cashback)) * (markup_value / 100)
+                ELSE
+                    markup_value * quantity * num_days
+            END
+        ), 0)
+         FROM order_items WHERE order_id = ?",
+        [$order['id']]
+    );
+}
+
+/**
  * Get order remaining amount (unpaid)
- * 
+ *
  * @param array $order
  * @return float
  */
 function getOrderRemainingAmount(array $order): float {
-    $total = (float)($order['total_final_price'] ?? 0);
+    $total = getOrderCalculatedTotal($order);
     $paid = (float)($order['paid_amount'] ?? 0);
     return max(0, $total - $paid);
 }

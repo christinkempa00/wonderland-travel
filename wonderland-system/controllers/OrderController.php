@@ -706,10 +706,18 @@ class OrderController {
             return;
         }
         
+        // Perbaiki total_final_price yang tersimpan kalau sempat drift dari 0
+        // (order lama yang belum sempat di-recalculate) sebelum divalidasi —
+        // supaya createOrderPaymentJournal() (yang baca ulang order dari DB)
+        // juga menghitung payment_status dari total yang benar, bukan 0.
+        $order->recalculateTotals();
         $orderArray = $order->toArray();
-        
-        // Calculate remaining
-        $totalPrice = (float)($orderArray['total_final_price'] ?? 0);
+
+        // Calculate remaining — fallback jaga-jaga kalau recalculate di atas
+        // gagal/di-skip untuk alasan apa pun.
+        $totalPrice = function_exists('getOrderCalculatedTotal')
+            ? getOrderCalculatedTotal($orderArray)
+            : (float)($orderArray['total_final_price'] ?? 0);
         $paidAmount = (float)($orderArray['paid_amount'] ?? 0);
         $remainingAmount = max(0, $totalPrice - $paidAmount);
         

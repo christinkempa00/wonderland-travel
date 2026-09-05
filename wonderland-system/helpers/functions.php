@@ -864,7 +864,7 @@ function recordPayment(
                 } catch (Exception $e) {}
             }
 
-            $result = createOrderPaymentJournal($order, $amount, $paymentMethod, $bankCashId, $reference, $notes);
+            $result = createOrderPaymentJournal($order, $amount, $paymentMethod, $bankCashId, $reference, $notes, $paymentDate);
             if ($result['success']) {
                 if ($proofImage && !empty($result['payment_id'])) {
                     db()->update('order_payments', ['proof_image' => $proofImage], 'id = ?', [$result['payment_id']]);

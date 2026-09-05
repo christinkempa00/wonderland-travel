@@ -11,7 +11,9 @@ $remainingAmount = function_exists('getOrderRemainingAmount')
     : ((float)($orderArray['total_final_price'] ?? 0) - (float)($orderArray['paid_amount'] ?? 0));
 
 $totalPaid = (float)($orderArray['paid_amount'] ?? 0);
-$totalPrice = (float)($orderArray['total_final_price'] ?? 0);
+$totalPrice = function_exists('getOrderCalculatedTotal')
+    ? getOrderCalculatedTotal($orderArray)
+    : (float)($orderArray['total_final_price'] ?? 0);
 $percentPaid = $totalPrice > 0 ? ($totalPaid / $totalPrice) * 100 : 0;
 
 // $payments dan $bankCashOptions disediakan dari controller

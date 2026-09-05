@@ -310,12 +310,18 @@ class Order extends Model {
         
         $paymentStatus = 'unpaid';
         $paidAt = null;
+        if ($totalPaid > 0) {
+            // Tanggal pembayaran real yang diinput user (payment_date),
+            // bukan tanggal sistem mencatatnya.
+            $paidAt = self::db()->fetchColumn(
+                "SELECT MAX(payment_date) FROM order_payments WHERE order_id = ? AND invoice_id IS NULL AND status = 'posted'",
+                [$this->id]
+            ) ?: date('Y-m-d');
+        }
         if ($totalPaid >= $this->total_final_price) {
             $paymentStatus = 'paid';
-            $paidAt = date('Y-m-d');
         } elseif ($totalPaid > 0) {
             $paymentStatus = 'partial';
-            $paidAt = date('Y-m-d');
         }
 
         $this->update([
