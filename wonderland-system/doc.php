@@ -326,8 +326,15 @@ $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 if ($docType == 'penawaran' || $docType == 'kesepakatan') {
     $docDate = tgl($order['order_date']);
 } elseif ($docType == 'invoice') {
-    // Tanggal invoice = tanggal selesai kegiatan (bukan tanggal cetak).
-    $docDate = !empty($order['event_end_date']) ? tgl($order['event_end_date']) : tgl(date('Y-m-d'));
+    // Tanggal invoice: manual (invoice_date, diisi admin) kalau ada,
+    // fallback ke tanggal selesai kegiatan, fallback lagi ke tanggal cetak.
+    if (!empty($order['invoice_date'])) {
+        $docDate = tgl($order['invoice_date']);
+    } elseif (!empty($order['event_end_date'])) {
+        $docDate = tgl($order['event_end_date']);
+    } else {
+        $docDate = tgl(date('Y-m-d'));
+    }
 } else {
     // Kwitansi: tanggal dokumen = tanggal dokumen ini dibuat/dicetak.
     $docDate = tgl(date('Y-m-d'));

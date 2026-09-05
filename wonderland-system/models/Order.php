@@ -31,6 +31,7 @@ class Order extends Model {
         'pic_phone',
         'divisi',
         'pelni_invoice_number',
+        'invoice_date',
         'description',
         'notes',
         'total_base_price',

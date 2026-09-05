@@ -629,6 +629,34 @@ class OrderController {
         }
     }
 
+    /**
+     * Set/ubah tanggal invoice manual (dipakai di dokumen invoice — lihat
+     * doc.php). Kosongkan untuk kembali ke fallback otomatis (tanggal
+     * selesai kegiatan, lalu tanggal cetak).
+     */
+    public function updateInvoiceDate(int $id): void {
+        $order = $this->findOrder($id);
+
+        if (!$order) {
+            Session::flash('error', 'Pesanan tidak ditemukan.');
+            redirect('/orders');
+            return;
+        }
+
+        $invoiceDate = trim($_POST['invoice_date'] ?? '');
+
+        if ($invoiceDate !== '' && !DateTime::createFromFormat('Y-m-d', $invoiceDate)) {
+            Session::flash('error', 'Format tanggal invoice tidak valid.');
+            redirect('/orders/' . $id);
+            return;
+        }
+
+        $order->update(['invoice_date' => $invoiceDate ?: null]);
+
+        Session::flash('success', $invoiceDate ? 'Tanggal invoice berhasil disimpan.' : 'Tanggal invoice dikosongkan, kembali ke otomatis.');
+        redirect('/orders/' . $id);
+    }
+
 // ==========================================
 // END OF PART 1 - Continue to Part 2
 // ==========================================

@@ -83,6 +83,7 @@ $routes = [
     'PUT /orders/{id:\d+}' => ['OrderController', 'update', 'auth'],
     'DELETE /orders/{id:\d+}' => ['OrderController', 'destroy', 'auth'],
     'POST /orders/{id:\d+}/status' => ['OrderController', 'updateStatus', 'auth'],
+    'POST /orders/{id:\d+}/invoice-date' => ['OrderController', 'updateInvoiceDate', 'auth'],
     
     // Payment Status Update (Quick)
     'PATCH /orders/{id:\d+}/payment-status' => ['OrderController', 'updatePaymentStatus', 'auth'],
