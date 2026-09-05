@@ -100,7 +100,12 @@ foreach ($items as $item) {
 }
 
 $items = $calculatedItems;
-$total = $calcTotalFinal;
+// Dibulatkan ke rupiah penuh -- markup persentase bisa menghasilkan
+// pecahan, dan angka ini dipakai baik untuk nominal (number_format,
+// pembulatan) maupun terbilang (bilang(), sebelumnya truncate) -- kalau
+// tidak dibulatkan di sini, dua-duanya bisa beda 1 rupiah dari satu
+// sama lain.
+$total = round($calcTotalFinal);
 
 // Total peserta lintas item, dipakai di baris "Untuk Pembayaran" kwitansi
 // (mis. "... ( 5 Orang )").
@@ -188,7 +193,11 @@ function tgl($d) {
 }
 
 function bilang($n) {
-    $n = abs((int)$n);
+    // $n harus sudah bilangan bulat penuh saat dipanggil dari luar (lihat
+    // $total di atas) -- (int) di sini SENGAJA truncate, bukan round: dipakai
+    // juga secara rekursif untuk memisahkan digit (mis. $n / 10 buat puluhan),
+    // yang butuh pembulatan ke bawah, bukan round biasa.
+    $n = abs((int) $n);
     $h = ["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];
     if ($n < 12) return $h[$n];
     if ($n < 20) return bilang($n - 10) . " Belas";

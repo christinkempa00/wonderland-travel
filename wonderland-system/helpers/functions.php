@@ -351,7 +351,7 @@ function formatFileSize(int $bytes): string {
  * @return string
  */
 function terbilang($number): string {
-    $number = abs((float) $number);
+    $number = abs(round((float) $number));
     $words = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
     
     if ($number < 12) {
