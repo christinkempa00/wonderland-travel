@@ -485,7 +485,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             <form method="POST" action="<?= url('/orders/' . $order->id . '/invoice-date') ?>"
                   class="d-flex gap-2 align-items-center mt-3 pt-3" style="border-top: 1px solid var(--gray-200);">
                 <?= csrfField() ?>
-                <label class="form-label mb-0" style="white-space: nowrap;">Tanggal Invoice</label>
+                <label class="form-label mb-0" style="white-space: nowrap;">Tanggal Dokumen</label>
                 <input type="date" name="invoice_date" class="form-control"
                        value="<?= e($order->invoice_date ?? '') ?>">
                 <button type="submit" class="btn btn-secondary" style="white-space: nowrap;">

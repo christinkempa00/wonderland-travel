@@ -630,7 +630,7 @@ class OrderController {
     }
 
     /**
-     * Set/ubah tanggal invoice manual (dipakai di dokumen invoice — lihat
+     * Set/ubah tanggal dokumen manual (dipakai di invoice & kwitansi — lihat
      * doc.php). Kosongkan untuk kembali ke fallback otomatis (tanggal
      * selesai kegiatan, lalu tanggal cetak).
      */
@@ -646,14 +646,14 @@ class OrderController {
         $invoiceDate = trim($_POST['invoice_date'] ?? '');
 
         if ($invoiceDate !== '' && !DateTime::createFromFormat('Y-m-d', $invoiceDate)) {
-            Session::flash('error', 'Format tanggal invoice tidak valid.');
+            Session::flash('error', 'Format tanggal dokumen tidak valid.');
             redirect('/orders/' . $id);
             return;
         }
 
         $order->update(['invoice_date' => $invoiceDate ?: null]);
 
-        Session::flash('success', $invoiceDate ? 'Tanggal invoice berhasil disimpan.' : 'Tanggal invoice dikosongkan, kembali ke otomatis.');
+        Session::flash('success', $invoiceDate ? 'Tanggal dokumen berhasil disimpan.' : 'Tanggal dokumen dikosongkan, kembali ke otomatis.');
         redirect('/orders/' . $id);
     }
 
