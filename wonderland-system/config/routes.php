@@ -39,6 +39,7 @@ $routes = [
     'POST /portal/login' => ['ClientPortalController', 'login'],
     'GET /portal/logout' => ['ClientPortalController', 'logout'],
     'GET /portal' => ['ClientPortalController', 'dashboard', 'client-auth'],
+    'GET /portal/orders/{id:\d+}' => ['ClientPortalController', 'showOrder', 'client-auth'],
 
     // Installation
     'GET /install' => ['InstallController', 'index'],

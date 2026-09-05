@@ -120,6 +120,46 @@ class ClientPortalController {
     }
 
     /**
+     * Detail satu pesanan — dokumen (Invoice/Kwitansi) & E-Tiket. Scoped
+     * ketat ke client_id sesi, sama seperti dashboard().
+     */
+    public function showOrder(int $id): void {
+        $clientId = Session::clientId();
+
+        $order = db()->fetchOne(
+            "SELECT * FROM orders WHERE id = ? AND client_id = ?",
+            [$id, $clientId]
+        );
+
+        if (!$order) {
+            Session::flash('error', 'Pesanan tidak ditemukan.');
+            redirect('/portal');
+            return;
+        }
+
+        $order['invoice_display'] = !empty($order['pelni_invoice_number'])
+            ? $order['pelni_invoice_number']
+            : 'INV-' . date('Y') . '-' . str_pad((string) $order['id'], 5, '0', STR_PAD_LEFT);
+        $order['remaining'] = max(0, (float) $order['total_final_price'] - (float) $order['paid_amount']);
+
+        $tickets = [];
+        try {
+            $tickets = db()->fetchAll(
+                "SELECT * FROM order_tickets WHERE order_id = ? ORDER BY created_at DESC",
+                [$id]
+            );
+        } catch (Exception $e) {
+            $tickets = [];
+        }
+
+        render('client-portal/order-detail', [
+            'pageTitle' => $order['invoice_display'],
+            'order' => $order,
+            'tickets' => $tickets
+        ], 'client-portal/layout');
+    }
+
+    /**
      * ============================================================
      * Simple rate limiting, mirroring Auth::attempt()'s pattern but
      * keyed by client_code instead of email so it doesn't touch the

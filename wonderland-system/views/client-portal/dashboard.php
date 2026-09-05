@@ -68,6 +68,7 @@
                     <th class="text-right">Sudah Dibayar</th>
                     <th class="text-right">Sisa Tagihan</th>
                     <th>Status</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -84,6 +85,11 @@
                         <?php if ($ps): ?>
                         <span class="badge badge-<?= $ps['color'] ?>"><?= $ps['label'] ?></span>
                         <?php endif; ?>
+                    </td>
+                    <td class="text-nowrap">
+                        <a href="<?= url('/portal/orders/' . $order['id']) ?>" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-eye"></i> Detail
+                        </a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -118,6 +124,7 @@
                     <th class="text-right">Total</th>
                     <th>Status</th>
                     <th>Pembayaran</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -143,6 +150,11 @@
                             <i class="fas fa-check-circle"></i> <?= formatDate($order['paid_at']) ?>
                         </small>
                         <?php endif; ?>
+                    </td>
+                    <td class="text-nowrap">
+                        <a href="<?= url('/portal/orders/' . $order['id']) ?>" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-eye"></i> Detail
+                        </a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -26,8 +26,11 @@ Session::start();
 
 // Dokumen ini berisi data klien (kontak, harga, rekening) — jangan biarkan
 // siapa pun yang tahu/menebak URL-nya mengaksesnya tanpa login, dan jangan
-// biarkan satu company mengintip order company lain.
-if (!Session::isLoggedIn()) {
+// biarkan satu company/klien mengintip order company/klien lain.
+$isStaff = Session::isLoggedIn();
+$isClient = Session::isClientLoggedIn();
+
+if (!$isStaff && !$isClient) {
     http_response_code(403);
     die('Akses ditolak. Silakan login terlebih dahulu.');
 }
@@ -38,9 +41,19 @@ $docType = isset($_GET['type']) ? $_GET['type'] : 'invoice';
 if (!$orderId) die('Usage: doc.php?order=ID&type=invoice|kwitansi|penawaran|kesepakatan');
 
 $order = db()->fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
-if (!$order || (int) $order['company_id'] !== (int) Session::companyId()) {
-    http_response_code(404);
-    die('Order not found');
+
+if ($isClient) {
+    // Portal klien: cuma invoice & kwitansi milik order klien itu sendiri —
+    // tidak ada akses ke penawaran/kesepakatan (internal negosiasi).
+    if (!$order || (int) $order['client_id'] !== (int) Session::clientId() || !in_array($docType, ['invoice', 'kwitansi'], true)) {
+        http_response_code(403);
+        die('Akses ditolak.');
+    }
+} else {
+    if (!$order || (int) $order['company_id'] !== (int) Session::companyId()) {
+        http_response_code(404);
+        die('Order not found');
+    }
 }
 
 $items = db()->fetchAll("SELECT * FROM order_items WHERE order_id = ?", [$orderId]);
