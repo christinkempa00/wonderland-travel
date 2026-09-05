@@ -333,10 +333,35 @@ class Order extends Model {
     }
     
     /**
-     * Get remaining amount
+     * Get remaining amount. Sama seperti getOrderCalculatedTotal()/
+     * getOrderRemainingAmount() di AccountingHelper.php (dipakai di halaman
+     * pembayaran) -- fallback hitung ulang dari item kalau total_final_price
+     * tersimpan 0, dan dibulatkan ke rupiah penuh supaya konsisten dengan
+     * yang ditampilkan/di-auto-fill di modal "Update Status Pembayaran".
+     * Duplikasi sengaja (bukan panggil helper) karena model tidak
+     * bergantung ke helpers/AccountingHelper.php yang cuma di-load
+     * kondisional dari controller.
      */
     public function getRemainingAmount(): float {
-        return max(0, $this->total_final_price - $this->paid_amount);
+        $total = (float) $this->total_final_price;
+        if ($total <= 0) {
+            $total = (float) self::db()->fetchColumn(
+                "SELECT COALESCE(SUM(
+                    (quantity * num_days * (base_price + cashback)) +
+                    CASE
+                        WHEN markup_type = 'percentage' THEN
+                            (quantity * num_days * (base_price + cashback)) * (markup_value / 100)
+                        ELSE
+                            markup_value * quantity * num_days
+                    END
+                ), 0)
+                 FROM order_items WHERE order_id = ?",
+                [$this->id]
+            );
+        }
+
+        $paid = round((float) $this->paid_amount);
+        return max(0, round($total) - $paid);
     }
     
     /**

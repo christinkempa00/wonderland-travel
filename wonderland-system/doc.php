@@ -810,7 +810,19 @@ $mainColor3 = '#7f1d1d';
 
         <div class="kwt-rule"></div>
         <div class="kwt-fields">
-            <?php $kwitansiDesc = !empty($items[0]['description']) ? $items[0]['description'] : 'Pembayaran layanan'; ?>
+            <?php
+            // Baris "poin" (tombol Sisipkan Poin di form, ditandai "• ") dipakai
+            // untuk keterangan/daftar peserta di invoice -- tidak ikut tercetak
+            // di kwitansi, cukup deskripsi utamanya saja.
+            $kwitansiDescLines = array_filter(
+                explode("\n", $items[0]['description'] ?? ''),
+                function ($line) { return mb_substr(ltrim($line), 0, 1) !== '•'; }
+            );
+            $kwitansiDesc = trim(implode("\n", $kwitansiDescLines));
+            if ($kwitansiDesc === '') {
+                $kwitansiDesc = 'Pembayaran layanan';
+            }
+            ?>
             <div class="kwt-row">
                 <div class="kwt-label">Untuk Pembayaran</div><div class="kwt-colon">:</div>
                 <div class="kwt-value">
