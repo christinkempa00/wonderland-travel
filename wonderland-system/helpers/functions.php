@@ -316,6 +316,21 @@ function formatDateTime($datetime, string $format = null): string {
 }
 
 /**
+ * Invoice number to display for an order — pelni_invoice_number if set,
+ * otherwise the same fallback scheme used on the printed invoice/kwitansi
+ * (see doc.php). Order lama tanpa pelni_invoice_number tidak di-generate
+ * ulang secara retroaktif, jadi fallback ini tetap dipakai di tampilan.
+ * @param array $order Must contain 'id' and (optionally) 'pelni_invoice_number'
+ * @return string
+ */
+function orderInvoiceNumber(array $order): string {
+    if (!empty($order['pelni_invoice_number'])) {
+        return $order['pelni_invoice_number'];
+    }
+    return 'INV-' . date('Y') . '-' . str_pad((string) $order['id'], 5, '0', STR_PAD_LEFT);
+}
+
+/**
  * Format File Size (bytes to KB/MB)
  * @param int $bytes
  * @return string

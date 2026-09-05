@@ -66,7 +66,7 @@ foreach ($orders as $order) {
     <form method="GET" action="<?= url('/orders') ?>" class="d-flex gap-3 flex-wrap">
         <div class="flex-1" style="min-width: 200px;">
             <input type="text" name="search" class="form-control" 
-                   placeholder="Cari nomor order atau nama event..."
+                   placeholder="Cari no. invoice, nomor order, atau nama event..."
                    value="<?= e($filters['search'] ?? '') ?>">
         </div>
         
@@ -151,7 +151,7 @@ foreach ($orders as $order) {
                             <?= e($order['client_name'] ?? 'Walk-in') ?>
                         </a>
                         <div class="text-muted" style="font-size: 0.75rem;">
-                            <?= e($order['order_number']) ?>
+                            <?= e(orderInvoiceNumber($order)) ?>
                         </div>
                     </td>
                     <td class="text-nowrap">
@@ -224,7 +224,7 @@ foreach ($orders as $order) {
                             <button type="button" class="btn btn-sm btn-icon btn-secondary text-danger"
                                     title="Hapus"
                                     data-delete="<?= url('/orders/' . $order['id']) ?>"
-                                    data-message="Yakin ingin menghapus pesanan <?= e($order['order_number']) ?>?">
+                                    data-message="Yakin ingin menghapus pesanan <?= e(orderInvoiceNumber($order)) ?>?">
                                 <i class="fas fa-trash"></i>
                             </button>
                             <?php endif; ?>

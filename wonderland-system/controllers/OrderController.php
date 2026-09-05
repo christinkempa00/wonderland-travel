@@ -53,7 +53,8 @@ class OrderController {
         }
         
         if (!empty($filters['search'])) {
-            $where .= " AND (o.order_number LIKE ? OR o.event_name LIKE ? OR c.name LIKE ?)";
+            $where .= " AND (o.order_number LIKE ? OR o.pelni_invoice_number LIKE ? OR o.event_name LIKE ? OR c.name LIKE ?)";
+            $params[] = "%{$filters['search']}%";
             $params[] = "%{$filters['search']}%";
             $params[] = "%{$filters['search']}%";
             $params[] = "%{$filters['search']}%";

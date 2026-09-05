@@ -93,7 +93,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>No. Order</th>
+                            <th>No. Invoice</th>
                             <th>Tanggal</th>
                             <th>Total</th>
                             <th>Status</th>
@@ -104,7 +104,7 @@
                         <tr>
                             <td>
                                 <a href="<?= url('/orders/' . $order['id']) ?>">
-                                    <?= e($order['order_number']) ?>
+                                    <?= e(orderInvoiceNumber($order)) ?>
                                 </a>
                             </td>
                             <td><?= formatDate($order['order_date']) ?></td>
