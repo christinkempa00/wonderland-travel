@@ -325,9 +325,10 @@ $docTitle = isset($titles[$docType]) ? $titles[$docType] : 'DOKUMEN';
 
 if ($docType == 'penawaran' || $docType == 'kesepakatan') {
     $docDate = tgl($order['order_date']);
-} elseif ($docType == 'invoice') {
-    // Tanggal invoice: manual (invoice_date, diisi admin) kalau ada,
-    // fallback ke tanggal selesai kegiatan, fallback lagi ke tanggal cetak.
+} elseif ($docType == 'invoice' || $docType == 'kwitansi') {
+    // Tanggal invoice & kwitansi: manual (invoice_date, diisi admin) kalau
+    // ada, fallback ke tanggal selesai kegiatan, fallback lagi ke tanggal
+    // cetak.
     if (!empty($order['invoice_date'])) {
         $docDate = tgl($order['invoice_date']);
     } elseif (!empty($order['event_end_date'])) {
@@ -336,7 +337,6 @@ if ($docType == 'penawaran' || $docType == 'kesepakatan') {
         $docDate = tgl(date('Y-m-d'));
     }
 } else {
-    // Kwitansi: tanggal dokumen = tanggal dokumen ini dibuat/dicetak.
     $docDate = tgl(date('Y-m-d'));
 }
 
@@ -800,7 +800,7 @@ $mainColor3 = '#7f1d1d';
         <div class="kwt-fields">
             <div class="kwt-row">
                 <div class="kwt-label">Sudah diterima dari</div><div class="kwt-colon">:</div>
-                <div class="kwt-value kwt-upper"><?php echo e($cl); ?><?php if ($orderPicName): ?> (U.p. <?php echo e($orderPicName); ?>)<?php endif; ?></div>
+                <div class="kwt-value kwt-upper"><?php echo e($cl); ?></div>
             </div>
             <div class="kwt-row">
                 <div class="kwt-label">Banyaknya Uang</div><div class="kwt-colon">:</div>
