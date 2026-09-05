@@ -47,7 +47,19 @@ if (php_sapi_name() !== 'cli' && isset($_SERVER['HTTP_HOST'])) {
     define('BASE_URL', 'https://admin.wonderlandtrips.com');
 }
 define('ASSETS_URL', BASE_URL . '/assets');
-define('UPLOADS_URL', BASE_URL . '/uploads');
+
+// uploads/ dikecualikan dari deploy (lihat .github/workflows/deploy.yml) dan
+// cuma benar-benar ada di server admin -- klien.wonderlandtrips.com (portal
+// klien) berbagi codebase yang sama tapi TIDAK punya folder uploads/ sendiri.
+// Supaya link logo/e-tiket/bukti pembayaran tidak 404 saat dibuka dari
+// domain klien, selalu arahkan ke domain admin -- kecuali saat testing
+// lokal (localhost), tetap pakai BASE_URL biasa supaya baca folder uploads/
+// lokal.
+if (stripos(BASE_URL, 'localhost') === false && stripos(BASE_URL, '127.0.0.1') === false) {
+    define('UPLOADS_URL', 'https://admin.wonderlandtrips.com/uploads');
+} else {
+    define('UPLOADS_URL', BASE_URL . '/uploads');
+}
 
 /**
  * Directory Paths

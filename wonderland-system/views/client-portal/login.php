@@ -3,14 +3,11 @@
  * Client Portal Login Page
  */
 
-// Portal klien di-deploy terpisah dari admin (folder uploads/ tidak ikut
-// ter-sync ke sini), jadi logo diambil langsung dari domain admin — di
-// situlah file logo aslinya ada.
 $loginLogoUrl = null;
 try {
     $loginCompany = db()->fetchOne("SELECT logo FROM companies WHERE logo IS NOT NULL AND logo != '' LIMIT 1");
     if (!empty($loginCompany['logo'])) {
-        $loginLogoUrl = 'https://admin.wonderlandtrips.com/uploads/' . ltrim($loginCompany['logo'], '/');
+        $loginLogoUrl = uploadUrl($loginCompany['logo']);
     }
 } catch (Exception $e) {
     $loginLogoUrl = null;

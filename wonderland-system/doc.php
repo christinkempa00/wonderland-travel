@@ -239,7 +239,7 @@ function getLogoUrl($company) {
         if (strpos($company['logo'], 'http') === 0) {
             return $company['logo'];
         }
-        return '/uploads/' . $company['logo'];
+        return UPLOADS_URL . '/' . $company['logo'];
     }
     return null;
 }
