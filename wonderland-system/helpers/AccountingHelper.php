@@ -1267,16 +1267,22 @@ function getOrderPayments(int $orderId): array {
  * supaya "Sisa Tagihan" di halaman pembayaran tidak salah 0 dan memblokir
  * pembayaran yang sah.
  *
+ * Dibulatkan ke rupiah penuh: markup persentase bisa menghasilkan pecahan
+ * (mis. Rp 1.340.879,6) padahal yang ditampilkan ke user sudah dibulatkan
+ * (formatRupiah, 0 desimal) — kalau tidak dibulatkan di sini juga, user
+ * yang mengetik persis angka yang ditampilkan akan selalu dianggap
+ * "melebihi sisa tagihan" walau sebenarnya pas.
+ *
  * @param array $order Harus punya 'id' dan 'total_final_price'
  * @return float
  */
 function getOrderCalculatedTotal(array $order): float {
     $total = (float) ($order['total_final_price'] ?? 0);
     if ($total > 0 || empty($order['id'])) {
-        return $total;
+        return round($total);
     }
 
-    return (float) db()->fetchColumn(
+    return round((float) db()->fetchColumn(
         "SELECT COALESCE(SUM(
             (quantity * num_days * (base_price + cashback)) +
             CASE
@@ -1288,7 +1294,7 @@ function getOrderCalculatedTotal(array $order): float {
         ), 0)
          FROM order_items WHERE order_id = ?",
         [$order['id']]
-    );
+    ));
 }
 
 /**
@@ -1299,7 +1305,7 @@ function getOrderCalculatedTotal(array $order): float {
  */
 function getOrderRemainingAmount(array $order): float {
     $total = getOrderCalculatedTotal($order);
-    $paid = (float)($order['paid_amount'] ?? 0);
+    $paid = round((float)($order['paid_amount'] ?? 0));
     return max(0, $total - $paid);
 }
 

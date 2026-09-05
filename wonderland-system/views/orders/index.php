@@ -191,7 +191,7 @@ foreach ($orders as $order) {
                         <?php $paymentStatus = PAYMENT_STATUSES[$order['payment_status']] ?? null; ?>
                         <div class="payment-status-wrapper">
                             <?php if ($paymentStatus): ?>
-                            <?php $orderRemaining = max(0, $displayTotal - (float)($order['paid_amount'] ?? 0)); ?>
+                            <?php $orderRemaining = round(max(0, $displayTotal - (float)($order['paid_amount'] ?? 0))); ?>
                             <span class="badge badge-<?= $paymentStatus['color'] ?> payment-badge"
                                   data-order-id="<?= $order['id'] ?>"
                                   data-current-status="<?= $order['payment_status'] ?>"

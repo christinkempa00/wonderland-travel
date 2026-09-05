@@ -746,7 +746,7 @@ class OrderController {
         $totalPrice = function_exists('getOrderCalculatedTotal')
             ? getOrderCalculatedTotal($orderArray)
             : (float)($orderArray['total_final_price'] ?? 0);
-        $paidAmount = (float)($orderArray['paid_amount'] ?? 0);
+        $paidAmount = round((float)($orderArray['paid_amount'] ?? 0));
         $remainingAmount = max(0, $totalPrice - $paidAmount);
         
         // Get input
