@@ -540,22 +540,19 @@ function togglePaidAtField(status) {
         form.action = '/orders/' + orderId + '/payment';
         methodOverride.disabled = true;
 
-        if (status === 'paid') {
-            amountInput.value = new Intl.NumberFormat('id-ID').format(remaining);
-            amountInput.readOnly = true;
-            remainingHint.textContent = 'Nominal otomatis disamakan dengan sisa tagihan.';
-        } else {
-            amountInput.readOnly = false;
-            if (amountInput.value === new Intl.NumberFormat('id-ID').format(remaining)) {
-                amountInput.value = '';
-            }
-            remainingHint.textContent = 'Sisa tagihan saat ini: Rp ' + new Intl.NumberFormat('id-ID').format(remaining);
-            amountInput.oninput = function() {
-                var typed = parseFloat(this.value.replace(/[^0-9]/g, '')) || 0;
-                var left = Math.max(0, remaining - typed);
-                remainingHint.textContent = 'Sisa setelah pembayaran ini: Rp ' + new Intl.NumberFormat('id-ID').format(left);
-            };
+        // Nominal selalu diisi manual oleh user (baik Sebagian maupun Telah
+        // Dibayar) -- tidak auto-fill/lock, supaya user bisa koreksi sendiri
+        // kalau angka sisa tagihan yang dihitung sistem meleset.
+        amountInput.readOnly = false;
+        if (amountInput.value === new Intl.NumberFormat('id-ID').format(remaining)) {
+            amountInput.value = '';
         }
+        remainingHint.textContent = 'Sisa tagihan saat ini: Rp ' + new Intl.NumberFormat('id-ID').format(remaining);
+        amountInput.oninput = function() {
+            var typed = parseFloat(this.value.replace(/[^0-9]/g, '')) || 0;
+            var left = Math.max(0, remaining - typed);
+            remainingHint.textContent = 'Sisa setelah pembayaran ini: Rp ' + new Intl.NumberFormat('id-ID').format(left);
+        };
     } else {
         recordGroup.style.display = 'none';
         form.action = '/orders/' + orderId + '/payment-status';
