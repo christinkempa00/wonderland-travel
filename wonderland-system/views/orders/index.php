@@ -496,6 +496,7 @@ function openPaymentModal(orderId, currentStatus, paidAt, remaining) {
     var form = document.getElementById('paymentForm');
     var statusSelect = document.getElementById('modalPaymentStatus');
     var amountInput = document.getElementById('modalAmount');
+    var dateInput = document.getElementById('modalPaymentDate');
 
     // Base action always targets payment-status; togglePaidAtField() swaps it
     // to /payment when the chosen status needs a real payment record.
@@ -505,6 +506,13 @@ function openPaymentModal(orderId, currentStatus, paidAt, remaining) {
 
     // Set current status
     statusSelect.value = currentStatus;
+
+    // Tampilkan tanggal pembayaran yang sudah tercatat (kalau ada), bukan
+    // selalu hari ini -- supaya user tidak salah kira tanggal yang tampil
+    // itu tanggal yang sebenarnya sudah tersimpan.
+    if (paidAt) {
+        dateInput.value = paidAt;
+    }
 
     // Show/hide payment-record fields + switch submission target based on status
     togglePaidAtField(currentStatus);
