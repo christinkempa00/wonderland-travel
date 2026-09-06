@@ -596,8 +596,13 @@ function togglePaidAtField(status) {
         if (amountInput.value === new Intl.NumberFormat('id-ID').format(remaining)) {
             amountInput.value = '';
         }
-        remainingHint.textContent = 'Sisa tagihan saat ini: Rp ' + new Intl.NumberFormat('id-ID').format(remaining);
+        if (remaining <= 0) {
+            remainingHint.textContent = 'Pesanan ini sudah LUNAS, tidak ada sisa tagihan.';
+        } else {
+            remainingHint.textContent = 'Sisa tagihan saat ini: Rp ' + new Intl.NumberFormat('id-ID').format(remaining);
+        }
         amountInput.oninput = function() {
+            if (remaining <= 0) return;
             var typed = parseFloat(this.value.replace(/[^0-9]/g, '')) || 0;
             var left = Math.max(0, remaining - typed);
             remainingHint.textContent = 'Sisa setelah pembayaran ini: Rp ' + new Intl.NumberFormat('id-ID').format(left);

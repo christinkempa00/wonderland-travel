@@ -748,7 +748,15 @@ class OrderController {
             : (float)($orderArray['total_final_price'] ?? 0);
         $paidAmount = round((float)($orderArray['paid_amount'] ?? 0));
         $remainingAmount = max(0, $totalPrice - $paidAmount);
-        
+
+        // Pesanan sudah lunas (tidak ada sisa tagihan) -- kasih tahu jelas
+        // alih-alih cuma "melebihi sisa tagihan (Rp 0)" yang membingungkan.
+        if ($remainingAmount <= 0) {
+            Session::flash('warning', 'Pesanan ini sudah LUNAS, tidak ada sisa tagihan. Tidak perlu menambahkan pembayaran lagi.');
+            redirect('/orders/' . $id . '/payment');
+            return;
+        }
+
         // Get input
         $amount = (float) preg_replace('/[^\d]/', '', $_POST['amount'] ?? '0');
         $paymentDate = $_POST['payment_date'] ?? date('Y-m-d');
