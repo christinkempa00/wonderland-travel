@@ -522,7 +522,7 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
             </div>
             <?php endif; ?>
 
-            <form method="POST" action="<?= url('/orders/' . $order->id . '/tickets') ?>" enctype="multipart/form-data">
+            <form id="ticketUploadForm" method="POST" action="<?= url('/orders/' . $order->id . '/tickets') ?>" enctype="multipart/form-data">
                 <?= csrfField() ?>
                 <div class="d-flex gap-2 align-items-center">
                     <input type="file" name="tickets[]" accept="application/pdf" multiple required class="form-control">
@@ -530,9 +530,58 @@ if ($order->total_base_price == 0 && $order->total_final_price == 0) {
                         <i class="fas fa-upload"></i> Upload
                     </button>
                 </div>
-                <small class="text-muted d-block mt-1">Bisa pilih lebih dari satu file. Hanya format PDF.</small>
+                <small class="text-muted d-block mt-1" id="ticketUploadHint">Bisa pilih lebih dari satu file. Hanya format PDF.</small>
             </form>
         </div>
+
+        <script>
+        // Server hosting kadang membalas 405 sesaat & acak untuk upload file
+        // (bukan dari aplikasi kita -- sudah diverifikasi: request identik,
+        // kadang berhasil kadang tidak). Coba ulang otomatis beberapa kali
+        // sebelum benar-benar menyerah, supaya gangguan sesaat itu tidak
+        // langsung terlihat sebagai error ke user.
+        document.getElementById('ticketUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var btn = form.querySelector('button[type="submit"]');
+            var hint = document.getElementById('ticketUploadHint');
+            var formData = new FormData(form);
+            var maxAttempts = 3;
+
+            function attempt(n) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload' + (n > 1 ? ' (percobaan ' + n + ')' : '') + '...';
+
+                // redirect: 'manual' -- controller SELALU redirect setelah
+                // sukses maupun error tervalidasi (mis. "pilih file dulu"),
+                // jadi respons berupa redirect ("opaqueredirect") berarti
+                // request beneran sampai ke aplikasi kita -- tinggal reload
+                // supaya flash message-nya (sukses/error) tampil. Retry cuma
+                // untuk kegagalan mentah dari server (405/5xx/network), bukan
+                // hasil validasi aplikasi.
+                fetch(form.action, { method: 'POST', body: formData, credentials: 'same-origin', redirect: 'manual' })
+                    .then(function(res) {
+                        if (res.type === 'opaqueredirect' || res.ok) {
+                            window.location.reload();
+                            return;
+                        }
+                        throw new Error('status ' + res.status);
+                    })
+                    .catch(function() {
+                        if (n < maxAttempts) {
+                            setTimeout(function() { attempt(n + 1); }, 800);
+                        } else {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-upload"></i> Upload';
+                            hint.textContent = 'Gagal upload setelah beberapa percobaan (gangguan server sesaat) -- coba lagi.';
+                            hint.classList.add('text-danger');
+                        }
+                    });
+            }
+
+            attempt(1);
+        });
+        </script>
 
         <!-- Notes -->
         <?php if ($order->notes): ?>
