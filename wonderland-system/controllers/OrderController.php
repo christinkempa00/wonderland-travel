@@ -806,7 +806,8 @@ class OrderController {
             // Check if now fully paid
             $updatedOrder = $this->findOrder($id);
             if ($updatedOrder && $updatedOrder->payment_status === 'paid') {
-                Session::flash('info', '🎉 Order ini sudah LUNAS!');
+                $invoiceNo = orderInvoiceNumber($updatedOrder->toArray());
+                Session::flash('info', "🎉 Pesanan {$invoiceNo} telah LUNAS! Total dibayar: " . formatRupiah($updatedOrder->paid_amount) . '.');
                 if (function_exists('notifyCompanyUsers')) {
                     notifyCompanyUsers(
                         (int)$orderArray['company_id'],
@@ -823,6 +824,33 @@ class OrderController {
         }
         
         redirect('/orders/' . $id . '/payment');
+    }
+
+    /**
+     * Riwayat pembayaran satu order (JSON) -- dipakai modal "Update Status
+     * Pembayaran" (daftar Pesanan & detail pesanan) supaya user bisa lihat
+     * histori pembayaran sebelum menambah yang baru, tanpa pindah halaman.
+     * GET /orders/{id}/payments-json
+     */
+    public function paymentsJson(int $id): void {
+        header('Content-Type: application/json');
+
+        $order = $this->findOrder($id);
+        if (!$order) {
+            echo json_encode(['success' => false, 'message' => 'Pesanan tidak ditemukan.']);
+            return;
+        }
+
+        $payments = function_exists('getOrderPayments') ? getOrderPayments($id) : [];
+        $rows = array_map(function ($p) {
+            return [
+                'date' => !empty($p['payment_date']) ? formatDate($p['payment_date'], 'd/m/Y') : '-',
+                'amount' => formatRupiah($p['amount']),
+                'method' => strtoupper($p['payment_method'] ?? '-')
+            ];
+        }, $payments);
+
+        echo json_encode(['success' => true, 'payments' => $rows]);
     }
 
     /**

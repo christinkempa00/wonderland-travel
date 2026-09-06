@@ -308,6 +308,11 @@ foreach ($orders as $order) {
             <?= csrfField() ?>
             <input type="hidden" name="_method" id="paymentMethodOverride" value="PATCH">
             <div class="modal-body">
+                <div class="form-group mb-3" id="paymentHistorySection" style="display: none;">
+                    <label class="form-label">Riwayat Pembayaran</label>
+                    <div id="paymentHistoryList" class="payment-history-list"></div>
+                </div>
+
                 <div class="form-group mb-3">
                     <label class="form-label">Status Pembayaran</label>
                     <select name="payment_status" id="modalPaymentStatus" class="form-control">
@@ -488,6 +493,28 @@ foreach ($orders as $order) {
         font-size: 0.75rem;
     }
 }
+
+/* Payment history inside the modal */
+.payment-history-list {
+    max-height: 140px;
+    overflow-y: auto;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+}
+
+.payment-history-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px dashed var(--gray-200);
+}
+
+.payment-history-row:last-child {
+    border-bottom: none;
+}
 </style>
 
 <script>
@@ -524,6 +551,28 @@ function openPaymentModal(orderId, currentStatus, paidAt, remaining) {
     statusSelect.onchange = function() {
         togglePaidAtField(this.value);
     };
+
+    loadPaymentHistory(orderId);
+}
+
+function loadPaymentHistory(orderId) {
+    var section = document.getElementById('paymentHistorySection');
+    var list = document.getElementById('paymentHistoryList');
+    section.style.display = 'none';
+    list.innerHTML = '';
+
+    fetch('/orders/' + orderId + '/payments-json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.success || !data.payments || data.payments.length === 0) return;
+            list.innerHTML = data.payments.map(function(p) {
+                return '<div class="payment-history-row">' +
+                       '<span>' + p.date + ' &middot; ' + p.method + '</span>' +
+                       '<strong>' + p.amount + '</strong></div>';
+            }).join('');
+            section.style.display = 'block';
+        })
+        .catch(function() {});
 }
 
 function togglePaidAtField(status) {

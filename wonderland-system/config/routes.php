@@ -95,6 +95,7 @@ $routes = [
     // ============================================
     
     'GET /orders/{id:\d+}/payment' => ['OrderController', 'payment', 'auth'],
+    'GET /orders/{id:\d+}/payments-json' => ['OrderController', 'paymentsJson', 'auth'],
     'POST /orders/{id:\d+}/payment' => ['OrderController', 'storePayment', 'auth'],
     'DELETE /orders/{id:\d+}/payment/{paymentId:\d+}/void' => ['OrderController', 'voidPayment', 'auth'],
     'POST /orders/{id:\d+}/payment/{paymentId:\d+}/void' => ['OrderController', 'voidPayment', 'auth'],
